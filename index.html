@@ -34,7 +34,34 @@
   .mono-a{flex-shrink:0;display:block}
   .nav .links{display:none;gap:26px}
   .nav .links a{font-size:.66rem;letter-spacing:.18em;text-transform:uppercase;color:var(--soft)}
-  .nav .btn{padding:10px 14px;font-size:.6rem}
+  .nav .btn{padding:10px 14px;font-size:.6rem;white-space:nowrap}
+  .nav .wm{font-size:1rem;letter-spacing:.22em}
+  @media(min-width:520px){.nav .wm{font-size:1.15rem;letter-spacing:.3em}}
+  .how{display:grid;grid-template-columns:1fr;gap:0}
+  .how div{border-top:1px solid var(--line);padding:22px 0}
+  .how .k{font-family:'IBM Plex Mono',monospace;color:var(--gold);font-size:.78rem;font-weight:600}
+  .how h3{font-family:'Cormorant Garamond',serif;font-weight:500;font-size:1.45rem;margin:6px 0 8px;line-height:1.2}
+  .how p{font-size:.88rem;color:var(--soft);line-height:1.65}
+  @media(min-width:820px){.how{grid-template-columns:1fr 1fr 1fr;gap:0 40px}}
+  .ex{margin-top:26px;border:1px solid var(--ink);padding:22px 20px;background:#fff}
+  .ex .micro{color:var(--gold)}
+  .ex p{font-size:.92rem;color:var(--ink);line-height:1.7;margin-top:8px}
+  .pil{display:grid;grid-template-columns:1fr;gap:14px}
+  .pil div{border:1px solid var(--ink);padding:22px 20px;background:#fff}
+  .pil .micro{color:var(--gold)}
+  .pil h3{font-family:'Cormorant Garamond',serif;font-weight:500;font-size:1.55rem;margin:6px 0 8px;line-height:1.15}
+  .pil p{font-size:.86rem;color:var(--soft);line-height:1.65}
+  @media(min-width:820px){.pil{grid-template-columns:1fr 1fr 1fr 1fr}}
+  .nums{display:grid;grid-template-columns:1fr 1fr;gap:0}
+  .nums div{border-top:1px solid #3A3733;padding:18px 0}
+  .nums b{display:block;font-family:'Cormorant Garamond',serif;font-weight:500;font-size:2.4rem;line-height:1;color:var(--paper)}
+  .nums span{font-size:.62rem;letter-spacing:.2em;text-transform:uppercase;color:#9D9A92}
+  @media(min-width:720px){.nums{grid-template-columns:repeat(3,1fr);gap:0 40px}}
+  .sec{display:grid;grid-template-columns:1fr;gap:0}
+  .sec div{border-top:1px solid var(--line);padding:16px 0}
+  .sec h3{font-size:.66rem;letter-spacing:.22em;text-transform:uppercase;font-weight:500}
+  .sec p{font-size:.84rem;color:var(--soft);margin-top:6px}
+  @media(min-width:720px){.sec{grid-template-columns:1fr 1fr;gap:0 40px}}
   @media(min-width:820px){.nav .links{display:flex}}
   /* hero */
   .hero{padding:64px 0 56px;border-bottom:1px solid var(--ink)}
@@ -158,20 +185,21 @@
 
 <nav><div class="wrap nav">
   <a class="wm" href="#top"><svg class="mono-a" width="22" height="22" viewBox="0 0 40 40" aria-hidden="true"><rect x="2" y="2" width="36" height="36" fill="none" stroke="currentColor" stroke-width="1.4"/><text x="20" y="29" text-anchor="middle" font-family="Cormorant Garamond, serif" font-size="26" fill="currentColor">A</text></svg>ARTVELCHIV</a>
-  <div class="links"><a href="#pourquoi">Pourquoi maintenant</a><a href="#methode">Le Protocole</a><a href="#couverture">L'Intelligence</a><a href="#livrables">Livrables</a><a href="#textes">Le Référentiel</a></div>
-  <a class="btn dark" href="/app/">Ouvrir le démonstrateur</a>
+  <div class="links"><a href="#comment">Fonctionnement</a><a href="#pourquoi">Pourquoi maintenant</a><a href="#methode">Le Protocole</a><a href="#couverture">L'Intelligence</a><a href="#livrables">Livrables</a><a href="#textes">Le Référentiel</a></div>
+  <a class="btn dark" href="/app/">Démonstrateur</a>
 </div></nav>
 
 <header class="hero" id="top"><div class="wrap"><div class="hero-grid"><div>
   <div class="micro" style="color:var(--gold)">The art transaction standard</div>
   <h1 style="margin-top:14px">Every work established.<br>Every transaction secured.</h1>
-  <p class="sub">Décrivez l'œuvre ; le droit se déduit, la douane se calcule, le dossier se constitue — jusqu'au contrat. Pour les galeries, les marchands, les maisons de vente et les conseillers qui veulent vendre sans faille, dans toutes les juridictions.</p>
-  <div class="ctas"><a class="btn dark" href="/app/">Ouvrir le démonstrateur</a><a class="btn" href="#preview">Demander un accès privé</a></div>
+  <p class="sub">Les galeries, les marchands et les maisons de vente confient à ARTVELCHIV leurs transactions les plus sensibles — celles où une œuvre vaut plusieurs millions d'euros, et où une lacune se paie au même prix : un certificat refusé après signature, une importation interdite, une restitution sans indemnité.</p>
+  <p class="sub" style="margin-top:12px">Pour chaque œuvre, ARTVELCHIV établit ce que la loi exige dans le pays d'entrée, dans le pays de revente et en douane, puis constitue le dossier qui rend la vente incontestable.</p>
+  <div class="ctas"><a class="btn dark" href="#preview">Demander une démonstration</a><a class="btn" href="/app/">Essayer le démonstrateur</a></div>
   <div class="tags"><span>Régime déduit</span><span>Douane et délais</span><span>Preuves scellées</span><span>Dossiers d'autorités</span><span>Contrat sur mesure</span></div>
 </div>
 <div class="hero-art">
   <img src="/assets/abstraction.jpg" alt="Acrylique sur toile, école américaine, vers 1970">
-  <div class="cap"><span>Record 26-004910 · Acrylique sur toile, école américaine, 1970 · New York → Paris</span><b>Import ICG</b></div>
+  <div class="cap"><span>Record 26-004910 · Acrylique sur toile, école américaine, 1970 · New York → Paris · 2,8 M€</span><b>Douane · vigilance</b></div>
 </div></div>
 
   <div class="card" aria-hidden="true">
@@ -191,15 +219,42 @@
   </div>
 </div></header>
 
-<section id="selection" style="padding-top:56px"><div class="wrap">
-  <div class="micro">Sélection</div>
+<section id="comment" style="padding-top:64px"><div class="wrap">
+  <div class="micro">Comment cela fonctionne</div>
+  <h2>Vous décrivez. ARTVELCHIV établit. Vous concluez.</h2>
+  <div class="how" style="margin-top:24px">
+    <div><div class="k">01</div><h3>Vous décrivez l'œuvre</h3><p>Sa nature, sa date, son auteur, son pays de création, l'endroit où elle se trouve, l'endroit où elle part, son statut douanier, le mode de vente et l'acheteur. Deux minutes, dans une interface pensée pour un téléphone.</p></div>
+    <div><div class="k">02</div><h3>ARTVELCHIV établit le droit</h3><p>L'Intelligence ARTVELCHIV déduit chaque obligation — export, import, douane, fiscalité, anti-blanchiment, sanctions, espèces protégées, droits d'auteur, consommation — avec son texte, sa gravité et son délai. Ce qui bloque apparaît en premier.</p></div>
+    <div><div class="k">03</div><h3>Vous concluez, dossier en main</h3><p>Vous joignez les pièces exigées, le vendeur signe ses déclarations, et ARTVELCHIV génère les dossiers pour les autorités, le rapport pour l'acheteur et le contrat — puis scelle le tout, conservé dix ans.</p></div>
+  </div>
+  <div class="ex">
+    <div class="micro">Un exemple, en trente secondes</div>
+    <p>Un bronze tibétain du XVIe siècle, conservé à Hong Kong, vendu 2,4 millions d'euros à un collectionneur parisien. ARTVELCHIV indique la déclaration de l'importateur à déposer dans le système ICG, la preuve de sortie licite de Chine à réunir, la vigilance anti-blanchiment sur les deux parties, la TVA à l'importation de 5,5 %, le séquestre recommandé et le délai d'instruction — puis génère le dossier douanier, le rapport de l'acheteur et le contrat avec ses conditions suspensives. Sans ce dossier, l'œuvre ne franchit pas la frontière de l'Union.</p>
+  </div>
+</div></section>
+
+<section id="apport" style="padding-top:0"><div class="wrap">
+  <div class="rule"></div>
+  <div class="micro" style="margin-top:28px">Ce que nous apportons</div>
+  <h2>Quatre certitudes, sur chaque transaction.</h2>
+  <div class="pil" style="margin-top:24px">
+    <div><div class="micro">L'Intelligence</div><h3>La certitude du droit</h3><p>Chaque obligation déduite de l'œuvre et de son parcours, avec sa source. Aucune règle générale : la règle qui s'applique à ce bronze, à ce dessin, à ce trajet.</p></div>
+    <div><div class="micro">Le Protocole</div><h3>La maîtrise du temps</h3><p>Les délais qui commandent la vente — admission temporaire, licence, préemption, rétractation — calculés et datés avant la signature, pas découverts après.</p></div>
+    <div><div class="micro">Le Référentiel</div><h3>La preuve de la diligence</h3><p>Le dossier réunit exactement ce que la directive 2014/60 exige du possesseur diligent. En cas de restitution, c'est ce dossier qui ouvre droit à indemnité.</p></div>
+    <div><div class="micro">Le Sceau</div><h3>La confiance de l'acheteur</h3><p>Un rapport clair sur le vérifié et le déclaré, un contrat bâti sur le dossier, un sceau daté. L'acheteur sait ce qu'il achète ; le vendeur sait ce qu'il garantit.</p></div>
+  </div>
+</div></section>
+
+<section id="selection" style="padding-top:0"><div class="wrap">
+  <div class="rule"></div>
+  <div class="micro" style="margin-top:28px">Sélection</div>
   <h2>Cinq œuvres. Cinq régimes.</h2>
-  <p class="lede">Chaque lot ouvre un dossier ; chaque dossier déduit ses obligations. Le même outil sert le dessin dédicacé de 12 000 € et le bronze de 120 000 €.</p>
+  <p class="lede">Chaque lot ouvre un dossier ; chaque dossier déduit ses obligations. Le même Protocole sert le dessin dédicacé de 18 000 € et le bronze de 2,4 millions d'euros — avec la même rigueur.</p>
   <div class="lots">
-    <a class="lot" href="#methode"><div class="img"><img src="/assets/cocteau.jpg" alt="Jean Cocteau, dédicace illustrée, 1960"></div><div class="no">26-004905</div><h3>Jean Cocteau, dessin dédicacé sur <span class="it">Le Grand Écart</span>, 1960</h3><p>Œuvre sur papier · Paris → Genève · artiste décédé depuis moins de 70 ans</p><div class="st warn">Requis — droit de suite, ADAGP, LTBC</div></a>
-    <a class="lot" href="#methode"><div class="img"><img src="/assets/bouddha.jpg" alt="Bouddha Shakyamuni, bronze doré, Tibet, XVIe-XVIIe siècle"></div><div class="no">26-004822</div><h3>Shakyamuni, bronze doré, Tibet, XVIe-XVIIe siècle</h3><p>Objet religieux · Hong Kong → Paris · bien culturel tiers de plus de 200 ans</p><div class="st warn">Requis — déclaration de l'importateur ICG</div></a>
-    <a class="lot" href="#methode"><div class="img"><img src="/assets/klee.jpg" alt="Paul Klee, Drang vor der Wanderung, 1940"></div><div class="no">26-004907</div><h3>Paul Klee, <span class="it">Drang vor der Wanderung</span>, 1940</h3><p>Dessin · Berne → Paris · œuvre européenne antérieure à 1946</p><div class="st warn">Requis — recherche de spoliation, diligence LTBC</div></a>
-    <a class="lot" href="#methode"><div class="img"><img src="/assets/kelly.jpg" alt="Ellsworth Kelly, Blue and Yellow and Red-Orange, lithographie"></div><div class="no">26-004908</div><h3>Ellsworth Kelly, <span class="it">Blue and Yellow and Red-Orange</span>, lithographie 34/75</h3><p>Estampe numérotée · Paris → Londres · artiste américain</p><div class="st ok">Conforme — tirage mentionné, licence sous les seuils</div></a>
+    <a class="lot" href="#methode"><div class="img"><img src="/assets/cocteau.jpg" alt="Jean Cocteau, dédicace illustrée, 1960"></div><div class="no">26-004905</div><h3>Jean Cocteau, dessin dédicacé sur <span class="it">Le Grand Écart</span>, 1960</h3><p>Œuvre sur papier · Paris → Genève · 18 000 € · artiste décédé depuis moins de 70 ans</p><div class="st warn">Requis — droit de suite, ADAGP, LTBC</div></a>
+    <a class="lot" href="#methode"><div class="img"><img src="/assets/bouddha.jpg" alt="Bouddha Shakyamuni, bronze doré, Tibet, XVIe-XVIIe siècle"></div><div class="no">26-004822</div><h3>Shakyamuni, bronze doré, Tibet, XVIe-XVIIe siècle</h3><p>Objet religieux · Hong Kong → Paris · 2 400 000 € · bien culturel tiers de plus de 200 ans</p><div class="st warn">Requis — déclaration de l'importateur ICG</div></a>
+    <a class="lot" href="#methode"><div class="img"><img src="/assets/klee.jpg" alt="Paul Klee, Drang vor der Wanderung, 1940"></div><div class="no">26-004907</div><h3>Paul Klee, <span class="it">Drang vor der Wanderung</span>, 1940</h3><p>Dessin · Berne → Paris · 380 000 € · œuvre européenne antérieure à 1946</p><div class="st warn">Requis — recherche de spoliation, diligence LTBC</div></a>
+    <a class="lot" href="#methode"><div class="img"><img src="/assets/kelly.jpg" alt="Ellsworth Kelly, Blue and Yellow and Red-Orange, lithographie"></div><div class="no">26-004908</div><h3>Ellsworth Kelly, <span class="it">Blue and Yellow and Red-Orange</span>, lithographie 34/75</h3><p>Estampe numérotée · Paris → Londres · 45 000 € · artiste américain</p><div class="st ok">Conforme — tirage mentionné, licence sous les seuils</div></a>
   </div>
   <p style="font-size:.68rem;color:var(--mute);margin-top:18px;line-height:1.6">Illustrations de démonstration. Reproduction des œuvres sous droits soumise à autorisation (ADAGP) et droits photographiques des maisons de vente réservés — précisément ce que le dossier ARTVELCHIV vérifie (CPI, art. L122-4).</p>
 </div></section>
@@ -219,7 +274,15 @@
 <div class="band-img"><img src="/assets/bouddha.jpg" alt=""><div class="in"><div class="wrap">
   <div class="micro" style="color:var(--gold)">Le principe</div>
   <div class="quote" style="margin-top:14px">« Rien n'est présumé. Chaque obligation est déduite de l'œuvre, du pays d'entrée, du pays de revente et du régime douanier — et chaque règle renvoie à son texte. »</div>
-  <p>ARTVELCHIV n'est pas une base de données. C'est <b>l'Intelligence ARTVELCHIV</b> — un référentiel vivant, conçu et tenu par des avocats : quatorze natures d'œuvres, vingt-quatre juridictions, cinq régimes douaniers, et un calendrier des échéances qui commande la vente.</p>
+  <p>ARTVELCHIV n'est pas une base de données. C'est <b>l'Intelligence ARTVELCHIV</b> — un référentiel vivant, conçu et tenu par des avocats, qui applique à chaque œuvre la règle qui la concerne, et seulement elle.</p>
+  <div class="nums" style="margin-top:34px">
+    <div><b>14</b><span>natures d'œuvres</span></div>
+    <div><b>24</b><span>juridictions</span></div>
+    <div><b>48</b><span>textes tenus à jour</span></div>
+    <div><b>5</b><span>régimes douaniers</span></div>
+    <div><b>6</b><span>domaines de clearance</span></div>
+    <div><b>9</b><span>étapes, un dossier</span></div>
+  </div>
 </div></div></div>
 
 <section id="methode"><div class="wrap">
@@ -324,14 +387,29 @@
   </div>
 </div></section>
 
+<section id="securite" style="padding-top:0"><div class="wrap">
+  <div class="rule"></div>
+  <div class="micro" style="margin-top:28px">Sécurité et confidentialité</div>
+  <h2>Le niveau d'exigence d'un cabinet d'avocats.</h2>
+  <p class="lede">Les dossiers d'ARTVELCHIV décrivent des œuvres, des propriétaires et des prix. Ils sont traités comme des dossiers de cabinet.</p>
+  <div class="sec" style="margin-top:20px">
+    <div><h3>Secret professionnel</h3><p>Conçu et opéré sous la responsabilité d'avocats, soumis au secret professionnel et à la déontologie du Barreau.</p></div>
+    <div><h3>Chiffrement et hébergement</h3><p>Données chiffrées en transit et au repos, hébergées dans l'Union européenne ; scellement des pièces par empreinte SHA-256.</p></div>
+    <div><h3>Aucune réutilisation</h3><p>Vos dossiers ne servent qu'à vos dossiers : aucune exploitation commerciale, aucun entraînement de modèle sur vos données.</p></div>
+    <div><h3>Accès et traçabilité</h3><p>Accès nominatif, journal des consultations, conservation dix ans conforme aux obligations de vigilance et de livre de police.</p></div>
+    <div><h3>Conformité RGPD</h3><p>Registre des traitements, base légale documentée, droits des personnes, sous-traitants européens.</p></div>
+    <div><h3>Versionnage du Référentiel</h3><p>Chaque dossier conserve la version des règles appliquées à sa date : ce qui a été exigé, quand, et sur quel texte.</p></div>
+  </div>
+</div></section>
+
 <div class="dark-band" id="preview"><div class="wrap">
   <div class="micro">Private preview</div>
-  <div class="quote" style="margin-top:14px">Le démonstrateur est ouvert à un cercle restreint de galeries, de marchands et de maisons de vente.</div>
-  <p>Accès par code, dix dossiers de démonstration, dix régimes. Vos retours façonnent la version de lancement.</p>
+  <div class="quote" style="margin-top:14px">Une démonstration sur vos propres dossiers, ou un accès au démonstrateur.</div>
+  <p>ARTVELCHIV est ouvert à un cercle restreint de galeries, de marchands, de maisons de vente et de conseillers. Une démonstration d'une heure suffit à traiter l'une de vos ventes en cours, de la description au contrat.</p>
   <form class="form" id="f" style="margin-top:30px" onsubmit="event.preventDefault();document.getElementById('f').style.display='none';document.getElementById('ok').style.display='block';">
     <div class="field"><label>Structure</label><select required style="color:#FBFAF7;border-bottom-color:#5A5751"><option value="" style="color:#111">Choisir…</option><option style="color:#111">Galerie</option><option style="color:#111">Marchand, antiquaire</option><option style="color:#111">Maison de vente</option><option style="color:#111">Conseiller, courtier</option><option style="color:#111">Collectionneur, family office</option><option style="color:#111">Institution, musée</option></select></div>
     <div class="field"><label>Adresse e-mail professionnelle</label><input type="email" required placeholder="prenom@maison.com" style="color:#FBFAF7;border-bottom-color:#5A5751"></div>
-    <button class="btn full" type="submit" style="background:#FBFAF7;color:#111110;border-color:#FBFAF7">Demander un accès</button>
+    <button class="btn full" type="submit" style="background:#FBFAF7;color:#111110;border-color:#FBFAF7">Demander une démonstration</button>
     <div style="font-size:.7rem;color:#8B8880;margin-top:12px;line-height:1.6">Aucune sollicitation commerciale. Vos coordonnées servent uniquement à l'envoi du code d'accès.</div>
   </form>
   <div class="success" id="ok" style="border-color:#6FA381;color:#9CC7AB">✓ Demande enregistrée. Le code d'accès vous parviendra par courriel.</div>
