@@ -6,276 +6,380 @@
 <title>ARTVELCHIV — The art transaction standard</title>
 <meta name="description" content="ARTVELCHIV constitue et sécurise chaque transaction d'œuvre d'art : régime juridique déduit, douane et délais, preuves indexées, dossiers d'autorités, rapport acheteur, contrat. Pour galeries, marchands, maisons de vente et conseillers.">
 <meta name="robots" content="noindex, nofollow">
+<meta name="theme-color" content="#1D4633">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400;1,500&family=Jost:wght@300;400;500;600&family=IBM+Plex+Mono:wght@400;600&display=swap" rel="stylesheet">
 <style>
-  :root{--paper:#FBFAF7;--ink:#111110;--soft:#4A4741;--mute:#8C8981;--line:#E4E1DA;--dark:#C9C5BC;--gold:#9C7C3C;--claret:#7A1E1E;--ok:#2F6B45}
+  :root{--paper:#FAF5EB;--cream:#FFFDF8;--beige:#EFE7D6;--ink:#15140F;--soft:#46443C;--mute:#8C8578;--line:#E3DCCB;--dark:#CEC6B2;--vert:#1D4633;--vert-deep:#123024;--vert-dim:#87A996;--claret:#7A1E1E;--ok:#2E6349;--warn:#9A6321}
   *{box-sizing:border-box;margin:0;padding:0}
   html{scroll-behavior:smooth;-webkit-text-size-adjust:100%}
-  body{font-family:'Jost',sans-serif;font-weight:300;color:var(--ink);background:var(--paper);line-height:1.6;-webkit-font-smoothing:antialiased}
+  body{font-family:'Jost',sans-serif;font-weight:300;color:var(--ink);background:var(--paper);line-height:1.6;-webkit-font-smoothing:antialiased;border-top:4px solid var(--vert)}
   .serif{font-family:'Cormorant Garamond',serif;font-weight:500}
   .it{font-style:italic}
   .mono{font-family:'IBM Plex Mono',monospace}
-  .micro{font-size:.62rem;letter-spacing:.26em;text-transform:uppercase;color:var(--mute);font-weight:500}
-  .wrap{max-width:1080px;margin:0 auto;padding:0 22px}
   a{color:inherit;text-decoration:none}
-  .btn{display:inline-flex;align-items:center;justify-content:center;font-family:'Jost',sans-serif;font-weight:500;font-size:.7rem;letter-spacing:.18em;text-transform:uppercase;padding:16px 26px;border:1px solid var(--ink);color:var(--ink);background:transparent;cursor:pointer;transition:opacity .15s}
+  b,strong{font-weight:500}
+  .wrap{max-width:1120px;margin:0 auto;padding:0 22px}
+  @media(min-width:900px){.wrap{padding:0 40px}}
+
+  /* ---- type system ---- */
+  .eyebrow{font-size:.68rem;letter-spacing:.24em;text-transform:uppercase;color:var(--vert);font-weight:600}
+  .eyebrow.mute{color:var(--mute)}
+  h1{font-family:'Cormorant Garamond',serif;font-weight:500;font-style:italic;font-size:clamp(2.5rem,6.4vw,4.3rem);line-height:1.06;letter-spacing:-.005em}
+  h2{font-family:'Cormorant Garamond',serif;font-weight:500;font-size:clamp(1.85rem,3.8vw,2.7rem);line-height:1.12;margin-top:12px;max-width:820px}
+  h3{font-family:'Cormorant Garamond',serif;font-weight:500;line-height:1.2}
+  .lede{font-size:1rem;color:var(--soft);max-width:660px;line-height:1.72;margin-top:16px}
+  p{font-size:.92rem;color:var(--soft);line-height:1.68}
+
+  /* ---- buttons ---- */
+  .btn{display:inline-flex;align-items:center;justify-content:center;white-space:nowrap;font-family:'Jost',sans-serif;font-weight:600;font-size:.7rem;letter-spacing:.16em;text-transform:uppercase;padding:16px 26px;border:1px solid var(--ink);color:var(--ink);background:transparent;cursor:pointer;transition:opacity .15s,background .15s}
   .btn:active{opacity:.6}
-  .btn.dark{background:var(--ink);color:var(--paper)}
+  .btn.vert{background:var(--vert);border-color:var(--vert);color:var(--paper)}
+  .btn.dark{background:var(--ink);border-color:var(--ink);color:var(--paper)}
+  .btn.light{background:var(--paper);border-color:var(--paper);color:var(--ink)}
   .btn.full{width:100%}
-  .rule{border-top:1px solid var(--ink)}
-  section{padding:72px 0}
-  h2{font-family:'Cormorant Garamond',serif;font-weight:500;font-size:clamp(1.9rem,4.6vw,2.8rem);line-height:1.15;margin:8px 0 14px}
-  .lede{font-size:.98rem;color:var(--soft);max-width:620px;line-height:1.7}
-  /* nav */
-  nav{position:sticky;top:0;z-index:50;background:rgba(251,250,247,.94);backdrop-filter:blur(8px);border-bottom:1px solid var(--ink)}
-  .nav{display:flex;align-items:center;justify-content:space-between;height:60px}
-  .wm{font-family:'Cormorant Garamond',serif;font-weight:500;font-size:1.15rem;letter-spacing:.3em;display:inline-flex;align-items:center;gap:12px}
+
+  /* ---- sections ---- */
+  section{padding:64px 0}
+  @media(min-width:900px){section{padding:92px 0}}
+  section + section{border-top:1px solid var(--line)}
+  .head{margin-bottom:34px}
+  @media(min-width:900px){.head{margin-bottom:44px}}
+  .grid{display:grid;gap:0}
+  .cols2{grid-template-columns:1fr}
+  .cols3{grid-template-columns:1fr}
+  .cols4{grid-template-columns:1fr}
+  @media(min-width:720px){.cols2{grid-template-columns:1fr 1fr;column-gap:48px}.cols4{grid-template-columns:1fr 1fr;column-gap:32px}}
+  @media(min-width:960px){.cols3{grid-template-columns:1fr 1fr 1fr;column-gap:48px}.cols4{grid-template-columns:repeat(4,1fr);column-gap:32px}}
+
+  /* ---- nav ---- */
+  nav{position:sticky;top:0;z-index:50;background:rgba(250,245,235,.94);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);border-bottom:1px solid var(--line)}
+  .nav{display:flex;align-items:center;justify-content:space-between;height:64px;gap:16px}
+  .wm{font-family:'Cormorant Garamond',serif;font-weight:500;font-size:1.05rem;letter-spacing:.28em;display:inline-flex;align-items:center;gap:12px;white-space:nowrap}
   .mono-a{flex-shrink:0;display:block}
-  .nav .links{display:none;gap:26px}
-  .nav .links a{font-size:.66rem;letter-spacing:.18em;text-transform:uppercase;color:var(--soft)}
-  .nav .btn{padding:10px 14px;font-size:.6rem;white-space:nowrap}
-  .nav .wm{font-size:1rem;letter-spacing:.22em}
-  @media(min-width:520px){.nav .wm{font-size:1.15rem;letter-spacing:.3em}}
-  .how{display:grid;grid-template-columns:1fr;gap:0}
-  .how div{border-top:1px solid var(--line);padding:22px 0}
-  .how .k{font-family:'IBM Plex Mono',monospace;color:var(--gold);font-size:.78rem;font-weight:600}
-  .how h3{font-family:'Cormorant Garamond',serif;font-weight:500;font-size:1.45rem;margin:6px 0 8px;line-height:1.2}
-  .how p{font-size:.88rem;color:var(--soft);line-height:1.65}
-  @media(min-width:820px){.how{grid-template-columns:1fr 1fr 1fr;gap:0 40px}}
-  .ex{margin-top:26px;border:1px solid var(--ink);padding:22px 20px;background:#fff}
-  .ex .micro{color:var(--gold)}
-  .ex p{font-size:.92rem;color:var(--ink);line-height:1.7;margin-top:8px}
-  .pil{display:grid;grid-template-columns:1fr;gap:14px}
-  .pil div{border:1px solid var(--ink);padding:22px 20px;background:#fff}
-  .pil .micro{color:var(--gold)}
-  .pil h3{font-family:'Cormorant Garamond',serif;font-weight:500;font-size:1.55rem;margin:6px 0 8px;line-height:1.15}
-  .pil p{font-size:.86rem;color:var(--soft);line-height:1.65}
-  @media(min-width:820px){.pil{grid-template-columns:1fr 1fr 1fr 1fr}}
-  .nums{display:grid;grid-template-columns:1fr 1fr;gap:0}
-  .nums div{border-top:1px solid #3A3733;padding:18px 0}
-  .nums b{display:block;font-family:'Cormorant Garamond',serif;font-weight:500;font-size:2.4rem;line-height:1;color:var(--paper)}
-  .nums span{font-size:.62rem;letter-spacing:.2em;text-transform:uppercase;color:#9D9A92}
-  @media(min-width:720px){.nums{grid-template-columns:repeat(3,1fr);gap:0 40px}}
-  .sec{display:grid;grid-template-columns:1fr;gap:0}
-  .sec div{border-top:1px solid var(--line);padding:16px 0}
-  .sec h3{font-size:.66rem;letter-spacing:.22em;text-transform:uppercase;font-weight:500}
-  .sec p{font-size:.84rem;color:var(--soft);margin-top:6px}
-  @media(min-width:720px){.sec{grid-template-columns:1fr 1fr;gap:0 40px}}
-  @media(min-width:820px){.nav .links{display:flex}}
-  /* hero */
-  .hero{padding:64px 0 56px;border-bottom:1px solid var(--ink)}
-  .hero h1{font-family:'Cormorant Garamond',serif;font-weight:500;font-style:italic;font-size:clamp(2.35rem,7.2vw,4.4rem);line-height:1.1;letter-spacing:-.005em}
-  .hero .sub{margin-top:22px;font-size:1.02rem;color:var(--soft);max-width:560px;line-height:1.7}
-  .hero .ctas{display:flex;flex-direction:column;gap:10px;margin-top:30px}
-  @media(min-width:640px){.hero .ctas{flex-direction:row}}
-  .hero .tags{display:flex;flex-wrap:wrap;gap:14px 22px;margin-top:34px}
-  .hero .tags span{font-size:.62rem;letter-spacing:.2em;text-transform:uppercase;color:var(--gold);font-weight:500}
-  /* record card */
-  .card{margin-top:44px;border:1px solid var(--ink);background:#fff;max-width:460px}
-  .card .top{display:flex;justify-content:space-between;align-items:center;padding:12px 16px;border-bottom:1px solid var(--line);font-size:.62rem;letter-spacing:.18em;text-transform:uppercase}
-  .card .top b{color:var(--gold);font-weight:600}
-  .card .body{padding:16px}
-  .card .title{font-family:'Cormorant Garamond',serif;font-size:1.3rem;line-height:1.2}
-  .card .meta{font-size:.72rem;color:var(--mute);margin-top:4px}
-  .row{display:flex;justify-content:space-between;gap:12px;padding:9px 0;border-top:1px solid var(--line);font-size:.8rem}
-  .row b{font-weight:500;letter-spacing:.14em;text-transform:uppercase;font-size:.6rem;white-space:nowrap}
-  .ok{color:var(--ok)}.warn{color:#B8732A}.bad{color:var(--claret)}
-  /* facts */
-  .facts{display:grid;grid-template-columns:1fr;gap:0}
-  .fact{border-top:1px solid var(--line);padding:22px 0}
-  .fact .n{font-family:'IBM Plex Mono',monospace;font-size:1.35rem;font-weight:600;color:var(--gold)}
-  .fact h3{font-family:'Cormorant Garamond',serif;font-weight:500;font-size:1.35rem;margin:6px 0 6px;line-height:1.25}
-  .fact p{font-size:.86rem;color:var(--soft)}
-  .fact .src{font-size:.68rem;color:var(--mute);margin-top:8px;font-family:'IBM Plex Mono',monospace}
-  @media(min-width:720px){.facts{grid-template-columns:1fr 1fr;gap:0 40px}}
-  /* steps */
-  .steps{counter-reset:s}
-  .step{display:grid;grid-template-columns:44px 1fr;gap:14px;border-top:1px solid var(--line);padding:18px 0}
-  .step .k{font-family:'IBM Plex Mono',monospace;color:var(--gold);font-size:.82rem;font-weight:600;padding-top:3px}
-  .step h3{font-family:'Cormorant Garamond',serif;font-weight:500;font-size:1.3rem;line-height:1.2}
-  .step p{font-size:.86rem;color:var(--soft);margin-top:4px}
-  @media(min-width:820px){.steps{display:grid;grid-template-columns:1fr 1fr;gap:0 48px}}
-  /* coverage */
-  .cov{display:grid;grid-template-columns:1fr;gap:0}
-  .cov div{border-top:1px solid var(--line);padding:18px 0}
-  .cov h3{font-size:.68rem;letter-spacing:.22em;text-transform:uppercase;font-weight:500;color:var(--ink)}
-  .cov p{font-size:.86rem;color:var(--soft);margin-top:8px;line-height:1.65}
-  @media(min-width:820px){.cov{grid-template-columns:1fr 1fr 1fr;gap:0 40px}}
-  .countries{display:flex;flex-wrap:wrap;gap:8px 14px;margin-top:16px}
-  .countries span{font-size:.72rem;color:var(--soft);border-bottom:1px solid var(--dark);padding-bottom:2px}
-  /* outputs */
-  .outs{display:grid;grid-template-columns:1fr;gap:18px}
-  .out{border:1px solid var(--ink);padding:22px 20px;background:#fff}
-  .out .micro{color:var(--gold)}
-  .out h3{font-family:'Cormorant Garamond',serif;font-weight:500;font-size:1.5rem;margin:6px 0 10px;line-height:1.15}
+  .nav .links{display:none;gap:22px}
+  .nav .links a{font-size:.64rem;letter-spacing:.14em;text-transform:uppercase;color:var(--soft);font-weight:500;padding:6px 0;border-bottom:1.5px solid transparent;white-space:nowrap}
+  .nav .links a:hover{border-bottom-color:var(--vert);color:var(--ink)}
+  .nav .btn{padding:11px 16px;font-size:.62rem;white-space:nowrap}
+  @media(min-width:1180px){.nav .links{display:flex}.wm{font-size:1.15rem}}
+
+  /* ---- hero ---- */
+  .hero{padding:56px 0 48px}
+  @media(min-width:900px){.hero{padding:88px 0 72px}}
+  .hero-grid{display:grid;grid-template-columns:1fr;gap:40px;align-items:center}
+  @media(min-width:900px){.hero-grid{grid-template-columns:1.05fr .95fr;gap:72px}}
+  .hero .mark{display:inline-flex;padding:13px;border:1px solid var(--ink);background:var(--cream);box-shadow:0 8px 26px rgba(21,20,15,.07);margin-bottom:26px}
+  .hero .sub{margin-top:24px;font-size:1.06rem;color:var(--soft);max-width:560px;line-height:1.72}
+  .hero .sub2{margin-top:12px;font-size:.92rem;color:var(--mute);max-width:520px}
+  .hero .ctas{display:flex;flex-direction:column;gap:10px;margin-top:32px}
+  @media(min-width:560px){.hero .ctas{flex-direction:row}}
+  .hero-art{background:var(--cream);border:1px solid var(--ink);padding:12px;box-shadow:0 14px 44px rgba(21,20,15,.08)}
+  .hero-art img{display:block;width:100%;height:auto}
+  .hero-art .cap{display:flex;justify-content:space-between;align-items:baseline;gap:12px;padding:12px 4px 2px;font-size:.66rem;letter-spacing:.12em;text-transform:uppercase;color:var(--mute)}
+  .hero-art .cap b{color:var(--vert);font-weight:600;white-space:nowrap}
+  .trust{border-top:1px solid var(--line);border-bottom:1px solid var(--line);background:var(--cream)}
+  .trust .in{display:grid;grid-template-columns:1fr;gap:0}
+  .trust .in div{padding:16px 0;font-size:.82rem;color:var(--soft);display:flex;gap:12px;align-items:flex-start;border-top:1px solid var(--line)}
+  .trust .in div:first-child{border-top:none}
+  .trust .in div::before{content:"";width:7px;height:7px;border-radius:50%;background:var(--vert);flex-shrink:0;margin-top:8px}
+  @media(min-width:800px){.trust .in{grid-template-columns:1fr 1fr 1fr;column-gap:40px}.trust .in div{border-top:none;padding:22px 0}}
+
+  /* ---- how (3 steps) ---- */
+  .how > div{border-top:1px solid var(--line);padding:26px 0}
+  @media(min-width:960px){.how > div{border-top:1px solid var(--ink)}}
+  .how .k{font-family:'Cormorant Garamond',serif;color:var(--vert);font-size:2.2rem;line-height:1;font-weight:500}
+  .how h3{font-size:1.5rem;margin:12px 0 10px}
+  .ex{margin-top:40px;display:grid;grid-template-columns:1fr;gap:28px;border:1px solid var(--ink);background:var(--cream)}
+  @media(min-width:960px){.ex{grid-template-columns:1.15fr .85fr;gap:0}}
+  .ex .txt{padding:28px 24px}
+  @media(min-width:960px){.ex .txt{padding:36px 40px;border-right:1px solid var(--line)}}
+  .ex .txt p{margin-top:12px;color:var(--ink);font-size:.95rem;line-height:1.72}
+  .ex .txt p b{font-weight:500;color:var(--vert)}
+  .card{padding:24px}
+  @media(min-width:960px){.card{padding:36px 36px 36px 36px;background:var(--paper)}}
+  .card .top{display:flex;justify-content:space-between;align-items:center;padding-bottom:12px;border-bottom:1px solid var(--ink);font-size:.64rem;letter-spacing:.18em;text-transform:uppercase;color:var(--mute);font-weight:500}
+  .card .title{font-family:'Cormorant Garamond',serif;font-size:1.3rem;line-height:1.2;margin-top:14px}
+  .card .meta{font-size:.74rem;color:var(--mute);margin-top:4px}
+  .row{display:flex;justify-content:space-between;align-items:baseline;gap:12px;padding:10px 0;border-top:1px solid var(--line);font-size:.8rem;color:var(--soft)}
+  .row:first-of-type{margin-top:14px}
+  .st{display:inline-flex;align-items:center;gap:6px;font-weight:600;letter-spacing:.14em;text-transform:uppercase;font-size:.6rem;white-space:nowrap}
+  .st::before{content:"";width:6px;height:6px;border-radius:50%;background:currentColor}
+  .ok{color:var(--ok)}.warn{color:var(--warn)}.bad{color:var(--claret)}
+
+  /* ---- pillars ---- */
+  .pil{gap:16px}
+  .pil > div{border:1px solid var(--line);padding:26px 24px;background:var(--cream)}
+  .pil h3{font-size:1.5rem;margin:10px 0 10px}
+  .pil p{font-size:.88rem}
+
+  /* ---- lots ---- */
+  .lots{display:grid;grid-template-columns:1fr 1fr;gap:26px 16px}
+  @media(min-width:900px){.lots{grid-template-columns:repeat(4,1fr);gap:30px 26px}}
+  .lot{display:block}
+  .lot .img{background:var(--cream);border:1px solid var(--line);padding:10px;aspect-ratio:3/4;display:flex;align-items:center;justify-content:center;overflow:hidden;transition:border-color .2s}
+  .lot:hover .img{border-color:var(--ink)}
+  .lot .img img{max-width:100%;max-height:100%;object-fit:contain;display:block}
+  .lot .no{font-family:'IBM Plex Mono',monospace;font-size:.66rem;color:var(--vert);margin-top:12px;font-weight:600}
+  .lot h3{font-size:1.08rem;line-height:1.25;margin-top:4px}
+  .lot p{font-size:.76rem;margin-top:5px;line-height:1.5}
+  .lot .st{margin-top:8px}
+  .note{font-size:.7rem;color:var(--mute);margin-top:22px;line-height:1.6;max-width:760px}
+
+  /* ---- facts ---- */
+  .facts > div{border-top:1px solid var(--line);padding:26px 0}
+  .fact .n{font-family:'IBM Plex Mono',monospace;font-size:.8rem;font-weight:600;color:var(--vert);letter-spacing:.06em}
+  .fact h3{font-size:1.4rem;margin:8px 0 8px}
+  .fact p{font-size:.88rem}
+  .fact .src{font-size:.68rem;color:var(--mute);margin-top:10px;font-family:'IBM Plex Mono',monospace}
+
+  /* ---- vert band ---- */
+  .band{position:relative;color:var(--paper);overflow:hidden;background:var(--vert-deep)}
+  .band img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;opacity:.18;filter:grayscale(1)}
+  .band .in{position:relative;padding:80px 0}
+  @media(min-width:900px){.band .in{padding:110px 0}}
+  .band .eyebrow{color:var(--vert-dim)}
+  .band .quote{font-family:'Cormorant Garamond',serif;font-style:italic;font-weight:500;font-size:clamp(1.65rem,4.2vw,2.6rem);line-height:1.22;max-width:820px;margin-top:16px}
+  .band p{color:#C9D3CB;margin-top:20px;max-width:620px;font-size:.95rem}
+  .band p b{color:var(--paper)}
+  .nums{display:grid;grid-template-columns:1fr 1fr;gap:0 28px;margin-top:44px}
+  .nums div{border-top:1px solid rgba(250,245,235,.22);padding:20px 0}
+  .nums b{display:block;font-family:'Cormorant Garamond',serif;font-weight:500;font-size:2.5rem;line-height:1;color:var(--paper)}
+  .nums span{display:block;font-size:.64rem;letter-spacing:.18em;text-transform:uppercase;color:var(--vert-dim);margin-top:8px;font-weight:500}
+  @media(min-width:720px){.nums{grid-template-columns:repeat(3,1fr);gap:0 44px}}
+
+  /* ---- steps ---- */
+  .step{display:grid;grid-template-columns:48px 1fr;gap:14px;border-top:1px solid var(--line);padding:20px 0}
+  .step .k{font-family:'IBM Plex Mono',monospace;color:var(--vert);font-size:.82rem;font-weight:600;padding-top:4px}
+  .step h3{font-size:1.3rem}
+  .step p{font-size:.86rem;margin-top:4px}
+
+  /* ---- coverage ---- */
+  .cov > div{border-top:1px solid var(--line);padding:22px 0}
+  .cov h3{font-family:'Jost',sans-serif;font-size:.7rem;letter-spacing:.22em;text-transform:uppercase;font-weight:600;color:var(--ink)}
+  .cov p{font-size:.88rem;margin-top:10px}
+  .countries{display:flex;flex-wrap:wrap;gap:8px 16px;margin-top:22px}
+  .countries span{font-size:.74rem;color:var(--soft);border-bottom:1px solid var(--dark);padding-bottom:2px}
+
+  /* ---- outputs ---- */
+  .outs{gap:18px}
+  .out{border:1px solid var(--ink);padding:28px 26px;background:var(--cream)}
+  .out h3{font-size:1.55rem;margin:8px 0 12px}
   .out ul{list-style:none}
-  .out li{font-size:.84rem;color:var(--soft);padding:6px 0;border-top:1px solid var(--line);display:flex;gap:9px}
-  .out li::before{content:"✓";color:var(--ok);font-size:.8rem}
-  @media(min-width:820px){.outs{grid-template-columns:1fr 1fr 1fr}}
-  /* who */
-  .who{display:grid;grid-template-columns:1fr;gap:0}
-  .who div{border-top:1px solid var(--line);padding:18px 0}
-  .who h3{font-family:'Cormorant Garamond',serif;font-weight:500;font-size:1.35rem}
-  .who p{font-size:.84rem;color:var(--soft);margin-top:6px}
-  @media(min-width:720px){.who{grid-template-columns:1fr 1fr;gap:0 40px}}
-  /* deadlines */
-  table{width:100%;border-collapse:collapse;font-size:.84rem}
-  th{text-align:left;font-size:.62rem;letter-spacing:.2em;text-transform:uppercase;color:var(--mute);font-weight:500;padding:0 0 10px;border-bottom:1px solid var(--ink)}
-  td{padding:12px 12px 12px 0;border-bottom:1px solid var(--line);vertical-align:top;color:var(--soft)}
-  td.k{color:var(--ink);font-weight:400;font-family:'IBM Plex Mono',monospace;font-size:.76rem;white-space:nowrap}
+  .out li{font-size:.86rem;color:var(--soft);padding:8px 0;border-top:1px solid var(--line);display:flex;gap:10px;line-height:1.5}
+  .out li::before{content:"✓";color:var(--vert);font-size:.8rem;font-weight:600}
+
+  /* ---- who ---- */
+  .who > div{border-top:1px solid var(--line);padding:22px 0}
+  .who h3{font-size:1.4rem}
+  .who p{font-size:.86rem;margin-top:8px}
+
+  /* ---- table ---- */
+  table{width:100%;border-collapse:collapse;font-size:.86rem}
+  th{text-align:left;font-size:.64rem;letter-spacing:.2em;text-transform:uppercase;color:var(--mute);font-weight:600;padding:0 0 12px;border-bottom:1px solid var(--ink)}
+  td{padding:14px 14px 14px 0;border-bottom:1px solid var(--line);vertical-align:top;color:var(--soft)}
+  td.k{color:var(--vert);font-weight:600;font-family:'IBM Plex Mono',monospace;font-size:.78rem;white-space:nowrap}
   td.src{font-family:'IBM Plex Mono',monospace;font-size:.68rem;color:var(--mute)}
   .tbl{overflow-x:auto}
-  /* sources */
-  .srcs{display:grid;grid-template-columns:1fr;gap:0 40px}
-  .srcs div{padding:16px 0;border-top:1px solid var(--line)}
-  .srcs h3{font-size:.68rem;letter-spacing:.22em;text-transform:uppercase;font-weight:500}
+
+  /* ---- index (catégories, textes) ---- */
+  .idx > div{border-top:1px solid var(--line);padding:18px 0}
+  .idx h3{font-family:'Jost',sans-serif;font-size:.68rem;letter-spacing:.22em;text-transform:uppercase;font-weight:600;color:var(--ink)}
+  .idx ul{list-style:none;margin-top:8px}
+  .idx li{font-size:.8rem;color:var(--soft);padding:4px 0;line-height:1.5}
+  .idx li b{color:var(--ink)}
+  @media(min-width:1000px){.idx.cols3{grid-template-columns:1fr 1fr 1fr}}
+
+  /* ---- sources ---- */
+  .srcs > div{padding:18px 0;border-top:1px solid var(--line)}
+  .srcs h3{font-family:'Jost',sans-serif;font-size:.68rem;letter-spacing:.22em;text-transform:uppercase;font-weight:600}
   .srcs ul{list-style:none;margin-top:8px}
   .srcs li{font-size:.82rem;color:var(--soft);padding:4px 0;line-height:1.5}
-  @media(min-width:820px){.srcs{grid-template-columns:1fr 1fr}}
-  /* dark band */
-  .dark-band{background:var(--ink);color:var(--paper);padding:72px 0}
-  .dark-band .quote{font-family:'Cormorant Garamond',serif;font-style:italic;font-weight:500;font-size:clamp(1.6rem,4.4vw,2.5rem);line-height:1.25;max-width:760px}
-  .dark-band p{color:#C9C5BB;margin-top:18px;max-width:620px;font-size:.92rem}
-  .dark-band .micro{color:var(--gold)}
-  /* form */
+
+  /* ---- security ---- */
+  .sec > div{border-top:1px solid var(--line);padding:18px 0}
+  .sec h3{font-family:'Jost',sans-serif;font-size:.68rem;letter-spacing:.22em;text-transform:uppercase;font-weight:600}
+  .sec p{font-size:.86rem;margin-top:8px}
+
+  /* ---- dark band (form) ---- */
+  .dark-band{background:var(--ink);color:var(--paper);padding:80px 0}
+  @media(min-width:900px){.dark-band{padding:104px 0}}
+  .dark-band .in{display:grid;grid-template-columns:1fr;gap:40px}
+  @media(min-width:900px){.dark-band .in{grid-template-columns:1.1fr .9fr;gap:80px;align-items:start}}
+  .dark-band .eyebrow{color:var(--vert-dim)}
+  .dark-band .quote{font-family:'Cormorant Garamond',serif;font-style:italic;font-weight:500;font-size:clamp(1.65rem,4.2vw,2.5rem);line-height:1.22;margin-top:16px}
+  .dark-band p{color:#C9C5BB;margin-top:18px;max-width:560px;font-size:.95rem}
   .form{max-width:520px}
-  .field{margin-bottom:18px}
-  .field label{display:block;font-size:.62rem;letter-spacing:.24em;text-transform:uppercase;color:var(--mute);margin-bottom:6px}
-  .field input,.field select{width:100%;font-family:'Jost',sans-serif;font-size:1rem;background:transparent;border:none;border-bottom:1px solid var(--dark);border-radius:0;padding:10px 0;color:var(--ink);outline:none;-webkit-appearance:none}
-  .success{display:none;border-top:1px solid var(--ok);border-bottom:1px solid var(--ok);padding:16px 0;color:var(--ok);font-size:.92rem}
-  /* hero image */
-  .hero-grid{display:grid;grid-template-columns:1fr;gap:34px;align-items:center}
-  @media(min-width:900px){.hero-grid{grid-template-columns:1.05fr .95fr;gap:56px}}
-  .hero-art{position:relative;background:#fff;border:1px solid var(--ink);padding:10px}
-  .hero-art img{display:block;width:100%;height:auto}
-  .hero-art .cap{display:flex;justify-content:space-between;gap:10px;padding:10px 4px 2px;font-size:.66rem;letter-spacing:.14em;text-transform:uppercase;color:var(--mute)}
-  .hero-art .cap b{color:var(--claret);font-weight:600}
-  /* lots */
-  .lots{display:grid;grid-template-columns:1fr 1fr;gap:18px 14px;margin-top:26px}
-  @media(min-width:820px){.lots{grid-template-columns:repeat(4,1fr);gap:26px 22px}}
-  .lot{display:block}
-  .lot .img{background:#fff;border:1px solid var(--line);padding:8px;aspect-ratio:3/4;display:flex;align-items:center;justify-content:center;overflow:hidden}
-  .lot .img img{max-width:100%;max-height:100%;object-fit:contain;display:block}
-  .lot .no{font-family:'IBM Plex Mono',monospace;font-size:.66rem;color:var(--gold);margin-top:10px}
-  .lot h3{font-family:'Cormorant Garamond',serif;font-weight:500;font-size:1.05rem;line-height:1.25;margin-top:3px}
-  .lot p{font-size:.74rem;color:var(--soft);margin-top:4px;line-height:1.5}
-  .lot .st{font-size:.6rem;letter-spacing:.16em;text-transform:uppercase;font-weight:600;margin-top:6px}
-  .lot.wide{grid-column:1/-1}
-  @media(min-width:820px){.lot.wide{grid-column:span 2}.lot.wide .img{aspect-ratio:auto}}
-  /* photo band */
-  .band-img{position:relative;color:var(--paper);overflow:hidden;background:#111}
-  .band-img img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;opacity:.42;filter:saturate(.8)}
-  .band-img .in{position:relative;padding:90px 0}
-  .band-img .quote{font-family:'Cormorant Garamond',serif;font-style:italic;font-weight:500;font-size:clamp(1.6rem,4.4vw,2.5rem);line-height:1.25;max-width:760px}
-  .band-img p{color:#D9D5CC;margin-top:18px;max-width:620px;font-size:.92rem}
-  /* index des textes */
-  .idx{display:grid;grid-template-columns:1fr;gap:0 40px}
-  @media(min-width:720px){.idx{grid-template-columns:1fr 1fr}}
-  @media(min-width:1000px){.idx{grid-template-columns:1fr 1fr 1fr}}
-  .idx div{border-top:1px solid var(--line);padding:14px 0}
-  .idx h3{font-size:.64rem;letter-spacing:.22em;text-transform:uppercase;font-weight:500}
-  .idx li{list-style:none;font-size:.78rem;color:var(--soft);padding:3px 0;line-height:1.45}
-  .idx li b{font-weight:500;color:var(--ink)}
-  footer{border-top:1px solid var(--ink);padding:40px 0 60px}
-  footer .legal{font-size:.7rem;color:var(--mute);line-height:1.7;max-width:760px;margin-top:14px}
+  .field{margin-bottom:22px}
+  .field label{display:block;font-size:.64rem;letter-spacing:.24em;text-transform:uppercase;color:#9D9A92;margin-bottom:8px;font-weight:500}
+  .field input,.field select{width:100%;font-family:'Jost',sans-serif;font-size:1rem;background:transparent;border:none;border-bottom:1px solid #5A5751;border-radius:0;padding:10px 0;color:var(--paper);outline:none;-webkit-appearance:none}
+  .field input:focus,.field select:focus{border-bottom-color:var(--vert-dim)}
+  .field option{color:#111}
+  .success{display:none;border-top:1px solid var(--vert-dim);border-bottom:1px solid var(--vert-dim);padding:16px 0;color:var(--vert-dim);font-size:.92rem}
+  .hint{font-size:.72rem;color:#8B8880;margin-top:14px;line-height:1.6}
+
+
+  /* ================= MOBILE DÉDIÉ ================= */
+  #m{display:none}
+  @media(max-width:899px){
+    .desk{display:none}
+    #m{display:block;padding-bottom:88px}
+    body{border-top-width:3px}
+  }
+  .m-hero{padding:34px 0 26px;text-align:center}
+  .m-hero .mark{display:inline-flex;padding:12px;border:1px solid var(--ink);background:var(--cream);box-shadow:0 6px 22px rgba(21,20,15,.07)}
+  .m-hero .eyebrow{margin-top:16px;font-size:.62rem}
+  .m-hero h1{font-size:2.15rem;margin-top:12px;line-height:1.1}
+  .m-hero p{margin:16px auto 0;max-width:330px;font-size:.95rem;line-height:1.65}
+  .m-hero .who{margin-top:10px;font-size:.82rem;color:var(--mute)}
+  .m-trust{border-top:1px solid var(--line);border-bottom:1px solid var(--line);background:var(--cream);padding:14px 0}
+  .m-trust div{display:flex;gap:10px;font-size:.8rem;color:var(--soft);padding:6px 0;line-height:1.5}
+  .m-trust div::before{content:"";width:6px;height:6px;border-radius:50%;background:var(--vert);flex-shrink:0;margin-top:8px}
+  .m-sec{padding:30px 0 0}
+  .m-sec .eyebrow{font-size:.62rem}
+  .m-sec h2{font-size:1.65rem;margin-top:8px;line-height:1.15}
+  .m-steps{display:flex;gap:12px;overflow-x:auto;scroll-snap-type:x mandatory;margin:18px -22px 0;padding:0 22px 6px;-webkit-overflow-scrolling:touch;scrollbar-width:none}
+  .m-steps::-webkit-scrollbar{display:none}
+  .m-steps > div{flex:0 0 82%;scroll-snap-align:start;border:1px solid var(--ink);background:var(--cream);padding:20px 18px}
+  .m-steps .k{font-family:'Cormorant Garamond',serif;color:var(--vert);font-size:1.9rem;line-height:1}
+  .m-steps h3{font-size:1.3rem;margin:8px 0 6px}
+  .m-steps p{font-size:.84rem;line-height:1.55}
+  .m-swipe{font-size:.62rem;letter-spacing:.18em;text-transform:uppercase;color:var(--mute);margin-top:10px;font-weight:500}
+  .m-pil{margin-top:16px}
+  .m-pil div{border-top:1px solid var(--line);padding:13px 0;display:grid;grid-template-columns:auto 1fr;gap:4px 14px;align-items:baseline}
+  .m-pil .eyebrow{font-size:.58rem;white-space:nowrap}
+  .m-pil h3{font-size:1.2rem}
+  .m-pil p{grid-column:2;font-size:.82rem;line-height:1.5}
+  .m-acc{margin-top:28px;border-top:1px solid var(--ink)}
+  .m-acc details{border-bottom:1px solid var(--line)}
+  .m-acc summary{list-style:none;cursor:pointer;display:flex;justify-content:space-between;align-items:center;gap:12px;padding:17px 0}
+  .m-acc summary::-webkit-details-marker{display:none}
+  .m-acc summary .t{font-family:'Cormorant Garamond',serif;font-weight:500;font-size:1.3rem;line-height:1.2}
+  .m-acc summary .s{font-size:.72rem;color:var(--mute);margin-top:2px}
+  .m-acc summary::after{content:"+";font-family:'Cormorant Garamond',serif;font-size:1.6rem;color:var(--vert);flex-shrink:0;width:22px;text-align:center;line-height:1}
+  .m-acc details[open] summary::after{content:"–"}
+  .m-acc .body{padding:0 0 22px}
+  .m-acc .body .grid{display:block}
+  .m-acc .body .grid > div{padding:14px 0}
+  .m-acc .body .cols3.steps .step{grid-template-columns:40px 1fr;padding:14px 0}
+  .m-acc .body .pil > div,.m-acc .body .outs > .out{border:1px solid var(--line);margin-bottom:12px;padding:18px 16px}
+  .m-acc .body .lede{font-size:.9rem;margin:0 0 6px}
+  .m-acc .body .tbl{margin-top:4px}
+  .m-acc .body td{padding:10px 8px 10px 0;font-size:.82rem}
+  .m-acc .body .countries{margin-top:14px}
+  .m-acc .body .ex{margin-top:14px}
+  .m-acc .body .ex .txt{padding:18px 16px}
+  .m-acc .body .card{padding:16px}
+  .m-acc .body .note{margin-top:14px}
+  .m-cta{margin-top:30px;background:var(--ink);color:var(--paper);padding:30px 22px;margin-left:-22px;margin-right:-22px}
+  .m-cta .eyebrow{color:var(--vert-dim);font-size:.62rem}
+  .m-cta .q{font-family:'Cormorant Garamond',serif;font-style:italic;font-weight:500;font-size:1.5rem;line-height:1.25;margin-top:10px}
+  .m-cta p{color:#C9C5BB;font-size:.88rem;margin-top:12px}
+  .m-cta .form{margin-top:22px}
+  .m-cta .field{margin-bottom:18px}
+  .m-bar{position:fixed;left:0;right:0;bottom:0;z-index:60;background:rgba(250,245,235,.96);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);border-top:1px solid var(--line);padding:10px 16px calc(10px + env(safe-area-inset-bottom));display:none;gap:10px}
+  @media(max-width:899px){.m-bar{display:flex}}
+  .m-bar .btn{flex:1;padding:14px 10px;font-size:.62rem;letter-spacing:.14em}
+
+  /* ---- footer ---- */
+  footer{border-top:1px solid var(--ink);padding:44px 0 64px}
+  footer .tag{margin-top:10px}
+  footer .legal{font-size:.72rem;color:var(--mute);line-height:1.7;max-width:800px;margin-top:16px}
+  footer .legal b{color:var(--soft)}
 </style>
 </head>
 <body>
 
 <nav><div class="wrap nav">
-  <a class="wm" href="#top"><svg class="mono-a" width="22" height="22" viewBox="0 0 40 40" aria-hidden="true"><rect x="2" y="2" width="36" height="36" fill="none" stroke="currentColor" stroke-width="1.4"/><text x="20" y="29" text-anchor="middle" font-family="Cormorant Garamond, serif" font-size="26" fill="currentColor">A</text></svg>ARTVELCHIV</a>
-  <div class="links"><a href="#comment">Fonctionnement</a><a href="#pourquoi">Pourquoi maintenant</a><a href="#methode">Le Protocole</a><a href="#couverture">L'Intelligence</a><a href="#livrables">Livrables</a><a href="#textes">Le Référentiel</a></div>
-  <a class="btn dark" href="/app/">Démonstrateur</a>
+  <a class="wm" href="#top"><svg class="mono-a" width="24" height="24" viewBox="0 0 40 40" aria-hidden="true"><rect x="2.4" y="2.4" width="35.2" height="35.2" fill="none" stroke="currentColor" stroke-width="1.3"/><rect x="6.6" y="6.6" width="26.8" height="26.8" fill="none" stroke="currentColor" stroke-width=".6" opacity=".5"/><text x="20" y="29" text-anchor="middle" font-family="Cormorant Garamond, serif" font-size="24" fill="currentColor">A</text></svg>ARTVELCHIV</a>
+  <div class="links"><a href="#comment">Fonctionnement</a><a href="#pourquoi">Pourquoi maintenant</a><a href="#methode">Le Protocole</a><a href="#couverture">L'Intelligence</a><a href="#textes">Le Référentiel</a><a href="#securite">Sécurité</a></div>
+  <a class="btn vert" href="/app/">Démonstrateur</a>
 </div></nav>
 
-<header class="hero" id="top"><div class="wrap"><div class="hero-grid"><div>
-  <div class="micro" style="color:var(--gold)">The art transaction standard</div>
-  <h1 style="margin-top:14px">Every work established.<br>Every transaction secured.</h1>
-  <p class="sub">Les galeries, les marchands et les maisons de vente confient à ARTVELCHIV leurs transactions les plus sensibles — celles où une œuvre vaut plusieurs millions d'euros, et où une lacune se paie au même prix : un certificat refusé après signature, une importation interdite, une restitution sans indemnité.</p>
-  <p class="sub" style="margin-top:12px">Pour chaque œuvre, ARTVELCHIV établit ce que la loi exige dans le pays d'entrée, dans le pays de revente et en douane, puis constitue le dossier qui rend la vente incontestable.</p>
-  <div class="ctas"><a class="btn dark" href="#preview">Demander une démonstration</a><a class="btn" href="/app/">Essayer le démonstrateur</a></div>
-  <div class="tags"><span>Régime déduit</span><span>Douane et délais</span><span>Preuves scellées</span><span>Dossiers d'autorités</span><span>Contrat sur mesure</span></div>
-</div>
-<div class="hero-art">
-  <img src="/assets/abstraction.jpg" alt="Acrylique sur toile, école américaine, vers 1970">
-  <div class="cap"><span>Record 26-004910 · Acrylique sur toile, école américaine, 1970 · New York → Paris · 2,8 M€</span><b>Douane · vigilance</b></div>
-</div></div>
-
-  <div class="card" aria-hidden="true">
-    <div class="top"><span>Record 26-004841</span><b>Requis</b></div>
-    <div class="body">
-      <div class="title">Auguste Rodin, Éternel Printemps, fonte Rudier 1985, épreuve 7/8</div>
-      <div class="meta">France → États-Unis · 350 000 € · sous admission temporaire depuis le 15 janvier 2025</div>
-      <div style="margin-top:12px">
-        <div class="row"><span>Statut juridique</span><b class="warn">Requis</b></div>
-        <div class="row"><span>Export — certificat non requis (fonte 1985)</span><b class="ok">Conforme</b></div>
-        <div class="row"><span>Import — États-Unis, droits nuls</span><b class="ok">Conforme</b></div>
-        <div class="row"><span>Douane — admission temporaire, échéance 15 janvier 2027</span><b class="warn">Requis</b></div>
-        <div class="row"><span>Sanctions & espèces</span><b class="ok">Conforme</b></div>
-        <div class="row"><span>Conformité & vente — vigilance ≥ 10 000 €</span><b class="warn">Requis</b></div>
-      </div>
-    </div>
+<div class="desk">
+<header class="hero" id="top"><div class="wrap"><div class="hero-grid">
+  <div>
+    <div class="mark"><svg width="44" height="44" viewBox="0 0 40 40" aria-hidden="true"><rect x="2.4" y="2.4" width="35.2" height="35.2" fill="none" stroke="#15140F" stroke-width="1.3"/><rect x="6.6" y="6.6" width="26.8" height="26.8" fill="none" stroke="#15140F" stroke-width=".6" opacity=".5"/><text x="20" y="29" text-anchor="middle" font-family="Cormorant Garamond, serif" font-size="24" fill="#15140F">A</text></svg></div>
+    <div class="eyebrow">The art transaction standard</div>
+    <h1 style="margin-top:14px">Every work established.<br>Every transaction secured.</h1>
+    <p class="sub">Pour chaque œuvre d'art, ARTVELCHIV établit ce que la loi exige dans le pays de départ, dans le pays d'arrivée et en douane, puis constitue le dossier qui rend la vente incontestable.</p>
+    <p class="sub2">Conçu pour les galeries, les marchands, les maisons de vente et les conseillers.</p>
+    <div class="ctas"><a class="btn vert" href="#preview">Demander une démonstration</a><a class="btn" href="/app/">Essayer le démonstrateur</a></div>
   </div>
-</div></header>
+  <div class="hero-art">
+    <img src="/assets/abstraction.jpg" alt="Acrylique sur toile, école américaine, vers 1970">
+    <div class="cap"><span>Record 26-004910 · Acrylique sur toile, 1970 · New York → Paris · 2,8 M€</span><b>Douane · vigilance</b></div>
+  </div>
+</div></div></header>
 
-<section id="comment" style="padding-top:64px"><div class="wrap">
-  <div class="micro">Comment cela fonctionne</div>
-  <h2>Vous décrivez. ARTVELCHIV établit. Vous concluez.</h2>
-  <div class="how" style="margin-top:24px">
+<div class="trust"><div class="wrap"><div class="in">
+  <div>Chaque obligation est déduite de l'œuvre et de son trajet, et renvoie au texte qui la fonde.</div>
+  <div>Le Référentiel a été vérifié à la source par les équipes ARTVELCHIV le 3 septembre 2026 ; chaque dossier conserve la version appliquée à sa date.</div>
+  <div>Vos dossiers restent confidentiels : ils ne servent qu'à vos dossiers.</div>
+</div></div></div>
+
+<section id="comment"><div class="wrap">
+  <div class="head"><div class="eyebrow">Comment cela fonctionne</div><h2>Vous décrivez. ARTVELCHIV établit. Vous concluez.</h2></div>
+  <div class="grid cols3 how">
     <div><div class="k">01</div><h3>Vous décrivez l'œuvre</h3><p>Sa nature, sa date, son auteur, son pays de création, l'endroit où elle se trouve, l'endroit où elle part, son statut douanier, le mode de vente et l'acheteur. Deux minutes, dans une interface pensée pour un téléphone.</p></div>
-    <div><div class="k">02</div><h3>ARTVELCHIV établit le droit</h3><p>L'Intelligence ARTVELCHIV déduit chaque obligation — export, import, douane, fiscalité, anti-blanchiment, sanctions, espèces protégées, droits d'auteur, consommation — avec son texte, sa gravité et son délai. Ce qui bloque apparaît en premier.</p></div>
-    <div><div class="k">03</div><h3>Vous concluez, dossier en main</h3><p>Vous joignez les pièces exigées, le vendeur signe ses déclarations, et ARTVELCHIV génère les dossiers pour les autorités, le rapport pour l'acheteur et le contrat — puis scelle le tout, conservé dix ans.</p></div>
+    <div><div class="k">02</div><h3>ARTVELCHIV établit le droit</h3><p>L'Intelligence ARTVELCHIV déduit chaque obligation : export, import, douane, fiscalité, anti-blanchiment, sanctions, espèces protégées, droits d'auteur, consommation. Chacune avec son texte, sa gravité et son délai. Ce qui bloque apparaît en premier.</p></div>
+    <div><div class="k">03</div><h3>Vous concluez, dossier en main</h3><p>Vous joignez les pièces exigées, le vendeur signe ses déclarations, et ARTVELCHIV génère les dossiers pour les autorités, le rapport pour l'acheteur et le contrat, puis scelle le tout, conservé dix ans.</p></div>
   </div>
   <div class="ex">
-    <div class="micro">Un exemple, en trente secondes</div>
-    <p>Un bronze tibétain du XVIe siècle, conservé à Hong Kong, vendu 2,4 millions d'euros à un collectionneur parisien. Une sculpture de plus de 200 ans relèverait d'une simple déclaration de l'importateur ; mais un bronze cultuel dont la provenance n'exclut pas un temple ou un autel démembré bascule en partie B du règlement du 28 juin 2025 : <b>licence d'importation</b> instruite par le ministère de la Culture, déposée dans le système ICG, à toute valeur, avant toute mise en libre pratique. ARTVELCHIV pose la question de provenance qui fait la différence, exige la preuve de sortie licite de Chine, active la vigilance anti-blanchiment, calcule la TVA à l'importation de 5,5 %, recommande le séquestre, date l'instruction à quatre-vingt-dix jours — puis génère le dossier de licence, le rapport de l'acheteur et le contrat sous condition suspensive. Sans cette licence, l'œuvre ne franchit pas la frontière de l'Union.</p>
+    <div class="txt">
+      <div class="eyebrow">Un exemple, en trente secondes</div>
+      <p>Un bronze tibétain du XVIe siècle, conservé à Hong Kong, vendu 2,4 millions d'euros à un collectionneur parisien. Une sculpture de plus de 200 ans relèverait d'une simple déclaration de l'importateur ; mais un bronze cultuel dont la provenance n'exclut pas un temple ou un autel démembré bascule en partie B du règlement du 28 juin 2025 : <b>licence d'importation</b> instruite par le ministère de la Culture, déposée dans le système ICG, à toute valeur, avant toute mise en libre pratique.</p>
+      <p>ARTVELCHIV pose la question de provenance qui fait la différence, exige la preuve de sortie licite de Chine, active la vigilance anti-blanchiment, calcule la TVA à l'importation de 5,5 %, recommande le séquestre, date l'instruction à quatre-vingt-dix jours, puis génère le dossier de licence, le rapport de l'acheteur et le contrat sous condition suspensive. Sans cette licence, l'œuvre ne franchit pas la frontière de l'Union.</p>
+    </div>
+    <div class="card" aria-hidden="true">
+      <div class="top"><span>Record 26-004841</span><span class="st warn">Requis</span></div>
+      <div class="title">Auguste Rodin, Éternel Printemps, fonte Rudier 1985, épreuve 7/8</div>
+      <div class="meta">France → États-Unis · 350 000 € · sous admission temporaire depuis le 15 janvier 2025</div>
+      <div class="row"><span>Statut juridique</span><span class="st warn">Requis</span></div>
+      <div class="row"><span>Export : certificat non requis (fonte 1985)</span><span class="st ok">Conforme</span></div>
+      <div class="row"><span>Import : États-Unis, droits nuls</span><span class="st ok">Conforme</span></div>
+      <div class="row"><span>Douane : admission temporaire, échéance 15 janvier 2027</span><span class="st warn">Requis</span></div>
+      <div class="row"><span>Sanctions et espèces</span><span class="st ok">Conforme</span></div>
+      <div class="row"><span>Conformité et vente : vigilance ≥ 10 000 €</span><span class="st warn">Requis</span></div>
+    </div>
   </div>
 </div></section>
 
-<section id="apport" style="padding-top:0"><div class="wrap">
-  <div class="rule"></div>
-  <div class="micro" style="margin-top:28px">Ce que nous apportons</div>
-  <h2>Quatre certitudes, sur chaque transaction.</h2>
-  <div class="pil" style="margin-top:24px">
-    <div><div class="micro">L'Intelligence</div><h3>La certitude du droit</h3><p>Chaque obligation déduite de l'œuvre et de son parcours, avec sa source. Aucune règle générale : la règle qui s'applique à ce bronze, à ce dessin, à ce trajet.</p></div>
-    <div><div class="micro">Le Protocole</div><h3>La maîtrise du temps</h3><p>Les délais qui commandent la vente — admission temporaire, licence, préemption, rétractation — calculés et datés avant la signature, pas découverts après.</p></div>
-    <div><div class="micro">Le Référentiel</div><h3>La preuve de la diligence</h3><p>Le dossier réunit exactement ce que la directive 2014/60 exige du possesseur diligent. En cas de restitution, c'est ce dossier qui ouvre droit à indemnité.</p></div>
-    <div><div class="micro">Le Sceau</div><h3>La confiance de l'acheteur</h3><p>Un rapport clair sur le vérifié et le déclaré, un contrat bâti sur le dossier, un sceau daté. L'acheteur sait ce qu'il achète ; le vendeur sait ce qu'il garantit.</p></div>
+<section id="apport"><div class="wrap">
+  <div class="head"><div class="eyebrow">Ce que nous apportons</div><h2>Quatre certitudes, sur chaque transaction.</h2></div>
+  <div class="grid cols4 pil">
+    <div><div class="eyebrow">L'Intelligence</div><h3>La certitude du droit</h3><p>Chaque obligation déduite de l'œuvre et de son parcours, avec sa source. Aucune règle générale : la règle qui s'applique à ce bronze, à ce dessin, à ce trajet.</p></div>
+    <div><div class="eyebrow">Le Protocole</div><h3>La maîtrise du temps</h3><p>Les délais qui commandent la vente, admission temporaire, licence, préemption, rétractation, calculés et datés avant la signature, et non découverts après.</p></div>
+    <div><div class="eyebrow">Le Référentiel</div><h3>La preuve de la diligence</h3><p>Le dossier réunit exactement ce que la directive 2014/60 exige du possesseur diligent. En cas de restitution, c'est ce dossier qui ouvre droit à indemnité.</p></div>
+    <div><div class="eyebrow">Le Sceau</div><h3>La confiance de l'acheteur</h3><p>Un rapport clair sur le vérifié et le déclaré, un contrat bâti sur le dossier, un sceau daté. L'acheteur sait ce qu'il achète ; le vendeur sait ce qu'il garantit.</p></div>
   </div>
 </div></section>
 
-<section id="selection" style="padding-top:0"><div class="wrap">
-  <div class="rule"></div>
-  <div class="micro" style="margin-top:28px">Sélection</div>
-  <h2>Cinq œuvres. Cinq régimes.</h2>
-  <p class="lede">Chaque lot ouvre un dossier ; chaque dossier déduit ses obligations. Le même Protocole sert le dessin dédicacé de 18 000 € et le bronze de 2,4 millions d'euros — avec la même rigueur.</p>
+<section id="selection"><div class="wrap">
+  <div class="head"><div class="eyebrow">Sélection</div><h2>Quatre œuvres. Quatre régimes.</h2><p class="lede">Chaque lot ouvre un dossier ; chaque dossier déduit ses obligations. Le même Protocole sert le dessin dédicacé de 18 000 € et le bronze de 2,4 millions d'euros, avec la même rigueur.</p></div>
   <div class="lots">
-    <a class="lot" href="#methode"><div class="img"><img src="/assets/cocteau.jpg" alt="Jean Cocteau, dédicace illustrée, 1960"></div><div class="no">26-004905</div><h3>Jean Cocteau, dessin dédicacé sur <span class="it">Le Grand Écart</span>, 1960</h3><p>Œuvre sur papier · Paris → Genève · 18 000 € · artiste décédé depuis moins de 70 ans</p><div class="st warn">Requis — droit de suite, ADAGP, LTBC</div></a>
-    <a class="lot" href="#methode"><div class="img"><img src="/assets/bouddha.jpg" alt="Bouddha Shakyamuni, bronze doré, Tibet, XVIe-XVIIe siècle"></div><div class="no">26-004822</div><h3>Shakyamuni, bronze doré, Tibet, XVIe-XVIIe siècle</h3><p>Bronze cultuel · Hong Kong → Paris · 2 400 000 € · provenance monastique probable</p><div class="st bad">Bloqué — licence d'importation ICG, ministère de la Culture</div></a>
-    <a class="lot" href="#methode"><div class="img"><img src="/assets/klee.jpg" alt="Paul Klee, Drang vor der Wanderung, 1940"></div><div class="no">26-004907</div><h3>Paul Klee, <span class="it">Drang vor der Wanderung</span>, 1940</h3><p>Dessin · Berne → Paris · 380 000 € · œuvre européenne antérieure à 1946</p><div class="st warn">Requis — recherche de spoliation, diligence LTBC</div></a>
-    <a class="lot" href="#methode"><div class="img"><img src="/assets/kelly.jpg" alt="Ellsworth Kelly, Blue and Yellow and Red-Orange, lithographie"></div><div class="no">26-004908</div><h3>Ellsworth Kelly, <span class="it">Blue and Yellow and Red-Orange</span>, lithographie 34/75</h3><p>Estampe numérotée · Paris → Londres · 45 000 € · artiste américain</p><div class="st ok">Conforme — tirage mentionné, licence sous les seuils</div></a>
+    <a class="lot" href="#methode"><div class="img"><img src="/assets/cocteau.jpg" alt="Jean Cocteau, dédicace illustrée, 1960"></div><div class="no">26-004905</div><h3>Jean Cocteau, dessin dédicacé sur <span class="it">Le Grand Écart</span>, 1960</h3><p>Œuvre sur papier · Paris → Genève · 18 000 € · artiste décédé depuis moins de 70 ans</p><div class="st warn">Requis · droit de suite, ADAGP, LTBC</div></a>
+    <a class="lot" href="#methode"><div class="img"><img src="/assets/bouddha.jpg" alt="Bouddha Shakyamuni, bronze doré, Tibet, XVIe-XVIIe siècle"></div><div class="no">26-004822</div><h3>Shakyamuni, bronze doré, Tibet, XVIe-XVIIe siècle</h3><p>Bronze cultuel · Hong Kong → Paris · 2 400 000 € · provenance monastique probable</p><div class="st bad">Bloqué · licence d'importation ICG</div></a>
+    <a class="lot" href="#methode"><div class="img"><img src="/assets/klee.jpg" alt="Paul Klee, Drang vor der Wanderung, 1940"></div><div class="no">26-004907</div><h3>Paul Klee, <span class="it">Drang vor der Wanderung</span>, 1940</h3><p>Dessin · Berne → Paris · 380 000 € · œuvre européenne antérieure à 1946</p><div class="st warn">Requis · recherche de spoliation, LTBC</div></a>
+    <a class="lot" href="#methode"><div class="img"><img src="/assets/kelly.jpg" alt="Ellsworth Kelly, Blue and Yellow and Red-Orange, lithographie"></div><div class="no">26-004908</div><h3>Ellsworth Kelly, <span class="it">Blue and Yellow and Red-Orange</span>, lithographie 34/75</h3><p>Estampe numérotée · Paris → Londres · 45 000 € · artiste américain</p><div class="st ok">Conforme · tirage mentionné, sous les seuils</div></a>
   </div>
-  <p style="font-size:.68rem;color:var(--mute);margin-top:18px;line-height:1.6">Illustrations de démonstration. Reproduction des œuvres sous droits soumise à autorisation (ADAGP) et droits photographiques des maisons de vente réservés — précisément ce que le dossier ARTVELCHIV vérifie (CPI, art. L122-4).</p>
+  <p class="note">Illustrations de démonstration. Reproduction des œuvres sous droits soumise à autorisation (ADAGP) et droits photographiques des maisons de vente réservés : précisément ce que le dossier ARTVELCHIV vérifie (CPI, art. L122-4).</p>
 </div></section>
 
 <section id="pourquoi"><div class="wrap">
-  <div class="micro">Pourquoi maintenant</div>
-  <h2>Le droit du marché de l'art a changé.<br>Les pratiques, pas encore.</h2>
-  <p class="lede">En dix-huit mois, quatre textes ont déplacé la charge de la preuve sur le professionnel. Une œuvre sans dossier devient une œuvre invendable — ou un risque non indemnisable.</p>
-  <div class="facts" style="margin-top:28px">
-    <div class="fact"><div class="n">28 juin 2025</div><h3>L'importation dans l'Union exige la preuve d'une sortie licite</h3><p>Licence d'importation, instruite en France par le ministère de la Culture, pour les objets archéologiques et les éléments de monuments, de temples ou d'autels de plus de 250 ans — à toute valeur ; déclaration de l'importateur au-delà de 200 ans et 18 000 € pour les peintures, sculptures, manuscrits et objets ethnologiques. Le tout dans le système électronique ICG. Sans document, l'importation est interdite.</p><div class="src">Règl. (UE) 2019/880 · règl. d'exécution 2021/1079 · douane.gouv.fr</div></div>
-    <div class="fact"><div class="n">10 juillet 2027</div><h3>Un règlement anti-blanchiment unique, directement applicable</h3><p>Les négociants de biens culturels restent assujettis quel que soit le mode de paiement ; plafond européen des espèces à 10 000 € ; supervision de l'AMLA à Francfort.</p><div class="src">Règl. (UE) 2024/1624 · directive (UE) 2024/1640</div></div>
-    <div class="fact"><div class="n">Diligence requise</div><h3>Seul le possesseur diligent est indemnisé en cas de restitution</h3><p>Documentation de provenance, autorisations de sortie, qualité des parties, prix payé, consultation des registres d'objets volés : les critères de la directive sont, mot pour mot, le contenu d'un dossier ARTVELCHIV.</p><div class="src">Directive 2014/60/UE, art. 10 · C. patr., art. L112-1 et s.</div></div>
-    <div class="fact"><div class="n">1er janvier 2021</div><h3>Les seuils français de certificat d'exportation ont été relevés</h3><p>Peintures 300 000 €, gouaches 50 000 €, dessins 30 000 €, sculptures 100 000 €, photographies 25 000 € — avec deux jeux de seuils selon la destination, et une exemption pour les séjours de moins de deux ans. Peu de professionnels appliquent les bons.</p><div class="src">Décret n° 2020-1718 · C. patr., art. R111-1</div></div>
+  <div class="head"><div class="eyebrow">Pourquoi maintenant</div><h2>Le droit du marché de l'art a changé.<br>Les pratiques, pas encore.</h2><p class="lede">En dix-huit mois, quatre textes ont déplacé la charge de la preuve sur le professionnel. Une œuvre sans dossier devient une œuvre invendable, ou un risque non indemnisable : un certificat refusé après signature, une importation interdite, une restitution sans indemnité.</p></div>
+  <div class="grid cols2 facts">
+    <div class="fact"><div class="n">28 JUIN 2025</div><h3>L'importation dans l'Union exige la preuve d'une sortie licite</h3><p>Licence d'importation, instruite en France par le ministère de la Culture, pour les objets archéologiques et les éléments de monuments, de temples ou d'autels de plus de 250 ans, à toute valeur ; déclaration de l'importateur au-delà de 200 ans et 18 000 € pour les peintures, sculptures, manuscrits et objets ethnologiques. Le tout dans le système électronique ICG. Sans document, l'importation est interdite.</p><div class="src">Règl. (UE) 2019/880 · règl. d'exécution 2021/1079 · douane.gouv.fr</div></div>
+    <div class="fact"><div class="n">10 JUILLET 2027</div><h3>Un règlement anti-blanchiment unique, directement applicable</h3><p>Les négociants de biens culturels restent assujettis quel que soit le mode de paiement ; plafond européen des espèces à 10 000 € ; supervision de l'AMLA à Francfort.</p><div class="src">Règl. (UE) 2024/1624 · directive (UE) 2024/1640</div></div>
+    <div class="fact"><div class="n">DILIGENCE REQUISE</div><h3>Seul le possesseur diligent est indemnisé en cas de restitution</h3><p>Documentation de provenance, autorisations de sortie, qualité des parties, prix payé, consultation des registres d'objets volés : les critères de la directive sont, mot pour mot, le contenu d'un dossier ARTVELCHIV.</p><div class="src">Directive 2014/60/UE, art. 10 · C. patr., art. L112-1 et s.</div></div>
+    <div class="fact"><div class="n">1ER JANVIER 2021</div><h3>Les seuils français de certificat d'exportation ont été relevés</h3><p>Peintures 300 000 €, gouaches 50 000 €, dessins 30 000 €, sculptures 100 000 €, photographies 25 000 €, avec deux jeux de seuils selon la destination et une exemption pour les séjours de moins de deux ans. Peu de professionnels appliquent les bons.</p><div class="src">Décret n° 2020-1718 · C. patr., art. R111-1</div></div>
   </div>
 </div></section>
 
-<div class="band-img"><img src="/assets/bouddha.jpg" alt=""><div class="in"><div class="wrap">
-  <div class="micro" style="color:var(--gold)">Le principe</div>
-  <div class="quote" style="margin-top:14px">« Rien n'est présumé. Chaque obligation est déduite de l'œuvre, du pays d'entrée, du pays de revente et du régime douanier — et chaque règle renvoie à son texte. »</div>
-  <p>ARTVELCHIV n'est pas une base de données. C'est <b>l'Intelligence ARTVELCHIV</b> — un référentiel vivant, conçu et tenu par des avocats, qui applique à chaque œuvre la règle qui la concerne, et seulement elle.</p>
-  <div class="nums" style="margin-top:34px">
+<div class="band"><img src="/assets/bouddha.jpg" alt=""><div class="in"><div class="wrap">
+  <div class="eyebrow">Le principe</div>
+  <div class="quote">« Rien n'est présumé. Chaque obligation est déduite de l'œuvre, du pays d'entrée, du pays de revente et du régime douanier, et chaque règle renvoie à son texte. »</div>
+  <p>ARTVELCHIV n'est pas une base de données. C'est <b>l'Intelligence ARTVELCHIV</b> : un référentiel vivant, tenu à jour par les équipes ARTVELCHIV, qui applique à chaque œuvre la règle qui la concerne, et seulement elle.</p>
+  <div class="nums">
     <div><b>14</b><span>natures d'œuvres</span></div>
     <div><b>24</b><span>juridictions</span></div>
     <div><b>48</b><span>textes tenus à jour</span></div>
@@ -286,27 +390,23 @@
 </div></div></div>
 
 <section id="methode"><div class="wrap">
-  <div class="micro">Le Protocole</div>
-  <h2>Neuf étapes. Un dossier.</h2>
-  <p class="lede">Le Protocole ARTVELCHIV : vous décrivez et vous joignez ; l'Intelligence déduit, calcule, génère. Rien n'est ressaisi.</p>
-  <div class="steps" style="margin-top:28px">
+  <div class="head"><div class="eyebrow">Le Protocole</div><h2>Neuf étapes. Un dossier.</h2><p class="lede">Le Protocole ARTVELCHIV : vous décrivez et vous joignez ; l'Intelligence déduit, calcule, génère. Rien n'est ressaisi.</p></div>
+  <div class="grid cols3 steps">
     <div class="step"><div class="k">01</div><div><h3>Décrire</h3><p>Nature, date, artiste, pays de création, lieu actuel, destination, statut douanier, mode de vente, acheteur.</p></div></div>
-    <div class="step"><div class="k">02</div><div><h3>Règles</h3><p>Statut de l'objet, circulation, douane et fiscalité, conformité et vente — chaque obligation avec sa base légale, triée par gravité.</p></div></div>
+    <div class="step"><div class="k">02</div><div><h3>Règles</h3><p>Statut de l'objet, circulation, douane et fiscalité, conformité et vente : chaque obligation avec sa base légale, triée par gravité.</p></div></div>
     <div class="step"><div class="k">03</div><div><h3>Douane et échéances</h3><p>Admission temporaire, carnet ATA, entrepôt ou port franc, importation définitive ; TVA à l'arrivée ; calendrier daté des délais à tenir.</p></div></div>
     <div class="step"><div class="k">04</div><div><h3>Preuves et déclarations</h3><p>Seules les pièces exigées par ce régime ; déclarations du vendeur selon le vocabulaire réglementé, signées et scellées.</p></div></div>
     <div class="step"><div class="k">05</div><div><h3>Clearance</h3><p>Six domaines, un verdict : conforme, requis ou bloqué. Ce qui peut se conclure, sous quelles conditions.</p></div></div>
-    <div class="step"><div class="k">06</div><div><h3>Autorités</h3><p>Certificat d'exportation, licence UE, licence ou déclaration ICG, CITES, Arts Council, commission scientifique des musées — générés dans le format attendu.</p></div></div>
-    <div class="step"><div class="k">07</div><div><h3>Rapport acheteur</h3><p>Le vérifié, le déclaré, et ce qui reste à sa charge — sans jamais se substituer à l'expertise.</p></div></div>
+    <div class="step"><div class="k">06</div><div><h3>Autorités</h3><p>Certificat d'exportation, licence UE, licence ou déclaration ICG, CITES, Arts Council, commission scientifique des musées, générés dans le format attendu.</p></div></div>
+    <div class="step"><div class="k">07</div><div><h3>Rapport acheteur</h3><p>Le vérifié, le déclaré, et ce qui reste à sa charge, sans jamais se substituer à l'expertise.</p></div></div>
     <div class="step"><div class="k">08</div><div><h3>Contrat</h3><p>Bâti sur le dossier : conditions suspensives d'autorisation, douane, vigilance, droit de suite, frais exhaustifs, réception contradictoire.</p></div></div>
-    <div class="step"><div class="k">09</div><div><h3>Clôture</h3><p>Signatures, séquestre, livraison, réception, livre de police, archivage dix ans — jusqu'au sceau <span class="serif it">Established</span>.</p></div></div>
+    <div class="step"><div class="k">09</div><div><h3>Clôture</h3><p>Signatures, séquestre, livraison, réception, livre de police, archivage dix ans, jusqu'au sceau <span class="serif it">Established</span>.</p></div></div>
   </div>
 </div></section>
 
-<section id="couverture" style="padding-top:0"><div class="wrap">
-  <div class="rule"></div>
-  <div class="micro" style="margin-top:28px">L'Intelligence ARTVELCHIV</div>
-  <h2>Ce que l'Intelligence ARTVELCHIV sait.</h2>
-  <div class="cov" style="margin-top:20px">
+<section id="couverture"><div class="wrap">
+  <div class="head"><div class="eyebrow">L'Intelligence ARTVELCHIV</div><h2>Ce que l'Intelligence ARTVELCHIV sait.</h2></div>
+  <div class="grid cols3 cov">
     <div><h3>Statut de l'objet</h3><p>Restes humains, archéologie française post-2016, objets cultuels du domaine public, archives, spoliations 1933-1945, attribution (décret 1981) et fraude artistique (loi 1895), droits d'auteur et reproduction, multiples et tirages, métaux précieux, armes de collection, numismatique.</p></div>
     <div><h3>Circulation</h3><p>Certificat français à deux jeux de seuils, licence de l'Union, régimes italien, espagnol (permis et taxe), allemand, belge, néerlandais, britannique (Waverley) ; importation UE 2019/880, LTBC suisse et accords bilatéraux, CPIA américain, port franc de Hong Kong ; régimes d'origine de douze pays et embargos Irak et Syrie.</p></div>
     <div><h3>Douane, conformité, vente</h3><p>Admission temporaire, ATA, entrepôt, retour en franchise, TVA à l'importation par pays ; anti-blanchiment et AMLR 2027 ; sanctions ; CITES et ivoire révisé 2021 ; droit de suite ; préemption ; consommateur et vente à distance ; acquisitions par les musées de France.</p></div>
@@ -314,22 +414,18 @@
   <div class="countries"><span>France</span><span>Monaco</span><span>Italie</span><span>Espagne</span><span>Allemagne</span><span>Belgique</span><span>Pays-Bas</span><span>Suisse</span><span>Royaume-Uni</span><span>États-Unis</span><span>Hong Kong</span><span>Chine / Tibet</span><span>Inde</span><span>Égypte</span><span>Grèce</span><span>Turquie</span><span>Nigéria</span><span>Cambodge</span><span>Mexique</span><span>Pérou</span><span>Irak</span><span>Syrie</span><span>Russie</span></div>
 </div></section>
 
-<section id="livrables" style="padding-top:0"><div class="wrap">
-  <div class="rule"></div>
-  <div class="micro" style="margin-top:28px">Livrables</div>
-  <h2>Trois documents. Un seul dossier.</h2>
-  <div class="outs" style="margin-top:24px">
-    <div class="out"><div class="micro">Authority file</div><h3>Le dossier pour les autorités</h3><ul><li>Certificat d'exportation — Service des musées de France</li><li>Licence d'exportation de l'Union</li><li>Licence ou déclaration de l'importateur — ICG</li><li>Certificat CITES intra-UE</li><li>Attestato, export licence, commission scientifique</li><li>Extrait du livre de police, préemption</li></ul></div>
-    <div class="out"><div class="micro">Buyer report</div><h3>Le rapport acheteur</h3><ul><li>Vendeur identifié, qualité justifiée</li><li>Attribution au sens du décret de 1981</li><li>Provenance et registres interrogés</li><li>État et restaurations déclarées</li><li>Statut réglementaire, douane, fiscalité</li><li>Ce que le rapport ne garantit pas</li></ul></div>
-    <div class="out"><div class="micro">Sale agreement</div><h3>Le contrat</h3><ul><li>Conditions suspensives d'autorisation</li><li>Régularisation douanière et TVA</li><li>Vigilance, droit de suite, préemption</li><li>Frais exhaustifs — rien de non listé</li><li>Séquestre et réception contradictoire</li><li>Droits d'auteur réservés, annexes</li></ul></div>
+<section id="livrables"><div class="wrap">
+  <div class="head"><div class="eyebrow">Livrables</div><h2>Trois documents. Un seul dossier.</h2></div>
+  <div class="grid cols3 outs">
+    <div class="out"><div class="eyebrow">Authority file</div><h3>Le dossier pour les autorités</h3><ul><li>Certificat d'exportation, Service des musées de France</li><li>Licence d'exportation de l'Union</li><li>Licence ou déclaration de l'importateur, ICG</li><li>Certificat CITES intra-UE</li><li>Attestato, export licence, commission scientifique</li><li>Extrait du livre de police, préemption</li></ul></div>
+    <div class="out"><div class="eyebrow">Buyer report</div><h3>Le rapport acheteur</h3><ul><li>Vendeur identifié, qualité justifiée</li><li>Attribution au sens du décret de 1981</li><li>Provenance et registres interrogés</li><li>État et restaurations déclarées</li><li>Statut réglementaire, douane, fiscalité</li><li>Ce que le rapport ne garantit pas</li></ul></div>
+    <div class="out"><div class="eyebrow">Sale agreement</div><h3>Le contrat</h3><ul><li>Conditions suspensives d'autorisation</li><li>Régularisation douanière et TVA</li><li>Vigilance, droit de suite, préemption</li><li>Frais exhaustifs, rien de non listé</li><li>Séquestre et réception contradictoire</li><li>Droits d'auteur réservés, annexes</li></ul></div>
   </div>
 </div></section>
 
-<section id="pour-qui" style="padding-top:0"><div class="wrap">
-  <div class="rule"></div>
-  <div class="micro" style="margin-top:28px">Pour qui</div>
-  <h2>Chaque structure, ses obligations permanentes.</h2>
-  <div class="who" style="margin-top:20px">
+<section id="pour-qui"><div class="wrap">
+  <div class="head"><div class="eyebrow">Pour qui</div><h2>Chaque structure, ses obligations permanentes.</h2></div>
+  <div class="grid cols2 who">
     <div><h3>Galeries</h3><p>Registre des revendeurs, livre de police, anti-blanchiment, facture réglementée, TVA 5,5 %, dépôt-vente avec l'artiste, droits de reproduction, vente à distance, assurance. Dix obligations suivies.</p></div>
     <div><h3>Marchands et antiquaires</h3><p>Livre de police à chaque acquisition, registre des métaux précieux, marge et taux, diligence de provenance, armes de collection et CITES. Huit obligations suivies.</p></div>
     <div><h3>Maisons de vente</h3><p>Déclaration au Conseil des maisons de vente, mandat, livre de police d'entrée, procès-verbal à J+1, préemption, catalogue réglementé, frais et garanties, gré à gré après enchères, responsabilité de l'expert, prescription. Onze obligations suivies.</p></div>
@@ -337,12 +433,9 @@
   </div>
 </div></section>
 
-<section id="douane" style="padding-top:0"><div class="wrap">
-  <div class="rule"></div>
-  <div class="micro" style="margin-top:28px">Douane et délais</div>
-  <h2>Les échéances qui commandent la vente.</h2>
-  <p class="lede">Le calendrier se calcule à partir des dates réelles du dossier et s'annexe au contrat.</p>
-  <div class="tbl" style="margin-top:22px"><table>
+<section id="douane"><div class="wrap">
+  <div class="head"><div class="eyebrow">Douane et délais</div><h2>Les échéances qui commandent la vente.</h2><p class="lede">Le calendrier se calcule à partir des dates réelles du dossier et s'annexe au contrat.</p></div>
+  <div class="tbl"><table>
     <tr><th>Délai</th><th>Ce qu'il impose</th><th>Texte</th></tr>
     <tr><td class="k">24 mois</td><td>Admission temporaire : réexporter, entreposer ou mettre en libre pratique avant l'échéance ; toute vente impose la régularisation.</td><td class="src">CDU, art. 250-253</td></tr>
     <tr><td class="k">12 mois</td><td>Carnet e-ATA : exposition seulement, vente interdite sous le régime ; apurement des volets.</td><td class="src">Convention d'Istanbul</td></tr>
@@ -356,62 +449,50 @@
   </table></div>
 </div></section>
 
-<section id="categories" style="padding-top:0"><div class="wrap">
-  <div class="rule"></div>
-  <div class="micro" style="margin-top:28px">Par catégorie d'œuvre</div>
-  <h2>Chaque œuvre entre dans une catégorie. Chaque catégorie a ses textes.</h2>
-  <p class="lede">Le Référentiel croise la nature de l'œuvre, sa période, son matériau et sa provenance : une peinture de 1960, un bronze de 1450 ou une pierre sculptée issue de fouilles n'appellent pas les mêmes règles.</p>
-  <div class="idx" style="margin-top:22px">
-    <div><h3>Peintures</h3><ul><li><b>Moins de 50 ans</b> — libre ; droit moral, reproduction, TVA 5,5 %</li><li><b>Plus de 50 ans</b> — certificat au-delà de 300 000 € (Union) ou 150 000 € (tiers) ; spoliations si antérieure à 1946</li><li><b>Plus de 200 ans</b> — partie C du règlement 2019/880 à l'entrée dans l'Union</li></ul></div>
-    <div><h3>Œuvres sur papier</h3><ul><li><b>Gouaches, pastels</b> — 50 000 € (Union) · 30 000 € (tiers)</li><li><b>Dessins</b> — 30 000 € · 15 000 €</li><li><b>Estampes</b> — 20 000 € · 15 000 € ; mention du tirage</li></ul></div>
-    <div><h3>Sculptures et bronzes</h3><ul><li><b>Multiples</b> — douze épreuves, fondeur, fonte posthume (décret 1981, art. 9 ; CGI 98 A)</li><li><b>Plus de 50 ans</b> — certificat au-delà de 100 000 € · 50 000 €</li><li><b>Plus de 250 ans, monument ou fouilles</b> — licence d'importation, partie B, toute valeur</li></ul></div>
-    <div><h3>Archéologie et pierres anciennes</h3><ul><li><b>Toute valeur</b> — certificat d'exportation dès 100 ans</li><li><b>Découverte française après 2016</b> — propriété de l'État</li><li><b>Entrée dans l'Union</b> — licence partie B ; CPIA aux États-Unis ; accords bilatéraux suisses</li></ul></div>
-    <div><h3>Objets religieux et ethnographiques</h3><ul><li><b>Églises françaises avant 1905</b> — domaine public présumé</li><li><b>Provenance monastique ou d'autel</b> — partie B, licence</li><li><b>Diligence</b> — Unesco 1970, listes rouges ICOM, restitutions</li></ul></div>
-    <div><h3>Manuscrits, livres, archives</h3><ul><li><b>Manuscrits</b> — certificat dès 3 000 € (Union), toute valeur (tiers)</li><li><b>Livres de plus de 100 ans</b> — 50 000 €</li><li><b>Archives</b> — toute valeur ; archives publiques inaliénables</li></ul></div>
-    <div><h3>Mobilier, arts décoratifs, textiles</h3><ul><li><b>Plus de 50 ans</b> — 100 000 € · 50 000 €</li><li><b>Ivoire, écaille, bois protégés</b> — certificat intra-UE ; réexportation hors Union suspendue</li><li><b>Boiseries, décors fixes</b> — éléments de monuments</li></ul></div>
-    <div><h3>Bijoux, orfèvrerie, horlogerie</h3><ul><li><b>Poinçons et garantie</b> — registre des métaux précieux</li><li><b>Diamants bruts</b> — processus de Kimberley</li><li><b>TVA</b> — taux normal sur la marge</li></ul></div>
-    <div><h3>Instruments, armes, monnaies, spécimens</h3><ul><li><b>Instruments</b> — CITES ; certificat « instrument » sans droit de vente</li><li><b>Armes avant 1900</b> — catégorie D ; matériel de guerre à l'export</li><li><b>Monnaies de découverte</b> — régime archéologique ; <b>fossiles</b> — interdictions d'origine</li></ul></div>
+<section id="categories"><div class="wrap">
+  <div class="head"><div class="eyebrow">Par catégorie d'œuvre</div><h2>Chaque œuvre entre dans une catégorie. Chaque catégorie a ses textes.</h2><p class="lede">Le Référentiel croise la nature de l'œuvre, sa période, son matériau et sa provenance : une peinture de 1960, un bronze de 1450 ou une pierre sculptée issue de fouilles n'appellent pas les mêmes règles.</p></div>
+  <div class="grid cols3 idx">
+    <div><h3>Peintures</h3><ul><li><b>Moins de 50 ans</b> : libre ; droit moral, reproduction, TVA 5,5 %</li><li><b>Plus de 50 ans</b> : certificat au-delà de 300 000 € (Union) ou 150 000 € (tiers) ; spoliations si antérieure à 1946</li><li><b>Plus de 200 ans</b> : partie C du règlement 2019/880 à l'entrée dans l'Union</li></ul></div>
+    <div><h3>Œuvres sur papier</h3><ul><li><b>Gouaches, pastels</b> : 50 000 € (Union) · 30 000 € (tiers)</li><li><b>Dessins</b> : 30 000 € · 15 000 €</li><li><b>Estampes</b> : 20 000 € · 15 000 € ; mention du tirage</li></ul></div>
+    <div><h3>Sculptures et bronzes</h3><ul><li><b>Multiples</b> : douze épreuves, fondeur, fonte posthume (décret 1981, art. 9 ; CGI 98 A)</li><li><b>Plus de 50 ans</b> : certificat au-delà de 100 000 € · 50 000 €</li><li><b>Plus de 250 ans, monument ou fouilles</b> : licence d'importation, partie B, toute valeur</li></ul></div>
+    <div><h3>Archéologie et pierres anciennes</h3><ul><li><b>Toute valeur</b> : certificat d'exportation dès 100 ans</li><li><b>Découverte française après 2016</b> : propriété de l'État</li><li><b>Entrée dans l'Union</b> : licence partie B ; CPIA aux États-Unis ; accords bilatéraux suisses</li></ul></div>
+    <div><h3>Objets religieux et ethnographiques</h3><ul><li><b>Églises françaises avant 1905</b> : domaine public présumé</li><li><b>Provenance monastique ou d'autel</b> : partie B, licence</li><li><b>Diligence</b> : Unesco 1970, listes rouges ICOM, restitutions</li></ul></div>
+    <div><h3>Manuscrits, livres, archives</h3><ul><li><b>Manuscrits</b> : certificat dès 3 000 € (Union), toute valeur (tiers)</li><li><b>Livres de plus de 100 ans</b> : 50 000 €</li><li><b>Archives</b> : toute valeur ; archives publiques inaliénables</li></ul></div>
+    <div><h3>Mobilier, arts décoratifs, textiles</h3><ul><li><b>Plus de 50 ans</b> : 100 000 € · 50 000 €</li><li><b>Ivoire, écaille, bois protégés</b> : certificat intra-UE ; réexportation hors Union suspendue</li><li><b>Boiseries, décors fixes</b> : éléments de monuments</li></ul></div>
+    <div><h3>Bijoux, orfèvrerie, horlogerie</h3><ul><li><b>Poinçons et garantie</b> : registre des métaux précieux</li><li><b>Diamants bruts</b> : processus de Kimberley</li><li><b>TVA</b> : taux normal sur la marge</li></ul></div>
+    <div><h3>Instruments, armes, monnaies, spécimens</h3><ul><li><b>Instruments</b> : CITES ; certificat « instrument » sans droit de vente</li><li><b>Armes avant 1900</b> : catégorie D ; matériel de guerre à l'export</li><li><b>Monnaies de découverte</b> : régime archéologique ; <b>fossiles</b> : interdictions d'origine</li></ul></div>
   </div>
 </div></section>
 
-<section id="textes" style="padding-top:0"><div class="wrap">
-  <div class="rule"></div>
-  <div class="micro" style="margin-top:28px">Le Référentiel</div>
-  <h2>Quarante-huit textes, tenus à jour.</h2>
-  <p class="lede">Le Référentiel ARTVELCHIV : ce que l'Intelligence applique aujourd'hui — et ce que votre dossier citera demain devant un juge, une douane ou un ministère.</p>
-  <div class="idx" style="margin-top:22px">
-    <div><h3>Droit civil et contrat</h3><ul><li><b>C. civ., art. 1137</b> — dol</li><li><b>C. civ., art. 1383</b> — aveu extrajudiciaire</li><li><b>C. civ., art. 1599 · 1626</b> — vente de la chose d'autrui, garantie d'éviction</li><li><b>C. civ., art. 1641 à 1649</b> — garantie des vices cachés</li><li><b>C. civ., art. 2224 · 2276</b> — prescription, possession</li><li><b>C. consom., art. L217-3 · L221-18 · L612-1</b></li></ul></div>
-    <div><h3>Œuvre et attribution</h3><ul><li><b>Loi du 9 février 1895</b> — fraudes en matière artistique</li><li><b>Décret n° 81-255 du 3 mars 1981</b> — dénominations, art. 9 tirages</li><li><b>CPI, art. L121-1</b> — droit moral</li><li><b>CPI, art. L122-4 · L122-5</b> — reproduction, exceptions</li><li><b>CPI, art. L122-8 · R122-2</b> — droit de suite</li><li><b>CGI, ann. III, art. 98 A</b> — œuvre originale (bronzes, photographies)</li></ul></div>
-    <div><h3>Circulation et patrimoine</h3><ul><li><b>C. patr., art. L111-1 et s.</b> — trésors nationaux, certificat</li><li><b>C. patr., art. L112-1 et s.</b> — restitution intra-Union</li><li><b>C. patr., art. L121-1</b> — refus de certificat, offre d'achat</li><li><b>C. patr., art. L123-1</b> — préemption</li><li><b>C. patr., art. L451-5 · L541-1</b> — musées, archéologie</li><li><b>Décret n° 2020-1718</b> — seuils 2021</li><li><b>Règl. (CE) 116/2009 · (UE) 2019/880 · règl. d'exéc. 2021/1079</b></li><li><b>Directive 2014/60/UE</b> — diligence requise</li></ul></div>
-    <div><h3>Douane et fiscalité</h3><ul><li><b>Règl. (UE) 952/2013 (CDU), art. 203 · 237 · 250-253</b></li><li><b>Convention d'Istanbul 1990 · carnet e-ATA</b></li><li><b>CGI, art. 262 · 278-0 bis · 297 A</b> — exportation, 5,5 %, marge</li><li><b>Directive 2006/112/CE · 2022/542</b> — TVA</li><li><b>C. douanes, art. 169 et s.</b> — admission temporaire</li></ul></div>
-    <div><h3>Conformité</h3><ul><li><b>CMF, art. L561-2 (17°) · L561-10 · L112-6</b></li><li><b>Directive (UE) 2015/849 · 2018/843</b></li><li><b>Règl. (UE) 2024/1624 (AMLR) · directive 2024/1640</b></li><li><b>Règl. (UE) 833/2014 · (CE) 1210/2003 · (UE) 36/2012</b> — sanctions, embargos</li><li><b>Règl. (UE) 2016/679 (RGPD)</b></li><li><b>Loi n° 1.362 (Monaco)</b></li></ul></div>
-    <div><h3>Professions</h3><ul><li><b>C. pén., art. 321-7 · R321-1 à R321-8</b> — livre de police</li><li><b>C. com., art. L321-1 et s.</b> — ventes volontaires ; loi n° 2011-850 · loi n° 2022-267</li><li><b>Recueil des obligations déontologiques du CMV</b></li><li><b>Code de déontologie CPGA · SNA</b></li><li><b>CGI, ann. IV, art. 56 J quaterdecies</b> — métaux précieux</li><li><b>C. sécurité intérieure, art. L311-2 · R311-2</b> — armes</li></ul></div>
-    <div><h3>Espèces et matériaux</h3><ul><li><b>Règl. (CE) 338/97 · 865/2006 révisé 2021</b></li><li><b>Orientation 2021/C 528/03</b> — ivoire</li><li><b>Arrêté du 4 mai 2017</b></li><li><b>Ivory Act 2018 (Royaume-Uni)</b></li></ul></div>
-    <div><h3>Restitutions et éthique</h3><ul><li><b>Convention Unesco 1970 · Unidroit 1995 · La Haye 1954</b></li><li><b>Loi n° 2023-650</b> — spoliations 1933-1945</li><li><b>Loi n° 2023-1251</b> — restes humains</li><li><b>Principes de Washington 1998 · déclaration de Terezín 2009</b></li><li><b>Code de déontologie de l'ICOM · listes rouges</b></li><li><b>Responsible Art Market Initiative</b> — Genève</li></ul></div>
-    <div><h3>Juridictions étrangères</h3><ul><li><b>Italie</b> — Codice dei beni culturali, art. 65</li><li><b>Espagne</b> — Ley 16/1985</li><li><b>Allemagne</b> — KGSG 2016</li><li><b>Suisse</b> — LTBC, OTBC</li><li><b>Royaume-Uni</b> — Export Control Order 2003</li><li><b>États-Unis</b> — CPIA, 19 U.S.C. § 2601</li><li><b>Chine, Inde, Égypte, Grèce, Turquie, Nigéria, Cambodge, Mexique, Pérou</b></li></ul></div>
+<section id="textes"><div class="wrap">
+  <div class="head"><div class="eyebrow">Le Référentiel</div><h2>Quarante-huit textes, tenus à jour.</h2><p class="lede">Le Référentiel ARTVELCHIV : ce que l'Intelligence applique aujourd'hui, et ce que votre dossier citera demain devant un juge, une douane ou un ministère.</p></div>
+  <div class="grid cols3 idx">
+    <div><h3>Droit civil et contrat</h3><ul><li><b>C. civ., art. 1137</b> : dol</li><li><b>C. civ., art. 1383</b> : aveu extrajudiciaire</li><li><b>C. civ., art. 1599 · 1626</b> : vente de la chose d'autrui, garantie d'éviction</li><li><b>C. civ., art. 1641 à 1649</b> : garantie des vices cachés</li><li><b>C. civ., art. 2224 · 2276</b> : prescription, possession</li><li><b>C. consom., art. L217-3 · L221-18 · L612-1</b></li></ul></div>
+    <div><h3>Œuvre et attribution</h3><ul><li><b>Loi du 9 février 1895</b> : fraudes en matière artistique</li><li><b>Décret n° 81-255 du 3 mars 1981</b> : dénominations, art. 9 tirages</li><li><b>CPI, art. L121-1</b> : droit moral</li><li><b>CPI, art. L122-4 · L122-5</b> : reproduction, exceptions</li><li><b>CPI, art. L122-8 · R122-2</b> : droit de suite</li><li><b>CGI, ann. III, art. 98 A</b> : œuvre originale (bronzes, photographies)</li></ul></div>
+    <div><h3>Circulation et patrimoine</h3><ul><li><b>C. patr., art. L111-1 et s.</b> : trésors nationaux, certificat</li><li><b>C. patr., art. L112-1 et s.</b> : restitution intra-Union</li><li><b>C. patr., art. L121-1</b> : refus de certificat, offre d'achat</li><li><b>C. patr., art. L123-1</b> : préemption</li><li><b>C. patr., art. L451-5 · L541-1</b> : musées, archéologie</li><li><b>Décret n° 2020-1718</b> : seuils 2021</li><li><b>Règl. (CE) 116/2009 · (UE) 2019/880 · règl. d'exéc. 2021/1079</b></li><li><b>Directive 2014/60/UE</b> : diligence requise</li></ul></div>
+    <div><h3>Douane et fiscalité</h3><ul><li><b>Règl. (UE) 952/2013 (CDU), art. 203 · 237 · 250-253</b></li><li><b>Convention d'Istanbul 1990 · carnet e-ATA</b></li><li><b>CGI, art. 262 · 278-0 bis · 297 A</b> : exportation, 5,5 %, marge</li><li><b>Directive 2006/112/CE · 2022/542</b> : TVA</li><li><b>C. douanes, art. 169 et s.</b> : admission temporaire</li></ul></div>
+    <div><h3>Conformité</h3><ul><li><b>CMF, art. L561-2 (17°) · L561-10 · L112-6</b></li><li><b>Directive (UE) 2015/849 · 2018/843</b></li><li><b>Règl. (UE) 2024/1624 (AMLR) · directive 2024/1640</b></li><li><b>Règl. (UE) 833/2014 · (CE) 1210/2003 · (UE) 36/2012</b> : sanctions, embargos</li><li><b>Règl. (UE) 2016/679 (RGPD)</b></li><li><b>Loi n° 1.362 (Monaco)</b></li></ul></div>
+    <div><h3>Professions</h3><ul><li><b>C. pén., art. 321-7 · R321-1 à R321-8</b> : livre de police</li><li><b>C. com., art. L321-1 et s.</b> : ventes volontaires ; loi n° 2011-850 · loi n° 2022-267</li><li><b>Recueil des obligations déontologiques du CMV</b></li><li><b>Code de déontologie CPGA · SNA</b></li><li><b>CGI, ann. IV, art. 56 J quaterdecies</b> : métaux précieux</li><li><b>C. sécurité intérieure, art. L311-2 · R311-2</b> : armes</li></ul></div>
+    <div><h3>Espèces et matériaux</h3><ul><li><b>Règl. (CE) 338/97 · 865/2006 révisé 2021</b></li><li><b>Orientation 2021/C 528/03</b> : ivoire</li><li><b>Arrêté du 4 mai 2017</b></li><li><b>Ivory Act 2018 (Royaume-Uni)</b></li></ul></div>
+    <div><h3>Restitutions et éthique</h3><ul><li><b>Convention Unesco 1970 · Unidroit 1995 · La Haye 1954</b></li><li><b>Loi n° 2023-650</b> : spoliations 1933-1945</li><li><b>Loi n° 2023-1251</b> : restes humains</li><li><b>Principes de Washington 1998 · déclaration de Terezín 2009</b></li><li><b>Code de déontologie de l'ICOM · listes rouges</b></li><li><b>Responsible Art Market Initiative</b> : Genève</li></ul></div>
+    <div><h3>Juridictions étrangères</h3><ul><li><b>Italie</b> : Codice dei beni culturali, art. 65</li><li><b>Espagne</b> : Ley 16/1985</li><li><b>Allemagne</b> : KGSG 2016</li><li><b>Suisse</b> : LTBC, OTBC</li><li><b>Royaume-Uni</b> : Export Control Order 2003</li><li><b>États-Unis</b> : CPIA, 19 U.S.C. § 2601</li><li><b>Chine, Inde, Égypte, Grèce, Turquie, Nigéria, Cambodge, Mexique, Pérou</b></li></ul></div>
   </div>
 </div></section>
 
-<section id="sources" style="padding-top:0"><div class="wrap">
-  <div class="rule"></div>
-  <div class="micro" style="margin-top:28px">Sources et veille</div>
-  <h2>Chaque règle renvoie à un texte.</h2>
-  <p class="lede">Le Référentiel est tenu à jour par la veille juridique du cabinet ; chaque dossier conserve la version du Référentiel appliquée à sa date — opposable, datée, signée. Dernière vérification à la source : 3 septembre 2026, annexe 1 aux articles R. 111-1 du Code du patrimoine, annexe du règlement 2019/880, seuils de l'Arts Council England.</p>
-  <div class="srcs" style="margin-top:22px">
-    <div><h3>Conventions et Union européenne</h3><ul><li>Convention Unesco 1970 · Convention Unidroit 1995 · Convention de La Haye 1954</li><li>Directive 2014/60/UE — restitution intra-Union, diligence requise et indemnité</li><li>Règl. (UE) 2019/880 et système ICG · règl. (CE) 116/2009</li><li>Code des douanes de l'Union — admission temporaire, entrepôt, retour en franchise</li><li>Règl. (UE) 2024/1624 (AMLR) · directive (UE) 2018/843 (ports francs, intermédiaires)</li><li>Règl. (CE) 338/97 et 865/2006 révisé 2021 — CITES, ivoire</li><li>Sanctions : règl. 833/2014, 1210/2003, 36/2012</li></ul></div>
+<section id="sources"><div class="wrap">
+  <div class="head"><div class="eyebrow">Sources et veille</div><h2>Chaque règle renvoie à un texte.</h2><p class="lede">Le Référentiel est tenu à jour par la veille juridique des équipes ARTVELCHIV ; chaque dossier conserve la version du Référentiel appliquée à sa date, opposable, datée, signée. Dernière vérification à la source : 3 septembre 2026, annexe 1 aux articles R. 111-1 du Code du patrimoine, annexe du règlement 2019/880, seuils de l'Arts Council England.</p></div>
+  <div class="grid cols2 srcs">
+    <div><h3>Conventions et Union européenne</h3><ul><li>Convention Unesco 1970 · Convention Unidroit 1995 · Convention de La Haye 1954</li><li>Directive 2014/60/UE : restitution intra-Union, diligence requise et indemnité</li><li>Règl. (UE) 2019/880 et système ICG · règl. (CE) 116/2009</li><li>Code des douanes de l'Union : admission temporaire, entrepôt, retour en franchise</li><li>Règl. (UE) 2024/1624 (AMLR) · directive (UE) 2018/843 (ports francs, intermédiaires)</li><li>Règl. (CE) 338/97 et 865/2006 révisé 2021 : CITES, ivoire</li><li>Sanctions : règl. 833/2014, 1210/2003, 36/2012</li></ul></div>
     <div><h3>France</h3><ul><li>Code du patrimoine, art. L111-1 et s., L112-1 et s. (restitution), L123-1 (préemption), L451-5 (musées), L541-1 (archéologie) · décret n° 2020-1718</li><li>Décret n° 81-255 du 3 mars 1981 · loi du 9 février 1895</li><li>Code de la propriété intellectuelle, art. L121-1, L122-4, L122-8</li><li>Code pénal, art. 321-7 et R321-1 et s. · Code de la sécurité intérieure, art. R311-2</li><li>Code monétaire et financier, art. L561-2 (17°) · lignes directrices Tracfin</li><li>Code de commerce, art. L321-1 et s. · recueil des obligations déontologiques du CMV</li><li>Loi n° 2023-650 (spoliations 1933-1945) · loi n° 2023-1251 (restes humains)</li></ul></div>
     <div><h3>Europe et monde</h3><ul><li>Italie : Codice dei beni culturali, art. 65 · Espagne : Ley 16/1985 · Allemagne : KGSG 2016</li><li>Belgique : décret flamand topstukken · Pays-Bas : Erfgoedwet</li><li>Suisse : LTBC et OTBC, accords bilatéraux, ports francs</li><li>Royaume-Uni : Export Control Order 2003 et critères Waverley · Ivory Act 2018 · AMP (HMRC)</li><li>États-Unis : Cultural Property Implementation Act, accords bilatéraux et mesures d'urgence</li><li>Chine, Inde, Égypte, Grèce, Turquie, Nigéria, Cambodge, Mexique, Pérou : régimes nationaux d'origine</li></ul></div>
-    <div><h3>Déontologie et registres</h3><ul><li>Code de déontologie de l'ICOM · listes rouges ICOM · standard Object ID</li><li>Responsible Art Market Initiative — lignes directrices de diligence (Genève)</li><li>Code de déontologie du CPGA · SNA · recueil du CMV</li><li>Art Loss Register · Interpol · OCBC · Lost Art · ERR Project · MNR</li><li>Principes de Washington 1998 · déclaration de Terezín 2009</li></ul></div>
+    <div><h3>Déontologie et registres</h3><ul><li>Code de déontologie de l'ICOM · listes rouges ICOM · standard Object ID</li><li>Responsible Art Market Initiative : lignes directrices de diligence (Genève)</li><li>Code de déontologie du CPGA · SNA · recueil du CMV</li><li>Art Loss Register · Interpol · OCBC · Lost Art · ERR Project · MNR</li><li>Principes de Washington 1998 · déclaration de Terezín 2009</li></ul></div>
   </div>
 </div></section>
 
-<section id="securite" style="padding-top:0"><div class="wrap">
-  <div class="rule"></div>
-  <div class="micro" style="margin-top:28px">Sécurité et confidentialité</div>
-  <h2>Le niveau d'exigence d'un cabinet d'avocats.</h2>
-  <p class="lede">Les dossiers d'ARTVELCHIV décrivent des œuvres, des propriétaires et des prix. Ils sont traités comme des dossiers de cabinet.</p>
-  <div class="sec" style="margin-top:20px">
-    <div><h3>Secret professionnel</h3><p>Conçu et opéré sous la responsabilité d'avocats, soumis au secret professionnel et à la déontologie du Barreau.</p></div>
+<section id="securite"><div class="wrap">
+  <div class="head"><div class="eyebrow">Sécurité et confidentialité</div><h2>La confidentialité que vos transactions exigent.</h2><p class="lede">Les dossiers d'ARTVELCHIV décrivent des œuvres, des propriétaires et des prix. Nos services les traitent avec le niveau de confidentialité le plus élevé.</p></div>
+  <div class="grid cols3 sec">
+    <div><h3>Confidentialité</h3><p>Chaque dossier est accessible à votre seule structure ; les équipes ARTVELCHIV sont tenues à une obligation de confidentialité contractuelle.</p></div>
     <div><h3>Chiffrement et hébergement</h3><p>Données chiffrées en transit et au repos, hébergées dans l'Union européenne ; scellement des pièces par empreinte SHA-256.</p></div>
     <div><h3>Aucune réutilisation</h3><p>Vos dossiers ne servent qu'à vos dossiers : aucune exploitation commerciale, aucun entraînement de modèle sur vos données.</p></div>
     <div><h3>Accès et traçabilité</h3><p>Accès nominatif, journal des consultations, conservation dix ans conforme aux obligations de vigilance et de livre de police.</p></div>
@@ -420,24 +501,125 @@
   </div>
 </div></section>
 
-<div class="dark-band" id="preview"><div class="wrap">
-  <div class="micro">Private preview</div>
-  <div class="quote" style="margin-top:14px">Une démonstration sur vos propres dossiers, ou un accès au démonstrateur.</div>
-  <p>ARTVELCHIV est ouvert à un cercle restreint de galeries, de marchands, de maisons de vente et de conseillers. Une démonstration d'une heure suffit à traiter l'une de vos ventes en cours, de la description au contrat.</p>
-  <form class="form" id="f" style="margin-top:30px" onsubmit="event.preventDefault();document.getElementById('f').style.display='none';document.getElementById('ok').style.display='block';">
-    <div class="field"><label>Structure</label><select required style="color:#FBFAF7;border-bottom-color:#5A5751"><option value="" style="color:#111">Choisir…</option><option style="color:#111">Galerie</option><option style="color:#111">Marchand, antiquaire</option><option style="color:#111">Maison de vente</option><option style="color:#111">Conseiller, courtier</option><option style="color:#111">Collectionneur, family office</option><option style="color:#111">Institution, musée</option></select></div>
-    <div class="field"><label>Adresse e-mail professionnelle</label><input type="email" required placeholder="prenom@maison.com" style="color:#FBFAF7;border-bottom-color:#5A5751"></div>
-    <button class="btn full" type="submit" style="background:#FBFAF7;color:#111110;border-color:#FBFAF7">Demander une démonstration</button>
-    <div style="font-size:.7rem;color:#8B8880;margin-top:12px;line-height:1.6">Aucune sollicitation commerciale. Vos coordonnées servent uniquement à l'envoi du code d'accès.</div>
-  </form>
-  <div class="success" id="ok" style="border-color:#6FA381;color:#9CC7AB">✓ Demande enregistrée. Le code d'accès vous parviendra par courriel.</div>
+<div class="dark-band" id="preview"><div class="wrap"><div class="in">
+  <div>
+    <div class="eyebrow">Private preview</div>
+    <div class="quote">Une démonstration sur vos propres dossiers, ou un accès au démonstrateur.</div>
+    <p>ARTVELCHIV est ouvert à un cercle restreint de galeries, de marchands, de maisons de vente et de conseillers. Une démonstration d'une heure suffit à traiter l'une de vos ventes en cours, de la description au contrat.</p>
+  </div>
+  <div>
+    <form class="form" id="f" onsubmit="event.preventDefault();document.getElementById('f').style.display='none';document.getElementById('ok').style.display='block';">
+      <div class="field"><label>Structure</label><select required><option value="">Choisir…</option><option>Galerie</option><option>Marchand, antiquaire</option><option>Maison de vente</option><option>Conseiller, courtier</option><option>Collectionneur, family office</option><option>Institution, musée</option></select></div>
+      <div class="field"><label>Adresse e-mail professionnelle</label><input type="email" required placeholder="prenom@maison.com"></div>
+      <button class="btn vert full" type="submit">Demander une démonstration</button>
+      <div class="hint">Aucune sollicitation commerciale. Vos coordonnées servent uniquement à l'envoi du code d'accès.</div>
+    </form>
+    <div class="success" id="ok">✓ Demande enregistrée. Le code d'accès vous parviendra par courriel.</div>
+  </div>
+</div></div></div>
+</div><!-- /desk -->
+
+<!-- ================= MOBILE ================= -->
+<div id="m"><div class="wrap">
+
+  <div class="m-hero" id="m-top">
+    <div class="mark"><svg width="38" height="38" viewBox="0 0 40 40" aria-hidden="true"><rect x="2.4" y="2.4" width="35.2" height="35.2" fill="none" stroke="#15140F" stroke-width="1.3"/><rect x="6.6" y="6.6" width="26.8" height="26.8" fill="none" stroke="#15140F" stroke-width=".6" opacity=".5"/><text x="20" y="29" text-anchor="middle" font-family="Cormorant Garamond, serif" font-size="24" fill="#15140F">A</text></svg></div>
+    <div class="eyebrow">The art transaction standard</div>
+    <h1>Every work established.<br>Every transaction secured.</h1>
+    <p>Pour chaque œuvre d'art, ARTVELCHIV établit ce que la loi exige au départ, à l'arrivée et en douane, puis constitue le dossier qui rend la vente incontestable.</p>
+    <div class="who">Galeries, marchands, maisons de vente, conseillers.</div>
+  </div>
+  <div class="m-trust" style="margin:0 -22px;padding-left:22px;padding-right:22px">
+    <div>Chaque obligation renvoie au texte qui la fonde.</div>
+    <div>Référentiel vérifié à la source le 3 septembre 2026.</div>
+    <div>Vos dossiers ne servent qu'à vos dossiers.</div>
+  </div>
+
+  <div class="m-sec">
+    <div class="eyebrow">Comment cela fonctionne</div>
+    <h2>Vous décrivez. ARTVELCHIV établit. Vous concluez.</h2>
+    <div class="m-steps">
+      <div><div class="k">01</div><h3>Vous décrivez l'œuvre</h3><p>Nature, date, auteur, pays de création, lieu actuel, destination, statut douanier, mode de vente, acheteur. Deux minutes, sur votre téléphone.</p></div>
+      <div><div class="k">02</div><h3>ARTVELCHIV établit le droit</h3><p>Chaque obligation est déduite, avec son texte, sa gravité et son délai : export, import, douane, fiscalité, anti-blanchiment, sanctions, espèces protégées, droits d'auteur. Ce qui bloque apparaît en premier.</p></div>
+      <div><div class="k">03</div><h3>Vous concluez, dossier en main</h3><p>Pièces jointes, déclarations signées, dossiers pour les autorités, rapport acheteur et contrat, puis un sceau daté, conservé dix ans.</p></div>
+    </div>
+    <div class="m-swipe">Faites glisser →</div>
+  </div>
+
+  <div class="m-sec">
+    <div class="eyebrow">Ce que nous apportons</div>
+    <h2>Quatre certitudes, sur chaque transaction.</h2>
+    <div class="m-pil">
+      <div><div class="eyebrow">L'Intelligence</div><h3>La certitude du droit</h3><p>La règle qui s'applique à cette œuvre et à ce trajet, avec sa source.</p></div>
+      <div><div class="eyebrow">Le Protocole</div><h3>La maîtrise du temps</h3><p>Les délais qui commandent la vente, calculés et datés avant la signature.</p></div>
+      <div><div class="eyebrow">Le Référentiel</div><h3>La preuve de la diligence</h3><p>Le dossier qui ouvre droit à indemnité en cas de restitution.</p></div>
+      <div><div class="eyebrow">Le Sceau</div><h3>La confiance de l'acheteur</h3><p>Un rapport clair, un contrat bâti sur le dossier, un sceau daté.</p></div>
+    </div>
+  </div>
+
+  <div class="m-sec">
+    <div class="eyebrow">Pour aller plus loin</div>
+    <h2>Chaque chapitre, quand vous le souhaitez.</h2>
+    <div class="m-acc">
+      <details data-src="#comment .ex"><summary><div><div class="t">Un exemple, en trente secondes</div><div class="s">Un bronze tibétain, Hong Kong → Paris</div></div></summary><div class="body"></div></details>
+      <details data-src="#selection .lots,#selection .note"><summary><div><div class="t">Quatre œuvres, quatre régimes</div><div class="s">Cocteau, Shakyamuni, Klee, Kelly</div></div></summary><div class="body"></div></details>
+      <details data-src="#pourquoi .lede,#pourquoi .grid"><summary><div><div class="t">Pourquoi maintenant</div><div class="s">Quatre textes ont déplacé la charge de la preuve</div></div></summary><div class="body"></div></details>
+      <details data-src="#methode .lede,#methode .grid"><summary><div><div class="t">Le Protocole</div><div class="s">Neuf étapes, un dossier</div></div></summary><div class="body"></div></details>
+      <details data-src="#couverture .grid,#couverture .countries"><summary><div><div class="t">L'Intelligence ARTVELCHIV</div><div class="s">Ce qu'elle sait, 24 juridictions</div></div></summary><div class="body"></div></details>
+      <details data-src="#livrables .grid"><summary><div><div class="t">Les livrables</div><div class="s">Dossier d'autorités, rapport acheteur, contrat</div></div></summary><div class="body"></div></details>
+      <details data-src="#pour-qui .grid"><summary><div><div class="t">Pour qui</div><div class="s">Galeries, marchands, maisons de vente, conseillers</div></div></summary><div class="body"></div></details>
+      <details data-src="#douane .lede,#douane .tbl"><summary><div><div class="t">Douane et délais</div><div class="s">Les échéances qui commandent la vente</div></div></summary><div class="body"></div></details>
+      <details data-src="#categories .lede,#categories .grid"><summary><div><div class="t">Par catégorie d'œuvre</div><div class="s">Peintures, papier, bronzes, archéologie…</div></div></summary><div class="body"></div></details>
+      <details data-src="#textes .lede,#textes .grid"><summary><div><div class="t">Le Référentiel</div><div class="s">Quarante-huit textes, tenus à jour</div></div></summary><div class="body"></div></details>
+      <details data-src="#sources .lede,#sources .grid"><summary><div><div class="t">Sources et veille</div><div class="s">Chaque règle renvoie à un texte</div></div></summary><div class="body"></div></details>
+      <details data-src="#securite .lede,#securite .grid"><summary><div><div class="t">Sécurité et confidentialité</div><div class="s">Chiffrement, hébergement européen, traçabilité</div></div></summary><div class="body"></div></details>
+    </div>
+  </div>
+
+  <div class="m-cta" id="m-demo">
+    <div class="eyebrow">Private preview</div>
+    <div class="q">Une démonstration sur vos propres dossiers, ou un accès au démonstrateur.</div>
+    <p>Une démonstration d'une heure suffit à traiter l'une de vos ventes en cours, de la description au contrat.</p>
+    <form class="form" id="mf" onsubmit="event.preventDefault();document.getElementById('mf').style.display='none';document.getElementById('mok').style.display='block';">
+      <div class="field"><label>Structure</label><select required><option value="">Choisir…</option><option>Galerie</option><option>Marchand, antiquaire</option><option>Maison de vente</option><option>Conseiller, courtier</option><option>Collectionneur, family office</option><option>Institution, musée</option></select></div>
+      <div class="field"><label>Adresse e-mail professionnelle</label><input type="email" required placeholder="prenom@maison.com"></div>
+      <button class="btn vert full" type="submit">Demander une démonstration</button>
+      <div class="hint">Aucune sollicitation commerciale. Vos coordonnées servent uniquement à l'envoi du code d'accès.</div>
+    </form>
+    <div class="success" id="mok">✓ Demande enregistrée. Le code d'accès vous parviendra par courriel.</div>
+  </div>
+
 </div></div>
 
+<div class="m-bar"><a class="btn vert" href="#m-demo">Demander une démonstration</a><a class="btn" href="/app/">Démonstrateur</a></div>
+
 <footer><div class="wrap">
-  <div class="wm"><svg class="mono-a" width="22" height="22" viewBox="0 0 40 40" aria-hidden="true"><rect x="2" y="2" width="36" height="36" fill="none" stroke="currentColor" stroke-width="1.4"/><text x="20" y="29" text-anchor="middle" font-family="Cormorant Garamond, serif" font-size="26" fill="currentColor">A</text></svg>ARTVELCHIV</div>
-  <div class="micro" style="margin-top:8px;color:var(--gold)">Every work established. Every transaction secured.</div>
-  <p class="legal">ARTVELCHIV — le Protocole, l'Intelligence et le Référentiel — est un dispositif d'aide à la constitution de dossiers et à la conformité, conçu et tenu par des avocats. Il ne se substitue ni à l'expertise d'authenticité, ni au conseil juridique individualisé, ni aux décisions des autorités compétentes. Les règles, seuils et délais présentés sont ceux en vigueur à la date de dernière revue (3 septembre 2026) et peuvent évoluer ; chaque dossier conserve la version des règles appliquées. Démonstrateur : données fictives. Cabinet ESPOSITO — 35 boulevard Gambetta, 06000 Nice — cabinet@micheleesposito.me. Mentions légales · Confidentialité.</p>
+  <div class="wm"><svg class="mono-a" width="24" height="24" viewBox="0 0 40 40" aria-hidden="true"><rect x="2.4" y="2.4" width="35.2" height="35.2" fill="none" stroke="currentColor" stroke-width="1.3"/><rect x="6.6" y="6.6" width="26.8" height="26.8" fill="none" stroke="currentColor" stroke-width=".6" opacity=".5"/><text x="20" y="29" text-anchor="middle" font-family="Cormorant Garamond, serif" font-size="24" fill="currentColor">A</text></svg>ARTVELCHIV</div>
+  <div class="eyebrow tag">Every work established. Every transaction secured.</div>
+  <p class="legal">ARTVELCHIV, le Protocole, l'Intelligence et le Référentiel, est un dispositif d'aide à la constitution de dossiers et à la conformité. Il ne se substitue ni à l'expertise d'authenticité, ni au conseil juridique individualisé, ni aux décisions des autorités compétentes. Les règles, seuils et délais présentés sont ceux en vigueur à la date de dernière revue (3 septembre 2026) et peuvent évoluer ; chaque dossier conserve la version des règles appliquées. Démonstrateur : données fictives. <b>ARTVELCHIV</b>, 35 boulevard Gambetta, 06000 Nice. Mentions légales · Confidentialité.</p>
 </div></footer>
 
+
+<script>
+(function(){
+  /* Version mobile : les chapitres détaillés reprennent, au premier dépliage, le contenu de la version complète. */
+  var acc = document.querySelectorAll('#m details[data-src]');
+  acc.forEach(function(d){
+    d.addEventListener('toggle', function(){
+      if(!d.open || d.dataset.done) return;
+      var body = d.querySelector('.body');
+      d.dataset.src.split(',').forEach(function(sel){
+        var src = document.querySelector(sel.trim());
+        if(src) body.appendChild(src.cloneNode(true));
+      });
+      d.dataset.done = '1';
+    });
+  });
+  /* En mobile, le lien "Démonstrateur" et l'ancre haut de page pointent vers la version mobile. */
+  if(window.matchMedia('(max-width:899px)').matches){
+    document.querySelectorAll('a[href="#top"]').forEach(function(a){ a.setAttribute('href','#m-top'); });
+  }
+})();
+</script>
 </body>
 </html>
