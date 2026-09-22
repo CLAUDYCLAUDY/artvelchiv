@@ -236,43 +236,67 @@ function analyse(o, structure) {
   return { rules, pieces, clauses: C, authorities, deadlines, clearance, overall, age, tiers, original, seq, actions: rules.filter((r) => ["required", "pending"].includes(r.kind)).length, bloquantes: rules.filter((r) => r.kind === "blocked").length };
 }
 
-/* ============================================================ UI */
+/* ============================================================ UI — ARTVELCHIV, interface aérée (esprit iOS) */
+const LOGO = "/assets/logo.png";
+const UI = {
+  bg: "#F4EFE5", card: "#FFFFFF", ink: "#15140F", inkSoft: "#4A4841", mute: "#8E887B", line: "#EAE4D7", field: "#F4EFE5",
+  vert: "#1D4633", vertSoft: "#E4EDE6", claret: "#8A2A2A", claretSoft: "#F6E7E6", warn: "#9A6321", warnSoft: "#F6ECDD", info: "#3F5F8A", infoSoft: "#E7EDF5", ok: "#2E6349", okSoft: "#E4EFE7", jaune: "#F2C21B",
+};
+const TONE = { blocked: [UI.claret, UI.claretSoft], required: [UI.warn, UI.warnSoft], pending: [UI.info, UI.infoSoft], info: [UI.mute, "#EFEBE2"], clear: [UI.ok, UI.okSoft] };
 const EXTRA = `
-@keyframes avPop { from { opacity: 0; transform: translateY(10px) scale(.985); } to { opacity: 1; transform: none; } }
+@keyframes avUp { from { opacity: 0; transform: translateY(28px); } to { opacity: 1; transform: none; } }
 @keyframes avVeil { from { opacity: 0; } to { opacity: 1; } }
-.av-pop { animation: avPop .32s cubic-bezier(.2,.7,.3,1) both; }
-.av-veil { animation: avVeil .22s ease both; }
+@keyframes avIn { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: none; } }
+.av-sheet { animation: avUp .42s cubic-bezier(.2,.8,.2,1) both; }
+.av-veil { animation: avVeil .25s ease both; }
+.av-fade { animation: avIn .3s cubic-bezier(.2,.7,.2,1) both; }
+.av-press { transition: transform .15s ease, opacity .15s ease; } .av-press:active { transform: scale(.985); opacity: .85; }
+.av-x { scrollbar-width: none; } .av-x::-webkit-scrollbar { display: none; }
+select, input { -webkit-appearance: none; appearance: none; }
+input[type=number]::-webkit-inner-spin-button { -webkit-appearance: none; }
 `;
-const MonoA = ({ size = 22, color = T.ink }) => <svg width={size} height={size} viewBox="0 0 40 40" style={{ flexShrink: 0, display: "block" }}><rect x="2.4" y="2.4" width="35.2" height="35.2" fill="none" stroke={color} strokeWidth="1.3" /><rect x="6.6" y="6.6" width="26.8" height="26.8" fill="none" stroke={color} strokeWidth="0.6" opacity="0.5" /><text x="20" y="29" textAnchor="middle" fontFamily="Cormorant Garamond, serif" fontSize="24" fill={color}>A</text></svg>;
-const Ring = ({ v, size = 42, dark }) => { const c = v >= 95 ? T.gold : v >= 75 ? T.ok : v >= 55 ? T.warn : T.claret; return <div style={{ width: size, height: size, borderRadius: "50%", border: `2px solid ${c}`, display: "flex", alignItems: "center", justifyContent: "center", ...mono, fontSize: size * 0.3, fontWeight: 600, color: dark ? "#FBFAF7" : c, flexShrink: 0 }}>{v}</div>; };
-const Pill = ({ k }) => <span style={{ display: "inline-flex", alignItems: "center", gap: 6, whiteSpace: "nowrap" }}><span style={{ width: 6, height: 6, borderRadius: "50%", background: KIND[k][1], flexShrink: 0 }} /><span style={{ ...sans, fontSize: 9.5, letterSpacing: "0.13em", textTransform: "uppercase", fontWeight: 600, color: KIND[k][1] }}>{KIND[k][0]}</span></span>;
-const Btn = ({ children, onClick, dark, vert, full, disabled, small }) => <button onClick={onClick} disabled={disabled} className="av-press" style={{ ...sans, fontWeight: 600, fontSize: small ? 10 : 11.5, letterSpacing: "0.16em", textTransform: "uppercase", padding: small ? "9px 14px" : "16px 20px", cursor: disabled ? "default" : "pointer", background: vert ? T.gold : dark ? T.ink : "transparent", color: (vert || dark) ? "#FAF5EB" : T.ink, border: `1px solid ${vert ? T.gold : T.ink}`, width: full ? "100%" : undefined, opacity: disabled ? 0.35 : 1, borderRadius: 0 }}>{children}</button>;
-const H = ({ children }) => <div style={{ ...serifU, fontSize: 26, color: T.ink, lineHeight: 1.2, margin: "4px 0 6px" }}>{children}</div>;
-const Lede = ({ children }) => <div style={{ ...sans, fontSize: 12.5, color: T.inkSoft, lineHeight: 1.6, margin: "0 0 20px" }}>{children}</div>;
-const Micro = ({ children, color = T.mute, style }) => <div style={{ ...sans, fontSize: 9.5, letterSpacing: "0.2em", textTransform: "uppercase", color, fontWeight: 600, ...style }}>{children}</div>;
-const Field = ({ label, children }) => <div style={{ marginBottom: 16 }}><Micro style={{ marginBottom: 6 }}>{label}</Micro>{children}</div>;
-const inp = { ...sans, width: "100%", background: "transparent", border: "none", borderBottom: `1px solid ${T.lineDark}`, borderRadius: 0, padding: "8px 0", color: T.ink, fontSize: 15.5, outline: "none", boxSizing: "border-box" };
-const Sel = ({ value, onChange, options }) => <div style={{ position: "relative" }}><select value={value} onChange={(e) => onChange(e.target.value)} style={{ ...inp, paddingRight: 24, cursor: "pointer" }}>{options.map((o) => Array.isArray(o) ? <option key={o[0]} value={o[0]}>{o[1]}</option> : <option key={o} value={o}>{o}</option>)}</select><span style={{ position: "absolute", right: 2, top: 9, color: T.mute, pointerEvents: "none", fontSize: 11 }}>▾</span></div>;
-const Toggle = ({ value, onChange, options }) => <div style={{ display: "flex", flexWrap: "wrap", border: `1px solid ${T.lineDark}` }}>{options.map(([v, l]) => <button key={v} onClick={() => onChange(v)} style={{ ...sans, flex: 1, minWidth: 80, padding: "10px 6px", fontSize: 10, letterSpacing: "0.1em", textTransform: "uppercase", fontWeight: value === v ? 600 : 400, cursor: "pointer", background: value === v ? T.ink : "transparent", color: value === v ? "#FBFAF7" : T.inkSoft, border: "none", borderRadius: 0 }}>{l}</button>)}</div>;
-const Line = ({ children, onClick }) => <div onClick={onClick} style={{ borderTop: `1px solid ${T.line}`, padding: "13px 0", cursor: onClick ? "pointer" : "default" }}>{children}</div>;
-const Frame = ({ hue, label, size = 64 }) => <div style={{ width: size, height: size, background: `linear-gradient(135deg, ${hue}, #111)`, border: `1px solid ${T.lineDark}`, padding: 4, flexShrink: 0, boxSizing: "border-box" }}><div style={{ width: "100%", height: "100%", border: "1px solid rgba(251,250,247,0.35)", display: "flex", alignItems: "center", justifyContent: "center", ...serifU, color: "rgba(251,250,247,0.85)", fontSize: size * 0.34 }}>{label}</div></div>;
-const Doc = ({ titre, sub, sections }) => <div style={{ borderTop: `1px solid ${T.ink}`, padding: "12px 0 6px", marginBottom: 12 }}><div style={{ ...serifU, fontSize: 17 }}>{titre}</div>{sub && <div style={{ ...sans, fontSize: 10.5, color: T.mute, marginTop: 2 }}>{sub}</div>}<div style={{ marginTop: 6 }}>{sections.map((s) => <div key={s} style={{ display: "flex", gap: 9, ...sans, fontSize: 11.5, color: T.inkSoft, padding: "4px 0", lineHeight: 1.45 }}><span style={{ color: T.ok, width: 10 }}>✓</span><span>{s}</span></div>)}</div></div>;
+const shadow = "0 2px 14px rgba(21,20,15,0.06), 0 1px 2px rgba(21,20,15,0.04)";
 
+/* ---------- primitives ---------- */
+const Logo = ({ size = 40 }) => <img src={LOGO} alt="ARTVELCHIV" style={{ width: size, height: "auto", display: "block" }} />;
+const Wordmark = ({ size = 18, color = UI.ink }) => <span style={{ ...serifU, fontSize: size, letterSpacing: "0.28em", color, paddingLeft: "0.1em" }}>ARTVELCHIV</span>;
+const Card = ({ children, style, pad = 18, onClick }) => <div onClick={onClick} className={onClick ? "av-press" : undefined} style={{ background: UI.card, borderRadius: 20, padding: pad, boxShadow: shadow, cursor: onClick ? "pointer" : "default", ...style }}>{children}</div>;
+const Title = ({ children, sub }) => <div style={{ margin: "6px 0 18px" }}><div style={{ ...serifU, fontSize: 32, lineHeight: 1.1, color: UI.ink, letterSpacing: "-0.01em" }}>{children}</div>{sub && <div style={{ ...sans, fontSize: 14, color: UI.mute, marginTop: 8, lineHeight: 1.55 }}>{sub}</div>}</div>;
+const Label = ({ children, style }) => <div style={{ ...sans, fontSize: 11.5, letterSpacing: "0.08em", textTransform: "uppercase", color: UI.mute, fontWeight: 600, ...style }}>{children}</div>;
+const Pill = ({ k, big }) => { const [c, bg] = TONE[k]; return <span style={{ ...sans, display: "inline-flex", alignItems: "center", gap: 6, background: bg, color: c, fontSize: big ? 12 : 11, fontWeight: 600, padding: big ? "6px 11px" : "4px 9px", borderRadius: 999, whiteSpace: "nowrap" }}><span style={{ width: 6, height: 6, borderRadius: "50%", background: c }} />{KIND[k][0]}</span>; };
+const Btn = ({ children, onClick, primary, ghost, full, disabled, small }) => <button onClick={onClick} disabled={disabled} className="av-press" style={{ ...sans, fontWeight: 600, fontSize: small ? 13 : 15, padding: small ? "9px 14px" : "16px 20px", borderRadius: small ? 999 : 16, cursor: disabled ? "default" : "pointer", border: ghost ? `1px solid ${UI.line}` : "none", background: primary ? UI.vert : ghost ? UI.card : UI.field, color: primary ? "#FFFFFF" : UI.ink, width: full ? "100%" : undefined, opacity: disabled ? 0.4 : 1, boxShadow: primary ? "0 6px 18px rgba(29,70,51,0.22)" : "none" }}>{children}</button>;
+const Chevron = ({ open }) => <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke={UI.mute} strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round" style={{ flexShrink: 0, transform: open ? "rotate(90deg)" : "none", transition: "transform .2s" }}><path d="M9 6l6 6-6 6" /></svg>;
+const Row = ({ children, onClick, last, style }) => <div onClick={onClick} className={onClick ? "av-press" : undefined} style={{ display: "flex", alignItems: "center", gap: 12, padding: "13px 0", borderBottom: last ? "none" : `1px solid ${UI.line}`, cursor: onClick ? "pointer" : "default", ...style }}>{children}</div>;
+const Field = ({ label, children }) => <div style={{ marginBottom: 14 }}><Label style={{ marginBottom: 7, paddingLeft: 4 }}>{label}</Label>{children}</div>;
+const inp = { ...sans, width: "100%", background: UI.field, border: "none", borderRadius: 14, padding: "14px 15px", color: UI.ink, fontSize: 16, outline: "none", boxSizing: "border-box" };
+const Sel = ({ value, onChange, options }) => <div style={{ position: "relative" }}><select value={value} onChange={(e) => onChange(e.target.value)} style={{ ...inp, paddingRight: 40, cursor: "pointer" }}>{options.map((o) => Array.isArray(o) ? <option key={o[0]} value={o[0]}>{o[1]}</option> : <option key={o} value={o}>{o}</option>)}</select><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke={UI.mute} strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round" style={{ position: "absolute", right: 15, top: 18, pointerEvents: "none" }}><path d="M6 9l6 6 6-6" /></svg></div>;
+const Seg = ({ value, onChange, options }) => <div style={{ display: "flex", background: "#EAE3D4", borderRadius: 12, padding: 3 }}>{options.map(([v, l]) => <button key={v} onClick={() => onChange(v)} style={{ ...sans, flex: 1, padding: "9px 6px", fontSize: 12.5, fontWeight: value === v ? 600 : 500, cursor: "pointer", background: value === v ? UI.card : "transparent", color: value === v ? UI.ink : UI.inkSoft, border: "none", borderRadius: 10, boxShadow: value === v ? "0 1px 4px rgba(21,20,15,0.12)" : "none", transition: "all .18s" }}>{l}</button>)}</div>;
+const Frame = ({ hue, label, size = 56, radius = 14 }) => <div style={{ width: size, height: size, borderRadius: radius, background: `linear-gradient(145deg, ${hue}, #14140F)`, display: "flex", alignItems: "center", justifyContent: "center", ...serifU, color: "rgba(250,245,235,0.92)", fontSize: size * 0.4, flexShrink: 0 }}>{label}</div>;
+const Ring = ({ v, size = 44 }) => { const c = v >= 95 ? UI.vert : v >= 75 ? UI.ok : v >= 55 ? UI.warn : UI.claret, r = (size - 5) / 2, circ = 2 * Math.PI * r; return <div style={{ position: "relative", width: size, height: size, flexShrink: 0 }}><svg width={size} height={size} style={{ transform: "rotate(-90deg)" }}><circle cx={size / 2} cy={size / 2} r={r} fill="none" stroke={UI.line} strokeWidth="4" /><circle cx={size / 2} cy={size / 2} r={r} fill="none" stroke={c} strokeWidth="4" strokeLinecap="round" strokeDasharray={circ} strokeDashoffset={circ * (1 - v / 100)} style={{ transition: "stroke-dashoffset .6s ease" }} /></svg><div style={{ position: "absolute", inset: 0, display: "flex", alignItems: "center", justifyContent: "center", ...sans, fontSize: size * 0.28, fontWeight: 600, color: c }}>{v}</div></div>; };
+const Doc = ({ titre, sub, sections }) => <Card style={{ marginBottom: 12 }}><div style={{ display: "flex", gap: 12, alignItems: "flex-start" }}><Logo size={22} /><div style={{ flex: 1 }}><div style={{ ...sans, fontSize: 15.5, fontWeight: 600, lineHeight: 1.3 }}>{titre}</div>{sub && <div style={{ ...sans, fontSize: 12.5, color: UI.mute, marginTop: 3 }}>{sub}</div>}</div></div><div style={{ marginTop: 12, borderTop: `1px solid ${UI.line}`, paddingTop: 6 }}>{sections.map((s) => <div key={s} style={{ display: "flex", gap: 10, ...sans, fontSize: 13.5, color: UI.inkSoft, padding: "6px 0", lineHeight: 1.45 }}><span style={{ color: UI.ok, fontWeight: 600 }}>✓</span><span>{s}</span></div>)}</div></Card>;
+const Ico = ({ name, active }) => { const c = active ? UI.vert : UI.mute; const p = { fill: "none", stroke: c, strokeWidth: 1.8, strokeLinecap: "round", strokeLinejoin: "round" };
+  if (name === "dossiers") return <svg width="24" height="24" viewBox="0 0 24 24"><path {...p} d="M4 7a2 2 0 0 1 2-2h4l2 2h6a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V7z" /></svg>;
+  if (name === "structure") return <svg width="24" height="24" viewBox="0 0 24 24"><path {...p} d="M4 20V9l8-5 8 5v11" /><path {...p} d="M9 20v-6h6v6" /></svg>;
+  return <svg width="24" height="24" viewBox="0 0 24 24"><path {...p} d="M5 4h9l5 5v11a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1V5a1 1 0 0 1 1-1z" /><path {...p} d="M14 4v5h5M8 13h8M8 17h5" /></svg>; };
+
+/* ---------- écrans ---------- */
 function Gate({ onOk, code }) {
   const [pin, setPin] = useState(""), [err, setErr] = useState(false);
   const check = () => (pin.trim().toUpperCase() === String(code).toUpperCase() ? onOk() : setErr(true));
   return (
-    <div style={{ minHeight: "100vh", background: "#0E1A14", color: "#F1EBDE", display: "flex", alignItems: "center", justifyContent: "center", padding: 24, ...sans }}>
-      <style>{FONTS}</style>
-      <div style={{ width: "100%", maxWidth: 360, textAlign: "center" }}>
-        <div style={{ display: "inline-flex", padding: 13, border: "1px solid rgba(241,235,222,0.35)", marginBottom: 20 }}><MonoA size={34} color="#F1EBDE" /></div>
-        <div style={{ ...serifU, fontSize: 28, letterSpacing: "0.34em", paddingLeft: "0.34em" }}>ARTVELCHIV</div>
-        <div style={{ fontSize: 9, letterSpacing: "0.3em", textTransform: "uppercase", color: T.vertDim, marginTop: 12, fontWeight: 600 }}>The art transaction standard</div>
-        <div style={{ ...serif, fontSize: 16.5, color: "#C7CFC5", marginTop: 26, lineHeight: 1.45 }}>Accès privé.<br />Établir l'œuvre. Sécuriser la transaction.</div>
-        <input type="password" value={pin} onChange={(e) => { setPin(e.target.value); setErr(false); }} onKeyDown={(e) => e.key === "Enter" && check()} placeholder="Code d'accès" style={{ ...mono, width: "100%", marginTop: 28, background: "transparent", border: "none", borderBottom: `1px solid ${err ? "#C97A6E" : "#5A5751"}`, color: "#FBFAF7", padding: "10px 0", fontSize: 16, textAlign: "center", letterSpacing: "0.2em", outline: "none" }} />
-        {err && <div style={{ fontSize: 10.5, color: "#D08A8A", marginTop: 8 }}>Code incorrect.</div>}
-        <button onClick={check} className="av-press" style={{ ...sans, marginTop: 22, width: "100%", padding: "15px", background: "#FBFAF7", color: T.ink, border: "none", fontSize: 11, letterSpacing: "0.18em", textTransform: "uppercase", fontWeight: 600, cursor: "pointer" }}>Entrer</button>
-        <div style={{ fontSize: 9.5, color: "#6F6C66", marginTop: 26, lineHeight: 1.6 }}>Démonstrateur confidentiel. Données fictives ; règles validées à date par les équipes ARTVELCHIV.</div>
+    <div style={{ minHeight: "100vh", background: UI.bg, display: "flex", alignItems: "center", justifyContent: "center", padding: 24, ...sans }}>
+      <style>{FONTS}{EXTRA}</style>
+      <div className="av-fade" style={{ width: "100%", maxWidth: 380, textAlign: "center" }}>
+        <div style={{ display: "flex", justifyContent: "center" }}><Logo size={112} /></div>
+        <div style={{ marginTop: 18 }}><Wordmark size={24} /></div>
+        <div style={{ fontSize: 11, letterSpacing: "0.24em", textTransform: "uppercase", color: UI.vert, fontWeight: 600, marginTop: 10 }}>The art transaction standard</div>
+        <Card style={{ marginTop: 30, textAlign: "left" }}>
+          <Label style={{ marginBottom: 8, paddingLeft: 4 }}>Accès privé</Label>
+          <input type="password" value={pin} onChange={(e) => { setPin(e.target.value); setErr(false); }} onKeyDown={(e) => e.key === "Enter" && check()} placeholder="Code d'accès" style={{ ...inp, ...mono, letterSpacing: "0.18em", textAlign: "center", border: err ? `1px solid ${UI.claret}` : "1px solid transparent" }} />
+          {err && <div style={{ fontSize: 12.5, color: UI.claret, marginTop: 8, paddingLeft: 4 }}>Code incorrect.</div>}
+          <div style={{ marginTop: 12 }}><Btn primary full onClick={check}>Entrer</Btn></div>
+        </Card>
+        <div style={{ fontSize: 12, color: UI.mute, marginTop: 22, lineHeight: 1.6 }}>Démonstrateur confidentiel. Données fictives ; règles validées à date par les équipes ARTVELCHIV.</div>
       </div>
     </div>
   );
@@ -280,25 +304,25 @@ function Gate({ onOk, code }) {
 
 function Onboarding({ onClose }) {
   const pts = [
-    ["01", "Le Protocole", "Vous décrivez l'œuvre dans une fiche unique : nature, date, valeur, provenance, trajet et mode de vente."],
-    ["02", "L'Intelligence", "Le droit applicable, les formalités de douane et les délais se déduisent automatiquement, puis se rassemblent en un dossier complet, jusqu'au contrat de vente."],
-    ["03", "Le Référentiel", "Chaque règle renvoie au texte officiel qui la fonde, vérifié à date par les équipes ARTVELCHIV. Rien n'est affirmé sans source."],
+    ["Le Protocole", "Vous décrivez l'œuvre dans une fiche unique : nature, date, valeur, provenance, trajet et mode de vente."],
+    ["L'Intelligence", "Le droit applicable, les formalités de douane et les délais se déduisent automatiquement, puis se rassemblent en un dossier complet, jusqu'au contrat de vente."],
+    ["Le Référentiel", "Chaque règle renvoie au texte officiel qui la fonde, vérifié à date par les équipes ARTVELCHIV. Rien n'est affirmé sans source."],
   ];
   return (
-    <div className="av-veil" onClick={onClose} style={{ position: "fixed", inset: 0, zIndex: 60, background: "rgba(14,26,20,0.55)", display: "flex", alignItems: "center", justifyContent: "center", padding: 22 }}>
-      <div className="av-pop" onClick={(e) => e.stopPropagation()} style={{ width: "100%", maxWidth: 392, maxHeight: "92vh", overflowY: "auto", background: T.paper, border: `1px solid ${T.ink}`, boxShadow: "0 26px 64px rgba(14,26,20,0.4)", padding: "30px 26px 26px" }}>
-        <div style={{ display: "flex", justifyContent: "center" }}><div style={{ display: "inline-flex", padding: 11, border: `1px solid ${T.ink}`, background: T.card }}><MonoA size={30} /></div></div>
-        <div style={{ textAlign: "center", ...sans, fontSize: 9.5, letterSpacing: "0.26em", textTransform: "uppercase", color: T.gold, fontWeight: 600, marginTop: 14 }}>The art transaction standard</div>
-        <div style={{ ...serif, fontSize: 20, textAlign: "center", color: T.ink, margin: "16px 0 6px", lineHeight: 1.3 }}>Établir l'œuvre. Sécuriser la transaction.</div>
-        <div style={{ ...sans, fontSize: 12.5, color: T.inkSoft, textAlign: "center", lineHeight: 1.6, margin: "0 auto 20px", maxWidth: 306 }}>ARTVELCHIV conduit chaque vente d'œuvre d'art, de la description au contrat, en trois temps.</div>
-        {pts.map(([n, t, d]) => (
-          <div key={n} style={{ display: "flex", gap: 14, borderTop: `1px solid ${T.line}`, padding: "14px 0" }}>
-            <span style={{ ...mono, fontSize: 11, color: T.gold, fontWeight: 600, width: 20, flexShrink: 0, paddingTop: 3 }}>{n}</span>
-            <div><div style={{ ...serifU, fontSize: 16, color: T.ink }}>{t}</div><div style={{ ...sans, fontSize: 12, color: T.inkSoft, lineHeight: 1.55, marginTop: 3 }}>{d}</div></div>
-          </div>
+    <div className="av-veil" onClick={onClose} style={{ position: "fixed", inset: 0, zIndex: 60, background: "rgba(21,20,15,0.42)", display: "flex", alignItems: "flex-end", justifyContent: "center" }}>
+      <div className="av-sheet" onClick={(e) => e.stopPropagation()} style={{ width: "100%", maxWidth: 480, maxHeight: "90vh", overflowY: "auto", background: UI.bg, borderRadius: "26px 26px 0 0", padding: "12px 22px 26px", boxSizing: "border-box" }}>
+        <div style={{ width: 38, height: 5, borderRadius: 3, background: "#D8D1C2", margin: "0 auto 18px" }} />
+        <div style={{ display: "flex", alignItems: "center", gap: 14 }}><Logo size={54} /><div><Wordmark size={17} /><div style={{ ...sans, fontSize: 10.5, letterSpacing: "0.2em", textTransform: "uppercase", color: UI.vert, fontWeight: 600, marginTop: 4 }}>The art transaction standard</div></div></div>
+        <div style={{ ...serifU, fontSize: 26, lineHeight: 1.15, color: UI.ink, margin: "20px 0 8px" }}>Établir l'œuvre.<br />Sécuriser la transaction.</div>
+        <div style={{ ...sans, fontSize: 14, color: UI.inkSoft, lineHeight: 1.6, marginBottom: 16 }}>ARTVELCHIV conduit chaque vente d'œuvre d'art, de la description au contrat, en trois temps.</div>
+        {pts.map(([t, d], i) => (
+          <Card key={t} pad={16} style={{ marginBottom: 10, display: "flex", gap: 14, alignItems: "flex-start" }}>
+            <div style={{ width: 34, height: 34, borderRadius: 11, background: UI.vertSoft, color: UI.vert, display: "flex", alignItems: "center", justifyContent: "center", ...sans, fontSize: 14, fontWeight: 600, flexShrink: 0 }}>{i + 1}</div>
+            <div><div style={{ ...sans, fontSize: 15.5, fontWeight: 600, color: UI.ink }}>{t}</div><div style={{ ...sans, fontSize: 13.5, color: UI.inkSoft, lineHeight: 1.55, marginTop: 3 }}>{d}</div></div>
+          </Card>
         ))}
-        <div style={{ marginTop: 20 }}><Btn vert full onClick={onClose}>Commencer</Btn></div>
-        <div style={{ ...sans, fontSize: 10, color: T.mute, textAlign: "center", marginTop: 14, lineHeight: 1.5 }}>Démonstrateur — données fictives ; règles validées à date par les équipes ARTVELCHIV.</div>
+        <div style={{ marginTop: 16 }}><Btn primary full onClick={onClose}>Commencer</Btn></div>
+        <div style={{ ...sans, fontSize: 11.5, color: UI.mute, textAlign: "center", marginTop: 14, lineHeight: 1.5 }}>Démonstrateur — données fictives ; règles validées à date par les équipes ARTVELCHIV.</div>
       </div>
     </div>
   );
@@ -306,8 +330,8 @@ function Onboarding({ onClose }) {
 
 export default function Artvelchiv({ pin = DEFAULT_PIN, locked = true }) {
   const [gate, setGate] = useState(locked);
-  const [intro, setIntro] = useState(() => { try { return typeof localStorage !== "undefined" && !localStorage.getItem("av_intro_v2"); } catch (e) { return true; } });
-  const closeIntro = () => { try { localStorage.setItem("av_intro_v2", "1"); } catch (e) {} setIntro(false); };
+  const [intro, setIntro] = useState(() => { try { return typeof localStorage !== "undefined" && !localStorage.getItem("av_intro_v3"); } catch (e) { return true; } });
+  const closeIntro = () => { try { localStorage.setItem("av_intro_v3", "1"); } catch (e) {} setIntro(false); };
   const [structure, setStructure] = useState("galerie");
   const [tab, setTab] = useState("dossiers");
   const [screen, setScreen] = useState("home");
@@ -324,137 +348,185 @@ export default function Artvelchiv({ pin = DEFAULT_PIN, locked = true }) {
   const nJ = q.pieces.filter((p) => joint[p.titre]).length, nD = Object.keys(decl).length;
   const indice = Math.round((nJ / Math.max(1, q.pieces.length)) * 70 + (nD / DECL_Q.length) * 30);
   const STEPS = ["Décrire", "Règles", "Douane", "Preuves", "Clearance", "Autorités", "Acheteur", "Contrat", "Clôture"];
-  const openRecord = (d) => { setO(d); setJoint({}); setDecl({}); setStep(0); setOpen(null); setScreen("record"); };
+  const openRecord = (d) => { setO(d); setJoint({}); setDecl({}); setStep(0); setOpen(null); setScreen("record"); window.scrollTo(0, 0); };
   const [sLabel, sList] = STRUCT[structure], sd = structDone[structure] || {}, sOk = sList.filter((_, i) => sd[i] !== false).length;
   const groups = [...new Set(q.pieces.map((p) => p.group))];
   const GROUPS = [["Statut de l'objet", ["legal", "cultural"]], ["Circulation", ["export", "import"]], ["Douane et fiscalité", ["customs", "tax"]], ["Conformité et vente", ["aml", "sanctions", "species", "consumer"]]];
   if (gate) return <Gate code={pin} onOk={() => setGate(false)} />;
 
+  const Section = ({ title, children, style }) => <div style={{ marginTop: 22, ...style }}>{title && <Label style={{ marginBottom: 8, paddingLeft: 4 }}>{title}</Label>}{children}</div>;
+  const RuleRow = ({ r, last }) => { const isOpen = open === r.titre; return <div style={{ borderBottom: last ? "none" : `1px solid ${UI.line}` }}><Row onClick={() => setOpen(isOpen ? null : r.titre)} last><span style={{ ...sans, flex: 1, fontSize: 14.5, fontWeight: 500, lineHeight: 1.35 }}>{r.titre}</span><Pill k={r.kind} /><Chevron open={isOpen} /></Row>{isOpen && r.detail && <div className="av-fade" style={{ padding: "0 0 14px" }}><div style={{ ...sans, fontSize: 13.5, color: UI.inkSoft, lineHeight: 1.6 }}>{r.detail}</div><div style={{ ...mono, fontSize: 10.5, color: UI.vert, marginTop: 8, background: UI.vertSoft, display: "inline-block", padding: "4px 9px", borderRadius: 8 }}>{r.base}</div></div>}</div>; };
+
   return (
-    <div style={{ minHeight: "100vh", background: "#E4DBC9", ...sans, color: T.ink }}>
+    <div style={{ minHeight: "100vh", background: "#E6DFCF", ...sans, color: UI.ink }}>
       <style>{FONTS}{EXTRA}</style>
       {intro && screen === "home" && <Onboarding onClose={closeIntro} />}
-      <div style={{ maxWidth: 480, margin: "0 auto", minHeight: "100vh", background: T.paper, display: "flex", flexDirection: "column", borderTop: `4px solid ${T.gold}`, boxShadow: "0 0 44px rgba(20,20,15,0.08)" }}>
-        <header style={{ position: "sticky", top: 0, zIndex: 20, background: T.paper, borderBottom: `1px solid ${T.ink}` }}>
-          {screen === "home" ? (
-            <div style={{ padding: "16px 22px 0" }}>
-              <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}><div style={{ display: "flex", alignItems: "center", gap: 11 }}><MonoA size={24} /><span style={{ ...serifU, fontSize: 21, letterSpacing: "0.3em", paddingLeft: "0.15em" }}>ARTVELCHIV</span></div><button onClick={() => setIntro(true)} className="av-press" aria-label="Aide" style={{ ...sans, background: "none", border: `1px solid ${T.lineDark}`, color: T.inkSoft, width: 23, height: 23, borderRadius: "50%", cursor: "pointer", fontSize: 11, fontWeight: 600, lineHeight: 1, display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0 }}>?</button></div>
-              <div style={{ display: "flex", gap: 26, marginTop: 16 }}>{[["dossiers", "Dossiers"], ["structure", "Votre structure"], ["sources", "Référentiel"]].map(([k, l]) => <button key={k} onClick={() => setTab(k)} style={{ ...sans, background: "none", border: "none", cursor: "pointer", padding: "0 0 11px", fontSize: 11, letterSpacing: "0.13em", textTransform: "uppercase", color: tab === k ? T.ink : T.mute, fontWeight: tab === k ? 600 : 400, borderBottom: `2.5px solid ${tab === k ? T.gold : "transparent"}`, marginBottom: -1 }}>{l}</button>)}</div>
-            </div>
-          ) : (
-            <div style={{ padding: "12px 22px 0" }}>
-              <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between" }}><button onClick={() => setScreen("home")} style={{ ...sans, background: "none", border: "none", cursor: "pointer", fontSize: 10, letterSpacing: "0.16em", textTransform: "uppercase", color: T.inkSoft, padding: 0 }}>← Dossiers</button><span style={{ ...mono, fontSize: 10, color: T.mute }}>{o.id}</span><Pill k={q.overall} /></div>
-              <div style={{ display: "flex", alignItems: "center", gap: 12, marginTop: 10 }}><Frame hue={o.hue} label={(o.nom || "N")[0]} size={40} /><div style={{ flex: 1, minWidth: 0 }}><div style={{ ...serifU, fontSize: 17, whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>{o.nom}</div><div style={{ fontSize: 10, color: T.mute, marginTop: 1 }}>{q.actions} obligations{q.bloquantes ? ` · ${q.bloquantes} bloquante${q.bloquantes > 1 ? "s" : ""}` : ""} · {q.deadlines.length} échéances</div></div><Ring v={indice} size={36} /></div>
-              <div className="av-x" style={{ display: "flex", gap: 18, overflowX: "auto", marginTop: 12 }}>{STEPS.map((s, i) => <button key={s} onClick={() => setStep(i)} style={{ ...sans, background: "none", border: "none", cursor: "pointer", padding: "0 0 9px", flexShrink: 0, fontSize: 9.5, letterSpacing: "0.14em", textTransform: "uppercase", color: i === step ? T.ink : i < step ? T.gold : T.mute, fontWeight: i === step ? 600 : 400, borderBottom: `2.5px solid ${i === step ? T.gold : "transparent"}`, marginBottom: -1 }}>{s}</button>)}</div>
-            </div>
-          )}
-        </header>
+      <div style={{ maxWidth: 480, margin: "0 auto", minHeight: "100vh", background: UI.bg, display: "flex", flexDirection: "column", position: "relative" }}>
 
-        <main style={{ flex: 1, padding: "22px 22px 110px" }}>
-          {screen === "home" && tab === "dossiers" && (
-            <div className="av-fade">
-              <div style={{ textAlign: "center", padding: "6px 0 24px", borderBottom: `1px solid ${T.line}` }}>
-                <div style={{ display: "inline-flex", padding: 15, border: `1px solid ${T.ink}`, background: T.card, boxShadow: "0 6px 22px rgba(20,20,15,0.07)" }}><MonoA size={44} /></div>
-                <div style={{ ...sans, fontSize: 10, letterSpacing: "0.26em", textTransform: "uppercase", color: T.gold, fontWeight: 600, marginTop: 16 }}>The art transaction standard</div>
-                <div style={{ ...serif, fontSize: 21, color: T.ink, marginTop: 14, lineHeight: 1.35 }}>Établir l'œuvre.<br />Sécuriser la transaction.</div>
-                <div style={{ ...sans, fontSize: 12.5, color: T.inkSoft, lineHeight: 1.62, maxWidth: 322, margin: "14px auto 20px" }}>Vous décrivez l'œuvre ; ARTVELCHIV déduit le droit applicable, calcule les formalités de douane et réunit le dossier complet, jusqu'au contrat de vente.</div>
-                <div style={{ maxWidth: 290, margin: "0 auto" }}><Btn vert full onClick={() => openRecord({ ...NEW })}>Ouvrir un nouveau dossier</Btn></div>
+        {/* ===== ACCUEIL ===== */}
+        {screen === "home" && (
+          <main style={{ flex: 1, padding: "18px 20px 110px" }}>
+            <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: 10 }}>
+              <div style={{ display: "flex", alignItems: "center", gap: 10 }}><Logo size={34} /><Wordmark size={15} /></div>
+              <button onClick={() => setIntro(true)} className="av-press" aria-label="Aide" style={{ ...sans, width: 32, height: 32, borderRadius: "50%", border: "none", background: UI.card, color: UI.inkSoft, fontSize: 14, fontWeight: 600, cursor: "pointer", boxShadow: shadow }}>?</button>
+            </div>
+
+            {tab === "dossiers" && (
+              <div className="av-fade">
+                <Title sub="Vous décrivez l'œuvre ; ARTVELCHIV déduit le droit applicable, calcule les formalités de douane et réunit le dossier complet, jusqu'au contrat de vente.">Dossiers</Title>
+                <Card onClick={() => openRecord({ ...NEW })} style={{ background: UI.vert, color: "#FFFFFF", display: "flex", alignItems: "center", gap: 14, boxShadow: "0 10px 26px rgba(29,70,51,0.28)" }}>
+                  <div style={{ width: 44, height: 44, borderRadius: 14, background: "rgba(255,255,255,0.14)", display: "flex", alignItems: "center", justifyContent: "center", fontSize: 26, fontWeight: 300, lineHeight: 1 }}>+</div>
+                  <div style={{ flex: 1 }}><div style={{ fontSize: 16, fontWeight: 600 }}>Ouvrir un nouveau dossier</div><div style={{ fontSize: 12.5, opacity: 0.8, marginTop: 2 }}>Deux minutes pour décrire l'œuvre</div></div>
+                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#FFFFFF" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round" style={{ opacity: 0.8 }}><path d="M9 6l6 6-6 6" /></svg>
+                </Card>
+                <Section title="Dossiers en cours">
+                  <Card pad={0} style={{ padding: "2px 16px" }}>
+                    {RECORDS.map((d, i) => { const a = analyse(d, structure); return (
+                      <Row key={d.id} onClick={() => openRecord(d)} last={i === RECORDS.length - 1}>
+                        <Frame hue={d.hue} label={String(i + 1)} size={48} radius={13} />
+                        <div style={{ flex: 1, minWidth: 0 }}><div style={{ fontSize: 15, fontWeight: 600, lineHeight: 1.25 }}>{d.nom}</div><div style={{ fontSize: 12.5, color: UI.mute, marginTop: 3, whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>{d.lieu} → {d.dest} · {d.valeur.toLocaleString("fr-FR")} €</div></div>
+                        <Pill k={a.overall} />
+                        <Chevron />
+                      </Row>); })}
+                  </Card>
+                </Section>
+                <div style={{ fontSize: 11.5, color: UI.mute, lineHeight: 1.55, marginTop: 18, textAlign: "center" }}>Démonstrateur — données fictives ; le Référentiel ARTVELCHIV (règles, seuils, délais) est validé à date par les équipes ARTVELCHIV.</div>
               </div>
-              <Micro color={T.ink} style={{ margin: "24px 0 8px" }}>Dossiers en cours</Micro>
-              {RECORDS.map((d, i) => { const a = analyse(d, structure); return (
-                <div key={d.id} onClick={() => openRecord(d)} className="av-press" style={{ borderTop: `1px solid ${T.line}`, padding: "14px 0", cursor: "pointer", display: "flex", gap: 14, alignItems: "center" }}>
-                  <Frame hue={d.hue} label={String(i + 1)} size={56} />
-                  <div style={{ flex: 1, minWidth: 0 }}><div style={{ ...serifU, fontSize: 17, lineHeight: 1.2 }}>{d.nom}</div><div style={{ fontSize: 10.5, color: T.mute, marginTop: 3, whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>{d.titre}</div><div style={{ fontSize: 10.5, color: T.inkSoft, marginTop: 4 }}>{d.lieu} → {d.dest} · <span style={mono}>{d.valeur.toLocaleString("fr-FR")} €</span></div></div>
-                  <Pill k={a.overall} />
-                </div>); })}
-              <div style={{ fontSize: 10, color: T.mute, lineHeight: 1.55, marginTop: 18, borderTop: `1px solid ${T.line}`, paddingTop: 12 }}>Démonstrateur — données fictives ; le Référentiel ARTVELCHIV (règles, seuils, délais) est validé à date par les équipes ARTVELCHIV.</div>
-            </div>
-          )}
-          {screen === "home" && tab === "structure" && (
-            <div className="av-fade">
-              <Field label="Structure"><Toggle value={structure} onChange={setStructure} options={[["galerie", "Galerie"], ["marchand", "Marchand"], ["maison", "Maison"], ["conseiller", "Conseil"]]} /></Field>
-              <div style={{ display: "flex", justifyContent: "space-between", alignItems: "baseline", margin: "22px 0 6px" }}><H>{sLabel}</H><span style={{ ...mono, fontSize: 12, color: sOk === sList.length ? T.ok : T.warn, fontWeight: 600 }}>{sOk}/{sList.length}</span></div>
-              <Lede>Ce qui s'impose en permanence, indépendamment de chaque œuvre.</Lede>
-              {sList.map(([t, d, base], i) => { const done = sd[i] !== false, isOpen = open === `s${i}`; return <Line key={t} onClick={() => setOpen(isOpen ? null : `s${i}`)}><div style={{ display: "flex", alignItems: "center", gap: 10 }}><span style={{ color: done ? T.ok : T.warn, fontSize: 11, width: 12 }}>{done ? "✓" : "▲"}</span><span style={{ flex: 1, fontSize: 12.5, fontWeight: 500 }}>{t}</span><span style={{ color: T.mute }}>{isOpen ? "–" : "+"}</span></div>{isOpen && <div className="av-fade" style={{ paddingLeft: 22, marginTop: 8 }}><div style={{ fontSize: 11.5, color: T.inkSoft, lineHeight: 1.55 }}>{d}</div><div style={{ ...mono, fontSize: 9, color: T.mute, margin: "5px 0 9px" }}>{base}</div><Btn small onClick={(e) => { e.stopPropagation(); setStructDone((x) => ({ ...x, [structure]: { ...(x[structure] || {}), [i]: !done } })); }}>{done ? "Marquer à revoir" : "Marquer en place"}</Btn></div>}</Line>; })}
-            </div>
-          )}
-          {screen === "home" && tab === "sources" && <div className="av-fade"><H>Le Référentiel</H><Lede>Chaque règle renvoie à un texte. Vérifié à la source le 3 septembre 2026 — annexe 1 R. 111-1 (décret 2020-1718), annexe 2019/880, annexe 116/2009, OGEL britannique ; 241 920 combinaisons testées sans erreur.</Lede>{SOURCES.map(([j, items]) => <div key={j} style={{ marginBottom: 18 }}><Micro color={T.ink} style={{ marginBottom: 4 }}>{j}</Micro>{items.map((t) => <div key={t} style={{ borderTop: `1px solid ${T.line}`, padding: "8px 0", fontSize: 11.5, color: T.inkSoft, lineHeight: 1.45 }}>{t}</div>)}</div>)}</div>}
+            )}
 
-          {screen === "record" && step === 0 && (
-            <div className="av-fade" key="s0">
-              <H>L'œuvre</H><Lede>Décrivez-la ; l'Intelligence ARTVELCHIV déduit le droit à chaque champ.</Lede>
-              <Field label="Désignation"><input value={o.titre} onChange={(e) => set("titre")(e.target.value)} placeholder="Artiste, titre, technique, date" style={inp} /></Field>
-              <Field label="Nature"><Sel value={o.cat} onChange={set("cat")} options={CATS} /></Field>
-              <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 16 }}><Field label="Année (négatif : av. J.-C.)"><input type="number" inputMode="numeric" value={o.annee} onChange={(e) => set("annee")(+e.target.value)} style={{ ...inp, ...mono }} /></Field><Field label="Prix ou estimation (€)"><input type="number" inputMode="numeric" value={o.valeur} onChange={(e) => set("valeur")(+e.target.value)} style={{ ...inp, ...mono }} /></Field></div>
-              <Field label="Artiste"><Sel value={o.artiste} onChange={set("artiste")} options={ARTISTE} /></Field>
-              {TECHNIQUES[o.cat] && <Field label="Technique"><Sel value={o.technique || TECHNIQUES[o.cat][0][0]} onChange={set("technique")} options={TECHNIQUES[o.cat]} /></Field>}
-              {o.cat === "sculpture" && <Field label="Tirage (vide pour une pièce unique)"><input value={o.tirage || ""} onChange={(e) => set("tirage")(e.target.value)} placeholder="ex. 7/8, fonte posthume" style={inp} /></Field>}
-              <Field label="Pays de création ou de découverte"><Sel value={o.creation} onChange={set("creation")} options={PAYS} /></Field>
-              <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 16 }}><Field label="Lieu actuel"><Sel value={o.lieu} onChange={set("lieu")} options={PAYS} /></Field><Field label="Destination"><Sel value={o.dest} onChange={set("dest")} options={PAYS} /></Field></div>
-              <Field label="Statut douanier"><Sel value={o.douane} onChange={set("douane")} options={DOUANE} /></Field>
-              {(o.douane === "at" || o.douane === "ata") && <Field label={o.douane === "at" ? "Date de placement sous admission temporaire" : "Date d'émission du carnet ATA"}><input type="date" value={o.entree} onChange={(e) => set("entree")(e.target.value)} style={{ ...inp, ...mono }} /></Field>}
-              <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 16 }}><Field label="Matériau principal"><Sel value={o.materiau || "mixte"} onChange={set("materiau")} options={MATERIAUX} /></Field><Field label="Type de provenance"><Sel value={o.prov || "collection"} onChange={set("prov")} options={PROVTYPE} /></Field></div>
-              <Field label="Origine"><Toggle value={o.source} onChange={set("source")} options={[["premier", "De l'artiste"], ["second", "Second marché"]]} /></Field>
-              <Field label="Mode de vente"><Toggle value={o.mode} onChange={set("mode")} options={[["prive", "Gré à gré"], ["encheres", "Enchères"], ["distance", "À distance"]]} /></Field>
-              <Field label="Acheteur"><Toggle value={o.acheteur} onChange={set("acheteur")} options={[["particulier", "Particulier"], ["pro", "Professionnel"], ["public", "Musée"]]} /></Field>
-              <Field label="Espèces protégées (ivoire, écaille, bois précieux, corail)"><Toggle value={o.protege ? "oui" : "non"} onChange={(v) => set("protege")(v === "oui")} options={[["non", "Non"], ["oui", "Oui"]]} /></Field>
-              {o.cat === "religieux" && <Field label="Objet liturgique ou issu d'un monument ?"><Toggle value={o.liturgique ? "oui" : "non"} onChange={(v) => set("liturgique")(v === "oui")} options={[["non", "Non"], ["oui", "Oui"]]} /></Field>}
-            </div>
-          )}
+            {tab === "structure" && (
+              <div className="av-fade">
+                <Title sub="Ce qui s'impose en permanence à votre structure, indépendamment de chaque œuvre.">Votre structure</Title>
+                <Seg value={structure} onChange={setStructure} options={[["galerie", "Galerie"], ["marchand", "Marchand"], ["maison", "Maison"], ["conseiller", "Conseil"]]} />
+                <Card style={{ marginTop: 16, display: "flex", alignItems: "center", gap: 14 }}>
+                  <Ring v={Math.round((sOk / sList.length) * 100)} size={52} />
+                  <div style={{ flex: 1 }}><div style={{ fontSize: 16, fontWeight: 600 }}>{sLabel}</div><div style={{ fontSize: 13, color: UI.mute, marginTop: 2 }}>{sOk} obligation{sOk > 1 ? "s" : ""} en place sur {sList.length}</div></div>
+                </Card>
+                <Section title="Obligations permanentes">
+                  <Card pad={0} style={{ padding: "2px 16px" }}>
+                    {sList.map(([t, d, base], i) => { const done = sd[i] !== false, isOpen = open === `s${i}`; return <div key={t} style={{ borderBottom: i === sList.length - 1 ? "none" : `1px solid ${UI.line}` }}><Row onClick={() => setOpen(isOpen ? null : `s${i}`)} last><span style={{ width: 22, height: 22, borderRadius: "50%", background: done ? UI.okSoft : UI.warnSoft, color: done ? UI.ok : UI.warn, display: "flex", alignItems: "center", justifyContent: "center", fontSize: 12, fontWeight: 700, flexShrink: 0 }}>{done ? "✓" : "!"}</span><span style={{ flex: 1, fontSize: 14.5, fontWeight: 500, lineHeight: 1.35 }}>{t}</span><Chevron open={isOpen} /></Row>{isOpen && <div className="av-fade" style={{ padding: "0 0 14px 34px" }}><div style={{ fontSize: 13.5, color: UI.inkSoft, lineHeight: 1.6 }}>{d}</div><div style={{ ...mono, fontSize: 10.5, color: UI.vert, margin: "8px 0 10px", background: UI.vertSoft, display: "inline-block", padding: "4px 9px", borderRadius: 8 }}>{base}</div><div><Btn small ghost onClick={(e) => { e.stopPropagation(); setStructDone((x) => ({ ...x, [structure]: { ...(x[structure] || {}), [i]: !done } })); }}>{done ? "Marquer à revoir" : "Marquer en place"}</Btn></div></div>}</div>; })}
+                  </Card>
+                </Section>
+              </div>
+            )}
 
-          {screen === "record" && step === 1 && (
-            <div className="av-fade" key="s1">
-              <H>{q.bloquantes ? `${q.bloquantes} obstacle${q.bloquantes > 1 ? "s" : ""}, ${q.actions} obligation${q.actions > 1 ? "s" : ""}` : q.actions ? `${q.actions} obligation${q.actions > 1 ? "s" : ""}` : "Aucune démarche particulière"}</H>
-              <Lede>{q.age > 0 ? `${q.age} ans` : "Antiquité"} · {q.tiers ? "bien culturel tiers" : "bien de l'Union"} · {o.lieu === o.dest ? "sans frontière" : `${o.lieu} → ${o.dest}`}. Ce que la loi impose — et ce qu'elle interdit.</Lede>
-              {GROUPS.map(([g, doms]) => { const rs = q.rules.filter((r) => doms.includes(r.domain)).sort((a, b) => ORDER[a.kind] - ORDER[b.kind]); if (!rs.length) return null; return <div key={g} style={{ marginTop: 18 }}><Micro color={T.ink} style={{ marginBottom: 2 }}>{g}</Micro>{rs.map((r) => { const isOpen = open === r.titre; return <Line key={r.titre} onClick={() => setOpen(isOpen ? null : r.titre)}><div style={{ display: "flex", gap: 12, alignItems: "baseline" }}><span style={{ flex: 1, fontSize: 12.5, fontWeight: 500, lineHeight: 1.4 }}>{r.titre}</span><Pill k={r.kind} /></div>{isOpen && r.detail && <div className="av-fade" style={{ marginTop: 8 }}><div style={{ fontSize: 12, color: T.inkSoft, lineHeight: 1.55 }}>{r.detail}</div><div style={{ ...mono, fontSize: 9, color: T.mute, marginTop: 5 }}>{r.base}</div></div>}</Line>; })}</div>; })}
-            </div>
-          )}
+            {tab === "sources" && (
+              <div className="av-fade">
+                <Title sub="Chaque règle renvoie à un texte. Vérifié à la source le 3 septembre 2026 ; 241 920 combinaisons testées sans erreur.">Référentiel</Title>
+                {SOURCES.map(([j, items]) => <Section key={j} title={j} style={{ marginTop: 16 }}><Card pad={0} style={{ padding: "2px 16px" }}>{items.map((t, i) => <Row key={t} last={i === items.length - 1}><span style={{ fontSize: 13.5, color: UI.inkSoft, lineHeight: 1.5 }}>{t}</span></Row>)}</Card></Section>)}
+              </div>
+            )}
+          </main>
+        )}
 
-          {screen === "record" && step === 2 && (
-            <div className="av-fade" key="s2">
-              <H>Douane et échéances</H><Lede>{q.deadlines.some((d) => d.kind === "blocked") ? "Une échéance douanière est critique : elle commande le calendrier de la vente." : "Régime, TVA à l'arrivée, et chaque délai à tenir."}</Lede>
-              {q.rules.filter((r) => r.domain === "customs").map((r) => <div key={r.titre} style={{ borderTop: `1px solid ${T.ink}`, padding: "12px 0" }}><div style={{ display: "flex", gap: 12, alignItems: "baseline" }}><span style={{ flex: 1, ...serifU, fontSize: 17 }}>{r.titre}</span><Pill k={r.kind} /></div><div style={{ fontSize: 12, color: T.inkSoft, lineHeight: 1.55, marginTop: 6 }}>{r.detail}</div><div style={{ ...mono, fontSize: 9, color: T.mute, marginTop: 5 }}>{r.base}</div></div>)}
-              <Micro color={T.ink} style={{ marginTop: 24, marginBottom: 2 }}>Calendrier</Micro>
-              {q.deadlines.map((d) => <div key={d.titre} style={{ borderTop: `1px solid ${T.line}`, padding: "11px 0", display: "flex", gap: 14 }}><div style={{ ...mono, fontSize: 10.5, color: KIND[d.kind][1], fontWeight: 600, width: 92, flexShrink: 0, lineHeight: 1.4 }}>{fmt(d.date)}</div><div><div style={{ fontSize: 12.5, fontWeight: 500 }}>{d.titre}</div><div style={{ fontSize: 11, color: T.inkSoft, lineHeight: 1.5, marginTop: 2 }}>{d.detail}</div></div></div>)}
-              <div style={{ borderTop: `1px solid ${T.line}`, padding: "12px 0", fontSize: 11, color: T.mute, lineHeight: 1.55 }}>Points d'attention : adresse déclarée sous admission temporaire, apurement des volets ATA, valeur déclarée cohérente avec le prix, incoterm et risques, assurance clou à clou, retour en franchise trois ans.</div>
-            </div>
-          )}
+        {/* ===== DOSSIER ===== */}
+        {screen === "record" && (
+          <>
+            <header style={{ position: "sticky", top: 0, zIndex: 20, background: "rgba(244,239,229,0.92)", backdropFilter: "blur(14px)", WebkitBackdropFilter: "blur(14px)", borderBottom: `1px solid ${UI.line}` }}>
+              <div style={{ padding: "12px 20px 0" }}>
+                <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between" }}>
+                  <button onClick={() => setScreen("home")} className="av-press" style={{ ...sans, display: "flex", alignItems: "center", gap: 4, background: "none", border: "none", cursor: "pointer", fontSize: 15, color: UI.vert, fontWeight: 500, padding: 0 }}><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke={UI.vert} strokeWidth="2.4" strokeLinecap="round" strokeLinejoin="round"><path d="M15 6l-6 6 6 6" /></svg>Dossiers</button>
+                  <span style={{ ...mono, fontSize: 11.5, color: UI.mute }}>{o.id}</span>
+                  <Pill k={q.overall} />
+                </div>
+                <div style={{ display: "flex", alignItems: "center", gap: 12, marginTop: 12 }}><Frame hue={o.hue} label={(o.nom || "N")[0]} size={42} radius={12} /><div style={{ flex: 1, minWidth: 0 }}><div style={{ fontSize: 16, fontWeight: 600, whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>{o.nom}</div><div style={{ fontSize: 12, color: UI.mute, marginTop: 1 }}>{q.actions} obligations{q.bloquantes ? ` · ${q.bloquantes} bloquante${q.bloquantes > 1 ? "s" : ""}` : ""} · {q.deadlines.length} échéances</div></div><Ring v={indice} size={40} /></div>
+                <div className="av-x" style={{ display: "flex", gap: 8, overflowX: "auto", padding: "12px 0 12px" }}>{STEPS.map((s, i) => <button key={s} onClick={() => { setOpen(null); setStep(i); }} className="av-press" style={{ ...sans, flexShrink: 0, border: "none", cursor: "pointer", padding: "8px 13px", borderRadius: 999, fontSize: 12.5, fontWeight: 600, background: i === step ? UI.vert : i < step ? UI.vertSoft : UI.card, color: i === step ? "#FFFFFF" : i < step ? UI.vert : UI.mute, boxShadow: i === step ? "0 4px 12px rgba(29,70,51,0.25)" : "none" }}>{i < step ? "✓ " : ""}{s}</button>)}</div>
+              </div>
+            </header>
 
-          {screen === "record" && step === 3 && (
-            <div className="av-fade" key="s3">
-              <H>Preuves et déclarations</H><Lede>Seules les pièces exigées par ce régime ; vous les joignez, ARTVELCHIV les indexe et les scelle.</Lede>
-              {groups.map((g) => <div key={g} style={{ marginBottom: 14 }}><Micro color={T.ink} style={{ marginBottom: 2 }}>{g}</Micro>{q.pieces.filter((p) => p.group === g).map((p) => { const d = !!joint[p.titre]; return <div key={p.titre} style={{ borderTop: `1px solid ${T.line}`, padding: "11px 0", display: "flex", gap: 12, alignItems: "center" }}><div style={{ flex: 1 }}><div style={{ fontSize: 12.5, fontWeight: 500 }}>{p.titre}</div><div style={{ fontSize: 10.5, color: d ? T.ok : T.mute, marginTop: 2 }}>{d ? "Jointe · horodatée · scellée" : p.why}</div></div><Btn small dark={!d} onClick={() => setJoint((j) => ({ ...j, [p.titre]: !j[p.titre] }))}>{d ? "✓" : "Joindre"}</Btn></div>; })}</div>)}
-              <Micro color={T.ink} style={{ margin: "22px 0 8px" }}>Le vendeur déclare</Micro>
-              {o.artiste !== "anonyme" && <Field label="Dénomination de l'attribution — décret du 3 mars 1981"><Sel value={vocab} onChange={setVocab} options={VOCAB} /></Field>}
-              {DECL_Q.map((qn, i) => <div key={qn} style={{ borderTop: `1px solid ${T.line}`, padding: "11px 0" }}><div style={{ fontSize: 12.5, marginBottom: 8, lineHeight: 1.45 }}>{qn}</div><Toggle value={decl[i] || ""} onChange={(v) => setDecl((d) => ({ ...d, [i]: v }))} options={[["Oui", "Oui"], ["Non", "Non"], ["NSP", "Ne sais pas"]]} /></div>)}
-              <div style={{ borderTop: `1px solid ${T.ink}`, padding: "12px 0", fontSize: 11.5, color: T.inkSoft, lineHeight: 1.55 }}>« Je certifie la sincérité de mes déclarations et l'exhaustivité des pièces versées. » — signature sous identité vérifiée, scellé SHA-256.</div>
-            </div>
-          )}
+            <main style={{ flex: 1, padding: "18px 20px 120px" }}>
+              {step === 0 && (
+                <div className="av-fade" key="s0">
+                  <Title sub="Décrivez-la ; l'Intelligence ARTVELCHIV déduit le droit à chaque champ.">L'œuvre</Title>
+                  <Card><Field label="Désignation"><input value={o.titre} onChange={(e) => set("titre")(e.target.value)} placeholder="Artiste, titre, technique, date" style={inp} /></Field>
+                    <Field label="Nature"><Sel value={o.cat} onChange={set("cat")} options={CATS} /></Field>
+                    <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 12 }}><Field label="Année (négatif : av. J.-C.)"><input type="number" inputMode="numeric" value={o.annee} onChange={(e) => set("annee")(+e.target.value)} style={{ ...inp, ...mono }} /></Field><Field label="Prix ou estimation (€)"><input type="number" inputMode="numeric" value={o.valeur} onChange={(e) => set("valeur")(+e.target.value)} style={{ ...inp, ...mono }} /></Field></div>
+                    <Field label="Artiste"><Sel value={o.artiste} onChange={set("artiste")} options={ARTISTE} /></Field>
+                    {TECHNIQUES[o.cat] && <Field label="Technique"><Sel value={o.technique || TECHNIQUES[o.cat][0][0]} onChange={set("technique")} options={TECHNIQUES[o.cat]} /></Field>}
+                    {o.cat === "sculpture" && <Field label="Tirage (vide pour une pièce unique)"><input value={o.tirage || ""} onChange={(e) => set("tirage")(e.target.value)} placeholder="ex. 7/8, fonte posthume" style={inp} /></Field>}
+                  </Card>
+                  <Section title="Trajet et douane"><Card>
+                    <Field label="Pays de création ou de découverte"><Sel value={o.creation} onChange={set("creation")} options={PAYS} /></Field>
+                    <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 12 }}><Field label="Lieu actuel"><Sel value={o.lieu} onChange={set("lieu")} options={PAYS} /></Field><Field label="Destination"><Sel value={o.dest} onChange={set("dest")} options={PAYS} /></Field></div>
+                    <Field label="Statut douanier"><Sel value={o.douane} onChange={set("douane")} options={DOUANE} /></Field>
+                    {(o.douane === "at" || o.douane === "ata") && <Field label={o.douane === "at" ? "Date de placement sous admission temporaire" : "Date d'émission du carnet ATA"}><input type="date" value={o.entree} onChange={(e) => set("entree")(e.target.value)} style={{ ...inp, ...mono }} /></Field>}
+                    <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 12 }}><Field label="Matériau principal"><Sel value={o.materiau || "mixte"} onChange={set("materiau")} options={MATERIAUX} /></Field><Field label="Type de provenance"><Sel value={o.prov || "collection"} onChange={set("prov")} options={PROVTYPE} /></Field></div>
+                  </Card></Section>
+                  <Section title="Vente"><Card>
+                    <Field label="Origine"><Seg value={o.source} onChange={set("source")} options={[["premier", "De l'artiste"], ["second", "Second marché"]]} /></Field>
+                    <Field label="Mode de vente"><Seg value={o.mode} onChange={set("mode")} options={[["prive", "Gré à gré"], ["encheres", "Enchères"], ["distance", "À distance"]]} /></Field>
+                    <Field label="Acheteur"><Seg value={o.acheteur} onChange={set("acheteur")} options={[["particulier", "Particulier"], ["pro", "Professionnel"], ["public", "Musée"]]} /></Field>
+                    <Field label="Espèces protégées (ivoire, écaille, bois précieux, corail)"><Seg value={o.protege ? "oui" : "non"} onChange={(v) => set("protege")(v === "oui")} options={[["non", "Non"], ["oui", "Oui"]]} /></Field>
+                    {o.cat === "religieux" && <Field label="Objet liturgique ou issu d'un monument ?"><Seg value={o.liturgique ? "oui" : "non"} onChange={(v) => set("liturgique")(v === "oui")} options={[["non", "Non"], ["oui", "Oui"]]} /></Field>}
+                  </Card></Section>
+                </div>
+              )}
 
-          {screen === "record" && step === 4 && (
-            <div className="av-fade" key="s4">
-              <H>{q.overall === "blocked" ? "Ne peut pas se conclure en l'état" : q.overall === "required" ? "Peut se conclure, sous conditions" : "Aucun obstacle"}</H><Lede>Six domaines, un verdict.</Lede>
-              {q.clearance.map(([dom, s, doms]) => { const first = q.rules.filter((r) => doms.includes(r.domain)).sort((a, b) => ORDER[a.kind] - ORDER[b.kind])[0]; return <div key={dom} style={{ borderTop: `1px solid ${T.line}`, padding: "12px 0", display: "flex", gap: 12, alignItems: "baseline" }}><div style={{ flex: 1 }}><Micro>{dom}</Micro><div style={{ fontSize: 12, color: T.inkSoft, marginTop: 4 }}>{first ? first.titre : "—"}</div></div><Pill k={s} /></div>; })}
-              <div style={{ borderTop: `1px solid ${T.ink}`, marginTop: 8, padding: "18px 0", display: "flex", justifyContent: "space-between", alignItems: "center" }}><div><Micro>Statut global</Micro><div style={{ ...serifU, fontSize: 26, color: KIND[q.overall][1], marginTop: 4 }}>{KIND[q.overall][0]}</div><div style={{ fontSize: 11, color: T.mute, marginTop: 4 }}>{q.authorities.length} dossier{q.authorities.length > 1 ? "s" : ""} d'autorité · {nJ}/{q.pieces.length} pièces · {nD}/{DECL_Q.length} déclarations</div></div><Ring v={indice} size={52} /></div>
-            </div>
-          )}
+              {step === 1 && (
+                <div className="av-fade" key="s1">
+                  <Title sub={`${q.age > 0 ? `${q.age} ans` : "Antiquité"} · ${q.tiers ? "bien culturel tiers" : "bien de l'Union"} · ${o.lieu === o.dest ? "sans frontière" : `${o.lieu} → ${o.dest}`}. Ce que la loi impose, et ce qu'elle interdit.`}>{q.bloquantes ? `${q.bloquantes} obstacle${q.bloquantes > 1 ? "s" : ""}, ${q.actions} obligation${q.actions > 1 ? "s" : ""}` : q.actions ? `${q.actions} obligation${q.actions > 1 ? "s" : ""}` : "Aucune démarche particulière"}</Title>
+                  {GROUPS.map(([g, doms]) => { const rs = q.rules.filter((r) => doms.includes(r.domain)).sort((a, b) => ORDER[a.kind] - ORDER[b.kind]); if (!rs.length) return null; return <Section key={g} title={g}><Card pad={0} style={{ padding: "2px 16px" }}>{rs.map((r, i) => <RuleRow key={r.titre} r={r} last={i === rs.length - 1} />)}</Card></Section>; })}
+                </div>
+              )}
 
-          {screen === "record" && step === 5 && <div className="av-fade" key="s5"><H>Autorités</H><Lede>{q.authorities.length ? `${q.authorities.length} dossier${q.authorities.length > 1 ? "s" : ""} à déposer, générés depuis le dossier — rien n'est ressaisi.` : "Aucune autorité à saisir pour cette vente."}</Lede>{q.authorities.map((a) => <Doc key={a.titre} titre={a.titre} sub={`Destinataire : ${a.dest}`} sections={a.sections} />)}<Doc titre="Extrait du livre de police" sub="Présentable sur réquisition" sections={["Numéro d'ordre, date d'entrée", "Description et marques", "Identité et pièce du vendeur", "Prix d'acquisition", "Sortie : date, acheteur, prix"]} />{structure === "maison" && o.mode === "encheres" && <Doc titre="Notification — droit de préemption" sub="Ministère de la Culture, après adjudication" sections={["Procès-verbal", "Lot", "Prix", "Délai de quinze jours"]} />}</div>}
+              {step === 2 && (
+                <div className="av-fade" key="s2">
+                  <Title sub={q.deadlines.some((d) => d.kind === "blocked") ? "Une échéance douanière est critique : elle commande le calendrier de la vente." : "Régime, TVA à l'arrivée, et chaque délai à tenir."}>Douane et échéances</Title>
+                  {q.rules.filter((r) => r.domain === "customs").map((r) => <Card key={r.titre} style={{ marginBottom: 12 }}><div style={{ display: "flex", gap: 12, alignItems: "flex-start" }}><div style={{ flex: 1, fontSize: 16, fontWeight: 600, lineHeight: 1.3 }}>{r.titre}</div><Pill k={r.kind} /></div><div style={{ fontSize: 13.5, color: UI.inkSoft, lineHeight: 1.6, marginTop: 8 }}>{r.detail}</div><div style={{ ...mono, fontSize: 10.5, color: UI.vert, marginTop: 10, background: UI.vertSoft, display: "inline-block", padding: "4px 9px", borderRadius: 8 }}>{r.base}</div></Card>)}
+                  <Section title="Calendrier"><Card pad={0} style={{ padding: "2px 16px" }}>{q.deadlines.map((d, i) => <Row key={d.titre} last={i === q.deadlines.length - 1} style={{ alignItems: "flex-start" }}><div style={{ width: 40, height: 40, borderRadius: 12, background: TONE[d.kind][1], color: TONE[d.kind][0], display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0 }}><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.9" strokeLinecap="round"><circle cx="12" cy="12" r="9" /><path d="M12 7v5l3 2" /></svg></div><div style={{ flex: 1 }}><div style={{ fontSize: 14.5, fontWeight: 600 }}>{d.titre}</div><div style={{ ...mono, fontSize: 11.5, color: TONE[d.kind][0], marginTop: 3, fontWeight: 600 }}>{fmt(d.date)}</div><div style={{ fontSize: 12.5, color: UI.inkSoft, lineHeight: 1.5, marginTop: 3 }}>{d.detail}</div></div></Row>)}</Card></Section>
+                  <div style={{ fontSize: 12, color: UI.mute, lineHeight: 1.55, marginTop: 14, padding: "0 4px" }}>Points d'attention : adresse déclarée sous admission temporaire, apurement des volets ATA, valeur déclarée cohérente avec le prix, incoterm et risques, assurance clou à clou, retour en franchise trois ans.</div>
+                </div>
+              )}
 
-          {screen === "record" && step === 6 && (
-            <div className="av-fade" key="s6">
-              <H>Rapport acheteur</H><Lede>Le vérifié, le déclaré, et ce qui reste à sa charge.</Lede>
-              <div style={{ borderTop: `1px solid ${T.ink}`, padding: "12px 0 4px" }}><Micro color={T.gold}>Buyer report · {o.id}</Micro><div style={{ ...serifU, fontSize: 19, marginTop: 6, lineHeight: 1.25 }}>{o.titre || "Œuvre sans désignation"}</div><div style={{ ...mono, fontSize: 10, color: T.mute, marginTop: 3 }}>{o.valeur.toLocaleString("fr-FR")} € · {o.lieu} → {o.dest} · 3 septembre 2026</div></div>
-              {[["Vendeur", "Identité vérifiée, qualité justifiée, criblage négatif"], ["Attribution", o.artiste === "anonyme" ? "Non attribuée ; rapport d'expert joint" : `« ${vocab} » au sens du décret de 1981 — garantie contractuelle du vendeur`], ["Provenance", `Chaîne documentée ; registres interrogés${o.annee < 1946 && o.annee > 1800 ? " ; spoliations recherchées" : ""}`], ["État", "Rapport photographique annexé ; restaurations selon déclaration"], ["Statut réglementaire", q.clearance.map(([d, s]) => `${d} : ${KIND[s][0].toLowerCase()}`).join(" · ")], ["Douane et fiscalité", `${q.rules.find((r) => r.domain === "customs")?.titre || ""} ; ${q.original ? "TVA 5,5 %" : "TVA sur la marge"}`], ["Ce que ce rapport ne garantit pas", "L'authenticité en tant que telle, l'état mécanique, la valeur — hors garantie contractuelle et expertises jointes"], ["Vos protections", `Déclarations à valeur d'aveu ; ${q.seq ? "prix consigné jusqu'à réception conforme ; " : ""}rapport contradictoire ; dossier conservé dix ans`]].map(([k, v]) => <div key={k} style={{ borderTop: `1px solid ${T.line}`, padding: "9px 0" }}><Micro>{k}</Micro><div style={{ fontSize: 11.5, color: T.inkSoft, lineHeight: 1.5, marginTop: 3 }}>{v}</div></div>)}
-            </div>
-          )}
+              {step === 3 && (
+                <div className="av-fade" key="s3">
+                  <Title sub="Seules les pièces exigées par ce régime ; vous les joignez, ARTVELCHIV les indexe et les scelle.">Preuves et déclarations</Title>
+                  {groups.map((g) => <Section key={g} title={g}><Card pad={0} style={{ padding: "2px 16px" }}>{q.pieces.filter((p) => p.group === g).map((p, i, arr) => { const d = !!joint[p.titre]; return <Row key={p.titre} last={i === arr.length - 1}><div style={{ flex: 1 }}><div style={{ fontSize: 14.5, fontWeight: 500 }}>{p.titre}</div><div style={{ fontSize: 12, color: d ? UI.ok : UI.mute, marginTop: 2 }}>{d ? "Jointe · horodatée · scellée" : p.why}</div></div><button onClick={() => setJoint((j) => ({ ...j, [p.titre]: !j[p.titre] }))} className="av-press" style={{ ...sans, border: "none", cursor: "pointer", borderRadius: 999, padding: "8px 14px", fontSize: 12.5, fontWeight: 600, background: d ? UI.okSoft : UI.vert, color: d ? UI.ok : "#FFFFFF" }}>{d ? "✓ Jointe" : "Joindre"}</button></Row>; })}</Card></Section>)}
+                  <Section title="Le vendeur déclare"><Card>
+                    {o.artiste !== "anonyme" && <Field label="Dénomination de l'attribution (décret du 3 mars 1981)"><Sel value={vocab} onChange={setVocab} options={VOCAB} /></Field>}
+                    {DECL_Q.map((qn, i) => <div key={qn} style={{ padding: "12px 0", borderTop: `1px solid ${UI.line}` }}><div style={{ fontSize: 14, marginBottom: 10, lineHeight: 1.45 }}>{qn}</div><Seg value={decl[i] || ""} onChange={(v) => setDecl((d) => ({ ...d, [i]: v }))} options={[["Oui", "Oui"], ["Non", "Non"], ["NSP", "Ne sais pas"]]} /></div>)}
+                    <div style={{ borderTop: `1px solid ${UI.line}`, paddingTop: 12, fontSize: 12.5, color: UI.inkSoft, lineHeight: 1.55, fontStyle: "italic" }}>« Je certifie la sincérité de mes déclarations et l'exhaustivité des pièces versées. » — signature sous identité vérifiée, scellé SHA-256.</div>
+                  </Card></Section>
+                </div>
+              )}
 
-          {screen === "record" && step === 7 && <div className="av-fade" key="s7"><H>Contrat de vente</H><Lede>Bâti sur le dossier, pas sur un modèle — {q.clauses.length} clauses, chacune justifiée par le régime.</Lede><div style={{ borderTop: `1px solid ${T.ink}`, padding: "12px 0 4px" }}><div style={{ ...serifU, fontSize: 18 }}>{o.nom}</div><div style={{ fontSize: 10.5, color: T.mute, marginTop: 3 }}>Entre {structure === "maison" ? "le mandant représenté par la maison de vente" : "le vendeur"} et l'acheteur {o.acheteur === "public" ? "personne publique" : o.acheteur === "particulier" ? "consommateur" : "professionnel"}</div></div>{q.clauses.map(([k, v], i) => <div key={i} style={{ borderTop: `1px solid ${T.line}`, padding: "9px 0", display: "flex", gap: 12 }}><span style={{ ...mono, color: T.gold, fontSize: 10, width: 18, flexShrink: 0, paddingTop: 3 }}>{String(i + 1).padStart(2, "0")}</span><div><Micro>{k}</Micro><div style={{ fontSize: 11.5, color: T.inkSoft, lineHeight: 1.5, marginTop: 2 }}>{v}</div></div></div>)}<div style={{ borderTop: `1px solid ${T.line}`, padding: "10px 0", fontSize: 10.5, color: T.mute }}>Annexes : rapport, déclarations signées, rapport d'état, pièces indexées, dossiers d'autorités, calendrier douanier.</div></div>}
+              {step === 4 && (
+                <div className="av-fade" key="s4">
+                  <Title sub="Six domaines, un verdict.">{q.overall === "blocked" ? "Ne peut pas se conclure en l'état" : q.overall === "required" ? "Peut se conclure, sous conditions" : "Aucun obstacle"}</Title>
+                  <Card style={{ display: "flex", alignItems: "center", gap: 16, background: TONE[q.overall][1] }}><Ring v={indice} size={60} /><div style={{ flex: 1 }}><Label>Statut global</Label><div style={{ ...serifU, fontSize: 28, color: TONE[q.overall][0], lineHeight: 1.1, marginTop: 4 }}>{KIND[q.overall][0]}</div><div style={{ fontSize: 12.5, color: UI.inkSoft, marginTop: 4 }}>{q.authorities.length} dossier{q.authorities.length > 1 ? "s" : ""} d'autorité · {nJ}/{q.pieces.length} pièces · {nD}/{DECL_Q.length} déclarations</div></div></Card>
+                  <Section title="Par domaine"><Card pad={0} style={{ padding: "2px 16px" }}>{q.clearance.map(([dom, s, doms], i) => { const first = q.rules.filter((r) => doms.includes(r.domain)).sort((a, b) => ORDER[a.kind] - ORDER[b.kind])[0]; return <Row key={dom} last={i === q.clearance.length - 1}><div style={{ flex: 1 }}><div style={{ fontSize: 14.5, fontWeight: 600 }}>{dom}</div><div style={{ fontSize: 12.5, color: UI.mute, marginTop: 2 }}>{first ? first.titre : "—"}</div></div><Pill k={s} /></Row>; })}</Card></Section>
+                </div>
+              )}
 
-          {screen === "record" && step === 8 && <div className="av-fade" key="s8"><H>Clôture</H><Lede>{q.overall === "blocked" ? "Pas de clôture : le dossier reste archivé comme preuve de diligence." : "Pas à pas, jusqu'au sceau."}</Lede>{[["Signatures", "Contrat et déclarations sous identité vérifiée"], ...(q.seq ? [["Séquestre", "Prix consigné"]] : []), ...(q.authorities.length ? [["Autorisations", `${q.authorities.length} décision${q.authorities.length > 1 ? "s" : ""} obtenue${q.authorities.length > 1 ? "s" : ""}`]] : []), ...(q.rules.some((r) => r.domain === "customs" && r.kind !== "clear") ? [["Douane", "Régime régularisé, déclaration déposée, TVA acquittée"]] : []), ["Livraison", "Transporteur agréé, assurance clou à clou"], ["Réception", "Rapport contradictoire, réserves sous 48 h"], ...(q.seq ? [["Libération", "Fonds libérés au PV"]] : []), ...(structure === "maison" ? [["Procès-verbal", "À J + 1"]] : []), ...(o.source === "second" ? [["Livre de police", "Sortie inscrite"]] : []), ...(q.rules.some((r) => r.titre.startsWith("Droit de suite")) ? [["Droit de suite", "Versé"]] : []), ["Archivage", "Dossier scellé, dix ans"]].map(([k, v], i) => <div key={k} style={{ borderTop: `1px solid ${T.line}`, padding: "11px 0", display: "flex", gap: 14, alignItems: "center" }}><span style={{ ...mono, fontSize: 11, color: T.gold, fontWeight: 600, width: 20 }}>{String(i + 1).padStart(2, "0")}</span><div style={{ flex: 1 }}><div style={{ fontSize: 12.5, fontWeight: 500 }}>{k}</div><div style={{ fontSize: 10.5, color: T.mute, marginTop: 1 }}>{v}</div></div></div>)}{q.overall !== "blocked" && <div style={{ background: T.ink, color: "#FBFAF7", padding: "26px 20px", marginTop: 18, textAlign: "center" }}><div style={{ display: "flex", justifyContent: "center", alignItems: "center", gap: 12 }}><MonoA size={24} color="#FBFAF7" /><span style={{ ...serifU, fontSize: 22, letterSpacing: "0.3em" }}>ARTVELCHIV</span></div><div style={{ fontSize: 9, letterSpacing: "0.3em", textTransform: "uppercase", color: T.vertDim, marginTop: 8 }}>Established</div><div style={{ ...serif, fontSize: 15, color: "#C9C5BB", marginTop: 10, lineHeight: 1.4 }}>This work and this transaction have been established and secured through ARTVELCHIV.</div><div style={{ ...mono, fontSize: 9.5, color: "#8B8880", marginTop: 10 }}>{o.id} · SHA-256 · 03/09/2026</div></div>}</div>}
-        </main>
+              {step === 5 && <div className="av-fade" key="s5"><Title sub={q.authorities.length ? `${q.authorities.length} dossier${q.authorities.length > 1 ? "s" : ""} à déposer, générés depuis le dossier. Rien n'est ressaisi.` : "Aucune autorité à saisir pour cette vente."}>Autorités</Title>{q.authorities.map((a) => <Doc key={a.titre} titre={a.titre} sub={`Destinataire : ${a.dest}`} sections={a.sections} />)}<Doc titre="Extrait du livre de police" sub="Présentable sur réquisition" sections={["Numéro d'ordre, date d'entrée", "Description et marques", "Identité et pièce du vendeur", "Prix d'acquisition", "Sortie : date, acheteur, prix"]} />{structure === "maison" && o.mode === "encheres" && <Doc titre="Notification — droit de préemption" sub="Ministère de la Culture, après adjudication" sections={["Procès-verbal", "Lot", "Prix", "Délai de quinze jours"]} />}</div>}
 
-        {screen === "record" && <div style={{ position: "sticky", bottom: 0, background: T.paper, borderTop: `1px solid ${T.line}`, padding: "12px 22px 18px", display: "flex", gap: 10 }}><Btn onClick={() => step === 0 ? setScreen("home") : setStep(step - 1)}>Retour</Btn><div style={{ flex: 1 }}>{step < 8 ? <Btn dark full onClick={() => { setOpen(null); setStep(step + 1); }}>{["Voir les règles", "Douane et échéances", "Joindre les preuves", "Lancer la clearance", "Dossiers d'autorités", "Rapport acheteur", "Générer le contrat", "Clôturer"][step]}</Btn> : <Btn dark full>Exporter le dossier (PDF)</Btn>}</div></div>}
+              {step === 6 && (
+                <div className="av-fade" key="s6">
+                  <Title sub="Le vérifié, le déclaré, et ce qui reste à sa charge.">Rapport acheteur</Title>
+                  <Card><div style={{ display: "flex", gap: 12, alignItems: "center" }}><Logo size={30} /><div><Label>Buyer report · {o.id}</Label><div style={{ ...mono, fontSize: 11.5, color: UI.mute, marginTop: 3 }}>{o.valeur.toLocaleString("fr-FR")} € · {o.lieu} → {o.dest} · 3 septembre 2026</div></div></div><div style={{ ...serifU, fontSize: 20, marginTop: 14, lineHeight: 1.25 }}>{o.titre || "Œuvre sans désignation"}</div></Card>
+                  <Section title="Contenu"><Card pad={0} style={{ padding: "2px 16px" }}>{[["Vendeur", "Identité vérifiée, qualité justifiée, criblage négatif"], ["Attribution", o.artiste === "anonyme" ? "Non attribuée ; rapport d'expert joint" : `« ${vocab} » au sens du décret de 1981, garantie contractuelle du vendeur`], ["Provenance", `Chaîne documentée ; registres interrogés${o.annee < 1946 && o.annee > 1800 ? " ; spoliations recherchées" : ""}`], ["État", "Rapport photographique annexé ; restaurations selon déclaration"], ["Statut réglementaire", q.clearance.map(([d, s]) => `${d} : ${KIND[s][0].toLowerCase()}`).join(" · ")], ["Douane et fiscalité", `${q.rules.find((r) => r.domain === "customs")?.titre || ""} ; ${q.original ? "TVA 5,5 %" : "TVA sur la marge"}`], ["Ce que ce rapport ne garantit pas", "L'authenticité en tant que telle, l'état mécanique, la valeur, hors garantie contractuelle et expertises jointes"], ["Vos protections", `Déclarations à valeur d'aveu ; ${q.seq ? "prix consigné jusqu'à réception conforme ; " : ""}rapport contradictoire ; dossier conservé dix ans`]].map(([k, v], i, arr) => <Row key={k} last={i === arr.length - 1} style={{ flexDirection: "column", alignItems: "flex-start", gap: 4 }}><Label>{k}</Label><div style={{ fontSize: 13.5, color: UI.inkSoft, lineHeight: 1.5 }}>{v}</div></Row>)}</Card></Section>
+                </div>
+              )}
+
+              {step === 7 && <div className="av-fade" key="s7"><Title sub={`Bâti sur le dossier, pas sur un modèle : ${q.clauses.length} clauses, chacune justifiée par le régime.`}>Contrat de vente</Title><Card style={{ marginBottom: 12 }}><div style={{ ...serifU, fontSize: 20 }}>{o.nom}</div><div style={{ fontSize: 12.5, color: UI.mute, marginTop: 4 }}>Entre {structure === "maison" ? "le mandant représenté par la maison de vente" : "le vendeur"} et l'acheteur {o.acheteur === "public" ? "personne publique" : o.acheteur === "particulier" ? "consommateur" : "professionnel"}</div></Card><Card pad={0} style={{ padding: "2px 16px" }}>{q.clauses.map(([k, v], i) => <Row key={i} last={i === q.clauses.length - 1} style={{ alignItems: "flex-start" }}><span style={{ ...mono, color: UI.vert, fontSize: 11, width: 24, flexShrink: 0, paddingTop: 3, fontWeight: 600 }}>{String(i + 1).padStart(2, "0")}</span><div><div style={{ fontSize: 14, fontWeight: 600 }}>{k}</div><div style={{ fontSize: 13, color: UI.inkSoft, lineHeight: 1.5, marginTop: 2 }}>{v}</div></div></Row>)}</Card><div style={{ fontSize: 12, color: UI.mute, marginTop: 14, padding: "0 4px", lineHeight: 1.5 }}>Annexes : rapport, déclarations signées, rapport d'état, pièces indexées, dossiers d'autorités, calendrier douanier.</div></div>}
+
+              {step === 8 && <div className="av-fade" key="s8"><Title sub={q.overall === "blocked" ? "Pas de clôture : le dossier reste archivé comme preuve de diligence." : "Pas à pas, jusqu'au sceau."}>Clôture</Title><Card pad={0} style={{ padding: "2px 16px" }}>{[["Signatures", "Contrat et déclarations sous identité vérifiée"], ...(q.seq ? [["Séquestre", "Prix consigné"]] : []), ...(q.authorities.length ? [["Autorisations", `${q.authorities.length} décision${q.authorities.length > 1 ? "s" : ""} obtenue${q.authorities.length > 1 ? "s" : ""}`]] : []), ...(q.rules.some((r) => r.domain === "customs" && r.kind !== "clear") ? [["Douane", "Régime régularisé, déclaration déposée, TVA acquittée"]] : []), ["Livraison", "Transporteur agréé, assurance clou à clou"], ["Réception", "Rapport contradictoire, réserves sous 48 h"], ...(q.seq ? [["Libération", "Fonds libérés au PV"]] : []), ...(structure === "maison" ? [["Procès-verbal", "À J + 1"]] : []), ...(o.source === "second" ? [["Livre de police", "Sortie inscrite"]] : []), ...(q.rules.some((r) => r.titre.startsWith("Droit de suite")) ? [["Droit de suite", "Versé"]] : []), ["Archivage", "Dossier scellé, dix ans"]].map(([k, v], i, arr) => <Row key={k} last={i === arr.length - 1}><span style={{ width: 28, height: 28, borderRadius: "50%", background: UI.vertSoft, color: UI.vert, display: "flex", alignItems: "center", justifyContent: "center", ...sans, fontSize: 12, fontWeight: 700, flexShrink: 0 }}>{i + 1}</span><div style={{ flex: 1 }}><div style={{ fontSize: 14.5, fontWeight: 600 }}>{k}</div><div style={{ fontSize: 12.5, color: UI.mute, marginTop: 1 }}>{v}</div></div></Row>)}</Card>{q.overall !== "blocked" && <div style={{ background: UI.ink, color: "#FAF5EB", borderRadius: 22, padding: "30px 22px", marginTop: 18, textAlign: "center" }}><div style={{ display: "flex", justifyContent: "center" }}><Logo size={58} /></div><div style={{ marginTop: 14 }}><Wordmark size={19} color="#FAF5EB" /></div><div style={{ fontSize: 10.5, letterSpacing: "0.3em", textTransform: "uppercase", color: UI.jaune, marginTop: 10, fontWeight: 600 }}>Established</div><div style={{ ...serif, fontSize: 16, color: "#C9C5BB", marginTop: 12, lineHeight: 1.45 }}>This work and this transaction have been established and secured through ARTVELCHIV.</div><div style={{ ...mono, fontSize: 10.5, color: "#8B8880", marginTop: 12 }}>{o.id} · SHA-256 · 03/09/2026</div></div>}</div>}
+            </main>
+          </>
+        )}
+
+        {/* ===== barre du bas ===== */}
+        {screen === "home" && (
+          <div style={{ position: "fixed", bottom: 0, left: "50%", transform: "translateX(-50%)", width: "100%", maxWidth: 480, boxSizing: "border-box", background: "rgba(255,255,255,0.86)", backdropFilter: "blur(16px)", WebkitBackdropFilter: "blur(16px)", borderTop: `1px solid ${UI.line}`, padding: "8px 10px calc(10px + env(safe-area-inset-bottom))", display: "flex", zIndex: 30 }}>
+            {[["dossiers", "Dossiers"], ["structure", "Structure"], ["sources", "Référentiel"]].map(([k, l]) => <button key={k} onClick={() => { setTab(k); setOpen(null); }} className="av-press" style={{ ...sans, flex: 1, background: "none", border: "none", cursor: "pointer", display: "flex", flexDirection: "column", alignItems: "center", gap: 4, padding: "6px 0", fontSize: 10.5, fontWeight: 600, color: tab === k ? UI.vert : UI.mute }}><Ico name={k} active={tab === k} />{l}</button>)}
+          </div>
+        )}
+        {screen === "record" && (
+          <div style={{ position: "fixed", bottom: 0, left: "50%", transform: "translateX(-50%)", width: "100%", maxWidth: 480, boxSizing: "border-box", background: "rgba(244,239,229,0.9)", backdropFilter: "blur(16px)", WebkitBackdropFilter: "blur(16px)", borderTop: `1px solid ${UI.line}`, padding: "12px 20px calc(14px + env(safe-area-inset-bottom))", display: "flex", gap: 10, zIndex: 30 }}>
+            <Btn ghost onClick={() => { setOpen(null); step === 0 ? setScreen("home") : setStep(step - 1); window.scrollTo(0, 0); }}>Retour</Btn>
+            <div style={{ flex: 1 }}>{step < 8 ? <Btn primary full onClick={() => { setOpen(null); setStep(step + 1); window.scrollTo(0, 0); }}>{["Voir les règles", "Douane et échéances", "Joindre les preuves", "Lancer la clearance", "Dossiers d'autorités", "Rapport acheteur", "Générer le contrat", "Clôturer"][step]}</Btn> : <Btn primary full>Exporter le dossier (PDF)</Btn>}</div>
+          </div>
+        )}
       </div>
     </div>
   );
