@@ -1,26 +1,45 @@
-# ARTVELCHIV — site + démonstrateur (un seul dépôt, un seul projet Vercel)
+# ARTVELCHIV — site et application (accès privé)
 
-- `/`      → le site (index.html, images dans /public/assets)
-- `/app/`  → le démonstrateur React, protégé par un code d'accès
+Dépôt statique, sans étape de construction : chaque fichier se sert tel quel (GitHub Pages, Vercel, Netlify ou tout hébergement de fichiers).
 
-## Mise en ligne (GitHub → Vercel)
-1. Créer un dépôt GitHub privé `artvelchiv`, y pousser ce dossier :
-       git init && git add . && git commit -m "ARTVELCHIV preview" && git branch -M main
-       git remote add origin git@github.com:VOTRE_COMPTE/artvelchiv.git && git push -u origin main
-2. Sur vercel.com : Add New → Project → importer `artvelchiv`. Framework détecté : Vite. Ne rien changer.
-3. Onglet Environment Variables : ajouter `VITE_DEMO_PIN` = le code d'accès souhaité (Production + Preview).
-4. Deploy. Adresses : `https://artvelchiv.vercel.app` (site) et `https://artvelchiv.vercel.app/app/` (démonstrateur).
-5. Domaine : Settings → Domains → ajouter par ex. `preview.artvelchiv.com`.
+## Contenu
 
-Chaque `git push` sur `main` redéploie automatiquement. Pour changer le code d'accès : modifier la variable dans Vercel, puis Redeploy.
+| Chemin | Rôle |
+| --- | --- |
+| `index.html` | Site public (ordinateur et mobile). Le lien « Accès privé » (pied de page et menu mobile) ouvre `app/`. |
+| `app/index.html` | Application complète en une seule page. Elle charge React depuis cdnjs et embarque le code de l'application ; aucun fichier de build n'est nécessaire. |
+| `app/manifest.webmanifest`, `app/icon-*.png`, `app/apple-touch-icon.png` | Permettent d'ajouter l'application à l'écran d'accueil d'un iPhone ou d'un Android pendant la phase de test (icône verte, plein écran). |
+| `assets/logo-wordmark-*.png` | Logotype détouré, version sombre (fond clair) et claire (fond vert). |
+| `src/Artvelchiv.jsx` | Source du composant React. C'est ce fichier qui servira de base à la version App Store (Capacitor ou Expo). |
 
-## En local
-    npm install
-    npm run dev        → http://localhost:5173/ (site) et /app/ (démonstrateur)
-    npm run build      → dossier dist/
+## Accès privé
 
-## Protection renforcée (facultatif)
-Vercel → Settings → Deployment Protection (offre Pro) : mot de passe côté serveur sur tout le déploiement.
-Ou Cloudflare Access devant le domaine (gratuit jusqu'à 50 utilisateurs).
+L'application demande un code à l'ouverture. Le code est défini dans `src/Artvelchiv.jsx` (`DEFAULT_PIN`, valeur actuelle `ARTVELCHIV`). Pour le changer, modifier cette valeur, puis régénérer `app/index.html` (voir ci-dessous) ; à défaut, le code reste celui de la page fournie.
 
-Démonstrateur : données fictives ; le Référentiel ARTVELCHIV est validé à date par le cabinet.
+## Mise en ligne
+
+1. Remplacer `index.html` à la racine du site.
+2. Supprimer entièrement l'ancien dossier `app/` (anciens fichiers de build), puis déposer le nouveau dossier `app/`.
+3. Déposer `assets/` et `src/`.
+4. Conserver le fichier `CNAME` s'il existe (domaine www.artvelchiv.com).
+5. Vider le cache du navigateur avant de tester.
+
+## Régénérer `app/index.html` après une modification de `src/Artvelchiv.jsx`
+
+```bash
+npm install esbuild react@18 react-dom@18
+cat > main.jsx <<'JS'
+import { createRoot } from "react-dom/client";
+import Artvelchiv from "./src/Artvelchiv.jsx";
+createRoot(document.getElementById("root")).render(window.React.createElement(Artvelchiv, {}));
+JS
+npx esbuild main.jsx --bundle --minify --format=iife --jsx=transform \
+  --jsx-factory=window.React.createElement --jsx-fragment=window.React.Fragment \
+  --external:react --external:react-dom --external:react-dom/client --outfile=app-bundle.js
+```
+
+Coller ensuite le contenu de `app-bundle.js` dans la dernière balise `<script>` de `app/index.html`.
+
+## Vers l'App Store
+
+Le composant `src/Artvelchiv.jsx` ne dépend que de React. Pour la publication native, l'enrober dans un projet Capacitor (WebView, le plus rapide) ou le porter en React Native / Expo (rendu natif). L'écran de lancement vert, le code d'accès et les données de démonstration sont dans le composant lui-même.
