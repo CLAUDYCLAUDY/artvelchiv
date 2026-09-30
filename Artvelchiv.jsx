@@ -5,6 +5,8 @@ import { useState, useMemo, useEffect } from "react";
    Every work established. Every transaction secured.
    Démonstrateur pour galeries, marchands, maisons de vente et conseillers.
    Référentiel validé à date par les équipes ARTVELCHIV.
+   Interface : écran de lancement vert, cinq onglets (Accueil, Explorer, Boîte, Archive, Profil),
+   aperçus de rapports tels que leurs destinataires les reçoivent.
    ============================================================ */
 
 const DEFAULT_PIN = "ARTVELCHIV";
@@ -106,7 +108,7 @@ const SOURCES = [["Union européenne", ["Règl. (UE) 2019/880 · système ICG �
 function addMonths(iso, m) { if (!iso) return null; const d = new Date(iso); d.setMonth(d.getMonth() + m); return d; }
 function fmt(d) { return d ? d.toLocaleDateString("fr-FR", { day: "2-digit", month: "long", year: "numeric" }) : "—"; }
 function analyse(o, structure) {
-  const today = new Date("2026-09-03"), age = 2026 - o.annee, isUE = (p) => UE.includes(p);
+  const today = new Date("2026-09-30"), age = 2026 - o.annee, isUE = (p) => UE.includes(p);
   const rules = [], pieces = [], clauses = [], authorities = [], deadlines = [];
   const add = (domain, kind, titre, detail, base) => rules.push({ domain, kind, titre, detail, base });
   const piece = (group, titre, why) => pieces.push({ group, titre, why });
@@ -236,145 +238,271 @@ function analyse(o, structure) {
   return { rules, pieces, clauses: C, authorities, deadlines, clearance, overall, age, tiers, original, seq, actions: rules.filter((r) => ["required", "pending"].includes(r.kind)).length, bloquantes: rules.filter((r) => r.kind === "blocked").length };
 }
 
-/* ============================================================ UI — ARTVELCHIV, interface minimale (modèle Artsy) */
-const LOGO = "/assets/logo.png";
-const LOGO_LIGHT = "/assets/logo-light.png";
-const UI = { bg: "#FFFFFF", paper: "#FAF7F0", ink: "#15140F", soft: "#4A4841", mute: "#8E887B", line: "#EAE6DC", field: "#F3F0E8", vert: "#1D4633", vertDeep: "#123024", vertSoft: "#E6EEE8", jaune: "#F2C21B", claret: "#8A2A2A", claretSoft: "#F6E7E6", warn: "#8F5A1B", warnSoft: "#F6ECDD", info: "#3F5F8A", infoSoft: "#E7EDF5", ok: "#2E6349", okSoft: "#E4EFE7" };
-const TONE = { blocked: [UI.claret, UI.claretSoft], required: [UI.warn, UI.warnSoft], pending: [UI.info, UI.infoSoft], info: [UI.mute, "#EFEBE2"], clear: [UI.ok, UI.okSoft] };
-const LABEL = { blocked: "Point à résoudre", required: "À obtenir", pending: "À vérifier", info: "Information", clear: "Documenté" };
-const EXTRA = `
-@keyframes avOut { to { opacity: 0; visibility: hidden; } }
-@keyframes avLogo { from { opacity: 0; transform: scale(.92); } to { opacity: 1; transform: none; } }
-@keyframes avUp { from { opacity: 0; transform: translateY(28px); } to { opacity: 1; transform: none; } }
-@keyframes avVeil { from { opacity: 0; } to { opacity: 1; } }
+/* ============================================================ UI — ARTVELCHIV
+   Interface mobile : blanc, nette, éléments fixes (en-tête et barre d'onglets),
+   cinq onglets, écran de lancement vert au logo, aperçus de rapports consultables. */
+const TODAY = new Date("2026-09-30"), TODAY_LABEL = "30 septembre 2026";
+const LOGO_LIGHT = "data:image/png;base64,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";
+const LOGO_DARK = "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAmoAAABUCAYAAAAyPRuLAAApr0lEQVR42u19SXNcV3bmlwPmiQAJziIpkZQoStRITVWqsl12yOWyPHW3qyMcYXvT4UWv/AP8B7zs7p07oje9aEe07ajotmtQjbZUEkWVJKooUSIFcSbBEQNBYs5ML8534p28eAkCiXwvXyLPF5EBEkPmu/eee+53xgs4HA6Hw+FwOBwOh8PhcDgcDofD4XA4HA6Hw+FwOBwOh8PhcDgcDofD4XA4HA6Hw+FwOBwOh8PhcDgcDofD4XA4HA6Hw+FwOBwOh8PhcDgcDofD4XA4HA6Hw+FwOBwOh8PhcDgcDgDIrfcP9h496LNW/1znAOTNvFcAlPl1NVQ2mxw1EJUmja+S8bmvNOEZ8kbO1yPfWVzzVpWHtPVZLmZOcsGcVIJXK56LFZezzDxTy+vjq2e+WtebFjO8UboBFAAs8tXqqJiDa7Nhsx9SFX+2NT1DqU1ISruRstX0ma9ve8lZxZ8h/WfLKlEbAnAUwACAWwAuA5jcpCSnXhTa7HB0OBzNM5zzSMY7mnPi63C0DlGzG7YfwKsADgI4C+CXAB4AmG/BOe4G0MFXL4Bhfs0BuA9gCsAc/18IlFaZRKwMYJmvhQwRtBzXqhvphj815LLEuZtPgMTnAPTwVTTrkuPcL/Bzl5o4/10A+gB0Bh4O+3zLCT/DAJ+jyLkaoDzk1yDf67VU1TiZB3CvCYZbAcAgx6vznacMzPO1GQ2nSjCuHuqwHspeB9e/yDnKGzlcNLJo/72QQe9IVtZ3teeY5XNUmqBr9CwL9/E8gJmEn6mt9XGWiFrebIJhAC8D+BqAx6iULxmi1ipWWDeffzeAbQCeAPASCWgOwDkAJwFc4QboDhSBbsw5fp0EMA7gGrLhXRwEcJxj7OSz69okQdxU+DspL5MAxgCcB3CzwTLRz3Ed5dqV+cpTDm8BuMDPn2/CXhkB8ChlaisVgJIZnZeLCcxLSNJe5HNsAbCX87WPz/hljHzX45XRlAFV0ucB/BuAuynP+w7qpP0kHSU+zxT38nkAtzeJhyhXg0jtAnCYOmw3gO2QCMgQD6lerjOos+5QBq9zbm5Sh13m10pwHpWaOH9ZWd8dAF7jPlri5xU5l2f4HNMpE5AD1Ie7uMZlIx/nAbzPeUoKba2Ps0TU7MOPUkgf4QFwFsDbFNRWImpd3PQvAjgC4FkAT5ufPwFgD5WWeiTiiNo8xKM4TZJ2nV9vUEBnU1bgleCg/jqV9DKiEEluDYfAw+Sg1oGt+Ys3qCBKnJu5BsvjdgBvcM3m6CEq8PnvQDy9t5tgQHRRdl4nUR6lrBQoQxcA/IBKIa31H+XB/Zj53SMx8l1PnmaFsrWFY/8lgNOGqBUS9HTY8Y4C+C0aW3Oc8y4S0U7K4ASS92KmrY9HqIv38jB6FMAhru12GmxDq7zXTeqrOyRntykTF0iArlG/NWPesri+uwF8i3trzui8MT7TbTov0joDlai9CuAYHSmq6yvcj18YopZPwJHQ1vo4S0RND/e9HPSQOQyO8ftfreEwz4IlWjEHyAiAJ2mpHYj5/SeoBONCQ7Zqbpn/nqW1dxfARxSAk4GFleTBZT2fPTyYX6SyXuRnq6UTbrSwUqyWHKz2szKi0PENiEv5KhX+XAM2qP7tfW62g9x8FWMojPD3BgCcMBswn+C82zXdQov790mGeigffYhC7G8jmRCJHWMvD+yXaEV2xPz+ERpdKt/1oMTxjfLzpzjWtRD/Ru7nLdRFL/F55jkHZ+k97OMYW5Wo5WKeX0nDdwA8RZnPUz93kcA8bF23G/0wy8/RfXsCwI8B/Cuak9qStfXN0Wv1PIBXOGfLfI5+6vyulOelyP39OHXhDj6XhiAngv3YSKLm+hjZKyboAfAMD/7+QFkcBHCKhKTSQoqvkwu53Xx/mkLUy8Xsq/P9Dxpr9gQVH5BenkwHN8meJs3vHsrGSANl2W7uCYjbWtdyNCChRyAe01OIcgnT8nA8zwOlu8YY7iL58EiB+3Sr8ZYtmwO3mzLe2+DP3c59lTY6jAFZNDpqhGMsorVRMSRkmJ6zlwH8Ll89a/j7sA1Hni/NL7Ket/3cU0OQcNYn9K7podyO61vkeTDC/3caWR9GlP+Z9jnWRSI0HDwTOGdJzY3r44woFstMRyDu1de4CDAC+iIkxnuSG7mVlF+Yl9PFxSts8L33AvguvVo7AfyIll8Sls3Dxphr4tw2coz2vW4DeJfE4LkYJdkD8ZZ+wXlP8nApGwW1H5In1F3D+6R5e7MpyYFN7C0aJZ5DeyCJashmYhu9A79Dud8XQ9Jskrs90HOrEDjEkIx9AP4EEjb6CMD3uecuZmhO01zf1XoPNns+mtGSxfVxRohamJt2jMw4b9jyACR0eBvihr6fMhHZ6IIuQsJyfcZKytN6neICKnFT0pM3h15PsFZlRG75AUhehSYu/hQSIp5LYW6WaOWMQ7yGS4gSgvNmLGUjb12GnFeCA73M9ygF37fvo0nlecrDFMdaSkAeJzifQyTFe83mK3BtjkNyWK4ZiynJ3IjdVApbzfcW6Q2YA/AZxLt6OThAk9q7i0YWlwOiBj7TgvGs1IMS5WIb/38XzQkvavWW3Yd5fq+E1m8f1Eej7+skal+nkWx1TifX2JKyZa6P3btFRNXuhRgZtEnyW/nax/8vcO9Nt+H6VmKeQ7GAKEm9GbKvVbsDRgfqc5UTnI+218dZIGq6wJrvst8odN3MvWTQtwH8MxehVSz2XMwhpf+eBvAe2bbGstVq6YKENXdCcth2Bn9fDDbL61SqewG8RcvjQcIWzhxJ4SkKqlrYJbM2BaPAhyDhymFUe1Jt24Wr3JAVxLdzKHNuchA3+BXOYzkBy3MBkrR+GNUFG6osRyHe3+sA3jGKIanciCEAL0Dc7DaEpMRoCuJxDnMWkwyFh7JtQxElRJVOStLrrfpcRhT6+SpYj0rKezncx2vJvcw6ttIY/lMStJ2BF62M+CjALNd3kvKnbRoGIBGSYRLs/uDvCka/w5wBr3M/fRjsp3IbrW+tz8oh/bBn+Nm5QGcj+H6SaFt9nJWcijwk3+ppRLF5VcB2g+4nafm4xSzYWhvvJoCfQ1z+HcZSUaI2RIW5hwRsG+dnu7F0l4w18TzJHSCJ9qcTtnDuUaHO8HPzgQdM13aRazUC8ZYehRRWhOGUeySun/P3O2oQNbXoZ0nsLtWwQDeCgrFsL3HzPx5DWHdACkK2k3A3mjhYQjtERfQKZaVs5gNch1Ocv4WU5TskbYuQVgK/IFnTPKV6wifqZdA8oXOIclWSJqK1xoqYA71VMQjgm5A0ij9ElFOo+7YbUZ+0RR4696m/LnJv1CJqW/l1G8Trrv8fQXVS/BzlY5Q6vncjHohNsL5ZlbPcGr/XaLS1Pm4mUbNW0ggH+7IhIHGC2QepPDoHiUG3ytVStQ6ncQAf8JXn+JaMZ6qDyqtAxbWFZPbbAN5EFF6YRxQfPwjgN81hdjXBcc3w2T81smTdzGqFLRnl/RQkMfmPY4jaBInrW4asLmOl69qGSheo5OcSHKda+Hsh4ZmOgBzspJV3jmNIyoDYwT1yxHgg7T6+BcnPuJGyJyLMP5rl/vwRgH/kYa4NKzdiYKnlPhcQNcfG9O+TAP4cwB/FeJTCEPMYjalTXOOrEM+9es2XjExq77w8Dcmt1F9fo9duf3AA2gbffluBw/VxxjxqWyEVE89DXOTWzW4VRzcJnfYSW4whB62EB1zMBWNVPgxf8ve6qOwGOS8LxkI9DOAbFJBpEqqkDuiZdbz/TSryx2uMVa2lGxlYG7vxp3g47TbegHzgkXgakj/5MRqbxGpzfrSXVUhcAMnb+iKYu2aF4pa41mMk8XNwZA16YOyD5Li+bmT6HolVtzkj7kI8pO/w9VGd+3QMUf/Hp/n5u2jEgcTwHprbYd6RPbS1Pm4mUbPEai89LTv4f+3HFSqWrRBX4w1IX5JJM0GteHVLPTkHtyCVUeOQRnrfhYQVuhDlrKlL9jqk5H0mZQ/LarDJyFk2HhAohg/oAXgNUXheQ7zDNDQu03t0q8Hz3Qlx5z+N6lYuRX7GHUhO4i8R9RZCE9da+3F18NmdqGUHNnSzDeLZfhPVydCdgezcAPAPAH5IsnYb9VfeX4N4zD/kQXccwO9BogBafNCshHlHa6Dt9HEWiNowJFy3M1D0YZXjMiL3+RP8/bEY0tdKKKK6pLeL7L8cMHD1LmrT2zuQJpEdEC/kNsP2l/iehyAhjaEUPCy13lctDA2f9NDa6UV8axIN8doNsRSzwWw1aFprf4UW0i1EjYu1O3c/pFr5PKQq6VaD5lTH1gdpT3McUbjYJu3PQ25oOInqApJm7Qvtu9TL9Z4267mR0GeuyQR0M8DO3SGIN+04ZWkWUbhSMUZi9X8hnrRysF+xyl60+kt/p4TIC3+R+0qrxb9BuQnz1xyOttbHzU5OHOBgbRJ83HOFSmA7SciuFlfcYbFE2BOsYpTbYsw4xyAFA7eM4rSkaQdWVlslNY64VwnVOS7LWD0HJbz8uWS+Z9+3jPTyWOwhcxHiTp8ym7dsvBNHUe0KrzTgc4HqHE69R87mZz6AlIGf46GXherDkjGw7PdKq8jLw15lOElrxF7NkaS9Sj3aZeR5KdAvfwfgv/HgKcescSnY03HrtWz2foiLAP4/gP8J4F8gOUVDTtQcro+b61ELqyZehySX9geE5R6iSrGwTcMgpCz2PCT8Od/CgldZpyB1GGV6D1JRcgTRFSMWXTHz2uyxPswLVsnQ8yLYZHpt16OUv97gGbdD+lCNIGox0gi52A7JO9wRY70Bktd31eyrrKQCVDK4nu2K8E7Lb0FCjrvN79jinpsQT9r3EDXRLhq52uihVzB67BKiexv1gu1mtF9xtIYct50+bnY+0E6StGeMhVaAuMXP8f8H+Ht2IobJZq9AcibGY0jgZoX1UNyH5KldpGXcj+pwhF6JUoTnfWzEM6SYoGfhESqHXqxMYn2OBsQJbOwGDVU4esfersDYKfAwOwvJhRj3g82xRhyGVHi+YXRKGVH/pwlIte7fI2pxEOoebFC2Q9J+F8BPqNOXUZ2E7QTf0db6uBmhT9ulfh9fdsCgVfVrSKuGDznoJfP33SQmz6L6qql2OKBCD8VtWr+1+rT04eF39DnWhiVuxE8QudvtAdYHSWJ9GauH8teKTiqFY6jONSwYov5LAP+G6oaKWTnYwv6BeRehpuuNfkiO7zHzs7Cz/GcAfsDDrYSNX3W3VtyAXM7+XrC/siTLuRrenUYhreaxro9bSB/nm6Qwuki0wqoJxQzEU/YWFcbHkDCf3Rw9kCKEg8YSbDfLq0RSO494T6KGGIq+p9GovTJB5XAtkOklWnQvQPIuR+tU6PZQ3ML3Os5/hzJ+j3vjQyRzC8VGUMDKTvb1HkKt3vU/K+iGVNcfxcoipk7qkU950HxmjONm3u+YFZKmt8E0uiN/2OlfvTMu766Pm0LU7OT0kuW+guqqCUvULkIS5d+GNFdciHmfbSR8B9pYWAf4KtYgxYvwnkSNlt+bkNzAq5TbUHnvh+T+5Dd48GyFFNoco0ETJmTfgLj1ZxK08Os1xhYgoYAHgQVcqfP9PJy7cbntI0k7FHxf2wrMQEJJ76C6Uq7d536ZsjwdyHOpAXNTMe8FkuVZeLjX9XGTiFo+GPCrfI1gZaWfvVT1C77mYoR7CyLX5kgbCugAovBxXHhzgSz/vu/rhlr5E5Cw0Hv8t94ioRiGeIsPIf4arLV+zl4aIrZPkCamXoOkB1yr01JMeq5Wq/RzNI+oPUa5tA1mrYF8CpKgnYU2L1mBemjSugmn5HPu+hiBJZWmsCt2QvIkRgIitwipMPqME64TdZls+bAR5ByifiZXzCLpe21Wi8RWkGiZ/RFE1Z1LRkhzqL41oB2KLdKQ3zkeZntpKGwLflfbzlxCdX7lWm7Q0J9vg4T1rcte13Wan3/SyHyWDtRuSLLtY7Rmv+LYe1FfUUvOkIp5uId4I0TtANekK4YQ3KT+vbUOeW0H9PHseZZ7/y6iXoEbbROkLSX0zBqgXvH2JK6Pm0LUypyYXZA8ie0BgVBmrI3i7F1+4/zeLkh1hzbO1GscnoVcXP5Vi1mA60lOtXkSJSOAh0nWOkl0S0aAFlDtTfO8h8as2RKi65EmEIXetXHnCMTLe5XyPBNDslfDAMTF/hyqk2AVU9wP72eEqIWNaLtpwc5BmjOfoUz21eEtKPPQynGsY5xXv+1g/RigrPYbg1d17wz155UaRmE7QvfzNkiF7DCkJcN5zls98hy3d9TxUCQRCO+8drS5Pk47yVyTWV9AddWEYhaSjHca1a73SciVDDspyFuDZ99N612T+FqFqIVd2ssPYfYlI1h7IL2QnkRUTGGTt5dpQcz4Xm4o8mbdrkLaozwbzHsHlcURyuulNWzcuP6Cr/FQrRjDRA2aM/zsLMl6JZinY5S/JzgnPVifp1vbOPRx7GP8/10nanV7hgZijL9lSMjmCjxNwkK9v508e77JM+wyoltlNhq50ZtbcvycYTofbGjai8HaXB+nIQB2wMOozk0LrbpJSD7apeA9JknCHoVcM7K1BuM9D3FB3m8xQVuvBfsEgD+D3NF3xBxqup73OV/vBgzfw54bh1XMt2lF7SYp6Q/m+BGIt/MsCctalfoOKgXtL7iI6vDfBXo/FozcZCXUbxN5eyEhh6OBEbFWZVbheLVT/YeQtIhPXAzrkteeGH2TQ9Rk9haq2/y0e0J7LpDnIUho7WnOXb4BnhMNv1UQ3Y/bhfbtZOD6uElEzQrxKAd7hIIYXi90AdWN4gqIcgCuQfIn7kC8Z5bk9UEqSMchjXLvZ/AAi0NH8HxxuTfdxnrrpmX32wD+I8Q7qX9nL3ifhFTLvoPqfi6eb9JYeb6PyNP7GFY2HN5CkvI5xC1fWoPCKUC8pY8EylxvpDgL8TjfDn6elYMNxsItcA62NOj91dNQcDFct7zqLS+VGFK9RINu0o25mh4b9aA0Up7XQ0IcbayPiykKWzckGe8xYy2oxTIDqZh4LxiwTpQSukska0+i2jXcT0vnGuS+uBsZPMDinmUI1bkII2Tr2mtuAJKXN4LoOoxnSNAeXUUwLtKyOI30KpXaEQ8gHtzHAPwBoitF9D7FIUixy0WIW/7uKgZEhZv/IJVJX0Dowb9/jy+bw5nFwzWJvbcMb9VRL3r5KtaY13s06pbcsFsTKXC4Pk5NH6cV+85BYsRHUR22VLY7S2JxAisbxVmFP0nyod2BbY5Anp+xDxIvLrWARbIDkmemtwcMIUpO7YQkLu7knI0aoVHP2SJ/T9dxClFX8c8MSfPqrWQs7TIkV+oCgOuIqpKXKdv9kATUixAP590ae0PXpgeSv/kiooakFbMHZiDhv0+RzRytSrCvdS4WUV/TWm2LMGjG74ZHfeihTBVqGNOLfLkXZ+XcFFCd86TynG+QXq2Y87jDiaHr4zSJmh2w3s35kvEg2YtM5yHuyM/4b63q1DwAfa8HkD4/B0nKurGyP9sxSK7aGLJbxq+LvQvAX0Du3QtvENAKT81X6KSg5Y3w2bFPQTqK/x9+ve4bPjWP0XVIEcw+iItcQ/ZFRPkSexBdbh0m3asFNgIJ4b9KWS6jOvfwDiSH89oqlmAWDjYrlzcpm3mzr3PreK8SiVonJLXhPjw8Vw9Uv+RWkWevCl+pp8MGqrd5wBfqkOda8653rQ7QeO/0qXd93AyiNkKS9gK9R2HvmU8B/ApRPlUp+KqYhuRdDfP9RgPi08+JvcrFms6oR0mrfLoR5dutFYtct6I5zC4D+ADAPwP4PqLrtrxvWnKw8zoJ8QbvoWxuCcjKLhoWfVhZlWz/vR2Sv7k3kBNwTb9E9WXVWTtYbZ7kAp/3fRKsPOV9PfKoB2UP5f0yjTCv+KxP59SKMmiD0E74fawhudU84kka/59Aii7yiPqobXTPaBSll0TiEL1Bfb4Ero+TJmp2wHsgJbN7zaQWEPU/OYmoB9rD8ICb5TrEjanvlychfJU/e9cQtSz2A8pt4O+s0J0nOfsequ9EhZO01DBJGd5PA2JL8PMBSG7hGNfoQeA1Av/mMBW1PUDzkETvk5ALf2/H/G0WPA8wcjkLKer5MeXyMr/fjfX3ndJqOK1ODK/xcawNc5y3WncC92BlVWi7p0x0Gs/JW3x9DPEQazuNRja8rUDSX94A8FckbF444/o4FaI2AAlV7qph5S1AQhvHaXlrg0ur0LXKQu9Ae5zWh/2sZUT9bp7g1/MxpDErJO1hG1Cv4MmbTawW3jIkpHQO4kn7MYBfmHFqRYojPVyGhO/vImq4GFeV/GUM0ShAPKtPobq/YN4csifonWqFq32W6XU4C8nhWHDxaDpmsfIOyYrRRd3Uu04M4p0Dn0OSxsdS+LxReP9L18cpETVAQpEvQnqcDQYDUkJ2kEricVrL2qG5HDN52nl/lL9viY+1FHeTrH1JxtuKCbLFgKjZnLRrAP43LbwrFEYrJE7S0oPmJZQgSapjkKrkXkNa+o1i+D5JtsUwDZUXEOVw2v6CDyBFNJ+huqVNlmF7QjlRa65RqJWys4H8aP5VkQb1IKqT2R3RHHYiSihPGl3wELTr44SJmk2oGwDwNU5KGG8vGwVxBOLmnUd1NU0usPz0GqqOQKHENSZ8jot0L4MHRZiMOIWoc3sHJKF0v1EMSwERvQvgJ5DKlfBw9HBn+kpccRtRscvTqM7JKkBaquyBVCVbYj1CpfAs4q+luUxCvtwi66z3IPZxL94zB9BGrtzZaJipXQ+ukvEEWKNVU0Z6Ed0B2l3jb9sZRcryMM8r9XZ1YOPtYnKGMC9xLQbhnk3XxwkTNTtRo2SmLxqvUNGQOXs9RhHRHXRrQRgazQUTrUUFNuGvWQdcrc38BYD/TmauVZ4FAL8F4L8i6pW2iJU5bYUac+JIF2ES63vc/Hsg4f6w4eKTkJD1uDEgHqEi2WnkpciD9UtIvuV4C85LGSubWruMNu/geoDqW1u0LUcXidozkHstL8T8bTtDI0BLqI5WLDfQcCgbo7yR7+v6eBPo4yTcq7aj7yO00mxLiWVDSjZCFAvmPQrBZ+idos9R8dgNlyXcgiQknoFUvp6C5PT8P0iLDVWqfagu2d4K4Dc4Pg9VZAcLkLwITTgO0Uej5Wmznl0Qb/LOGAPqPhVNeMNEq5Cd0EDxHl3NxSyk0Gre6P+w6Gu3IWi+XitluZLweeJeY9fHqRA17ej7BC20kRjLJCkFYC8t74dUbTxqWHTWFI9eDRXiMoB/ImGbNr+rY9sN4D9BrpHaEZBXR3OQN+T7C1T3sSsZgv0axMusqQDPQNzsgzHveY9K5kN4crGjfn2smKFReIakrTMw9HohaSiPI6podDhcHzdZHzcy9GlLufUy5pcRXfUESA6WYgpRxcR6y8BtJ+cefl5HDLsdpeI5DUkszBo6IXkPasF2QzyC8xD36iCV5vGAiHZCbiiYhvSfm6Di9bBS82DDRDcgFY9PkUhrqL+IqEeSNjJ+hfukz6yxEu6bkLY1Ez69jg0Yr5aofU7d8Sj1pjXu+iE5xeN8LRoD0HWLw/Vxk/RxI4laPmCqYUffihnwDMR9+IUhKKV1fM4S368fEl49DAmxhhai3u11iaRmMmPCVDZjUaHQf98hcz9BwrmH82cJ7UEAv0di9zbJWj3E19GYtVTc5brtBvAN7oEwxKTNGL+OqB+gFsuUaQl+CklatbLvXg5HvbgPybEZo67QirYlyt0IgG9Sft9Huo2zXWc5XB+nQNTsA9teZsDK647OAPgh5AJVkL2utcw1bxRLN4naSyQs+8zEqoX4EsTt+StD1LJkIYY5D/b/VyDVnYMA3kQURtZqrWEAv00FfJFWg6P56zhLedsLaU2zNZD/3QB+l3/zTCDbasicgvTIu+tT62gQStQpZ+kd2GNkVz0MW2jcvsbDaRLp3K+q+2cL98E03IvncH3ccKKmE6PXLtiOvnqp7X2StB+QgGhD2h6svdJFLS9t6tpDkrIb4tbUaz3KEA/bY5CY825ktwGuncNSYAH/jGO0+X4LXLtOiOv2dZLeO36wNx05yuU5AL+GuMn3G4OlSOPiL4xRo4eoepwnqVg+QLWb3b1pjo3IZYWy9WtIrs1u6uswV/lRSP5rCcA/ILqyq4ukrdLAZ7KRmJ30eFQgEYKbvmwO18eNb8/RBSl3fR7V1zbYRnEnSNLGzAatp0HrnPn6ESfyICQMqt37LWM+AAklzrXIgadevxlIGOIXiEKgvQGhexLAd0jsfgIPgTYTevCUIO1hLkL68diWNN2IumUDUSNnzeGcgORVftXi5MzbO2SPqAFSrPQTiEf+DURtkdRY1v6Xc5BoxAnq7kb3o7SG6UEAv0OidgVyTeBNs6fcSHG0rT5uBFGzYcRhiMv8NcR39J3hBjyFxrq175PtHoC4NXcEYxvg4oyRVc+2gIBZgbhMy7YA4M84xoKxCAYB/BH/5gKFCuZ3HOnBEuNbiFzuT6H62rNwH9rmzpcoq/db+KAqYOW9tJtZHnMx483SutnnmAbwI0jKyTEat3pAqd4cIVm7R7n9oTGoi4jSNMrrnKM4GTgM4C8B/AnPjR+iusjBCb+jrfVxscETMQpJxDtKlqqJ8rZq4jyias8O1N/cTy1E/XoG4ln7JqKWFfZur9cg1R8X0BoeJ9vMtwS5BHYLJAT6G0b5zpH590NCoB9CQqDjTtKafiDOQKp3d0Hc7aoY5oODXZtAL1MhfEql0qoHVYXelwVU5zctb/J1X0Z1dCCL5FoPmUmIp/4kIi99b/DMuwF8y8jnB9ShyxuQC/3bTkix1y5IfvEf89xo1LnkcGwafZxv4ER0QHIbDqG6DYc2VbzBAV8P/raygU0PM6GXEF3HZA+GRYhH7RWStdEGjz8tLHH+fg7xSi5g5f1zeyC5Jf8B4nWzngxH+rhP4vwxogo6aySF63IX0lDxPVTnQrRaUrXetdduyeD5FiDV9uC6BOnV+AMjn3keXFrxto9E6q8B/BdIZKIROALguwD+BsBfQYrPYIiup2w4XB8nYLnsg+RKWYLQYZjsJxCP10QM2WoUxiEes2cRuS9tzzV7t1eSjXeTwi1IcUE/53kvx7jIsXSTkE5Bwp/vwq/taRZU9mZolY3TiNHDsGAIjbX4PuTazbXw2LshSeo7Id7sO0YfbNbrcXRNOwzZKCDbnebvQ25GGYTkiD1n1m8ZUSXodr620jjcCUnHmOZrAdVthuwe6OQ8dPF9RyEpKs9Boh+v82dqWM+66nC4Pk6GqA1D2mAcR3URgWKKA/4A1b3MGkGU7HvcJvvdBQkRDgQ/H4FcF3GehK4VQjFW+c1BQhV69cVeo+B0LTs5xm9R6X2C+oo1HI1RDIB4kT+hobDLrFV4iN+mEXHZKJByi4zV7sVuGm1XaSxM8TAe2gBR0xSKHCR14k6G9m8RURhvClHX8vV2988Zw2sayTaxVvm8BgmBvkJje8T8fAFRXhm4plqAcAHR9TyXzfPOIOpxOcTf7+f7HqLeOkTSN2hIWgnV3kjPS3O4Pm4AUbMPPcyNfpybUi9kVo/aNOTi8fMJKJ5KYCFqDPoxEjUb3uyHdB2+AgnFzsQsYlahRRsLFLKfQe4xPYaVSZG7AHybivMGD8xWGedmgZ3nCRLsfZD8wqFgXVV2x1CdGpBr4TF3UTa/DfFid/JgLtUhg1od2EedNQbgp1SkzUSZ+qUHkhC/wK9qfXesQ7GXOGcFiOf8Y0iV2b0UxnEJwI85lpcg3rVeo1fUW9ZJ43AvJGpxhIfdRT7nA6NTLVHrI1E7DOkIYJuSLyC6t1lJvpM0h+vjBhE1i93cgAfM5rODusZBTyfMTNWDdBhSBQmjaAqI7va6zoWaMc+T9fCgfb5xAP+IKAyheXfzHKeGQGchVa7j8PBnMxXDpFEMzxrFkOdrClKNdALVffBaLTQfVj3uAvCnJGv5dRKXkBAt0zDpJqk4bYhasxpYL3MP9lP/PY6otH89il2T7Af5fqf5vVsJEjUrn/cgVaBjkM7sb0K8Znac4Vg6SdR2Uc9oioV6TItc7w6uTycJW0eg07TfpWKG54RHARyujxtA1GyY4wA3rJ0Ujfleh3TCTrpqQsnfHC28cURl56pE9CaDJyGVoRdjFjEpIakEVvhGx/k5pBfSy5CuyrqeS0YZPsOfTULCzlk6+MsP2UybTUlchLjRbcPFvDEw3ufrQQvORyjbS+Yw35vA5z2J6C6+tC3dSkBgtEpsGFFLoo3iaUTNu9Mg1xWSo4+oKxY4tudpBPYEf6M3w3SiujhrreS2jKgJeo8hi5dpaH8QENRyk9a3WQd0JSPPkeQ55vo4JaKmJO0ZSFl1VyBMeVq8JzjgyRQFbpyepAOQJFi1WLVCchTisv+cCqGcsFCUEHX0XuRc5VBfvo79/bMA/oXjegnV5cYdkHzBN6l4ryO6p6zZuU8lc5gvGot6CZuvsaXO9QIk9P8ViUbR7D8ttjmNdK7rabRsL5mXVnsqAehs0GdZOWlW0+pK4OlZNPIcVzW23j1hG4MvpXQwhJ9xEcA/UX9+AxKZOB6QRr2mzxqFax2jHvCWXM/R6HyLnoxLgSej0sT17TRy3Qw507OrownPkeQ55vo4YaJm85y2QTri/2HASrvNv09B8i1mE954oWvzA0ie2hsx43wcwG9C8rfeR3IVHTl+9gDJYQ7V7TT66lDuYaz9ZyRouyEexGIw3kMA/jOF8nskz80mQz2IqoPtQb41JS9CmrAH0m0qgEN8aUf4yzycVClk6S7a1VCg7A0jCnUlhc4ac5rm+hURJdsD8YVTG5lLRUcTPCi2wecdvq7zQLsDCXMOU5d11Xl2FAIyOgeJtJyiwfkLVOcENXt9O80515Oi3HUZ/Zgz8rAtOD/SnKNGn2OujxMmaraztN5E8FSN312C9DY7h+gi8aSUT0hgPjSELBynXtZ+js83F0NCGwFtAZKrMdeVDXye3mH2OSTG/iqiUG+IAwB+HxLeeAuRdzPt4gJ7ZUxPDQK32Xq+lQK5fJdGzQ7K4QWI1/l6i4wnF7Omaa9ZB5pXIZjGQdmHqNF1mnszxGUAfw/xcr0MCcke4aG2YwOf9YB66yTkTs/TkDzmqQzId3eN76lnK2nyrKH0nhoEDkjfg5XkOeb6OCGiZhdkHpKAuocLqRtthML9tiFpSFnpXIS06jgE6dkzD/HqFWglXuDzlh+irDYyPwtUdif4/Z2I8uXmKCTTwYZYz4GpV7icJQFb4lroFS8ac5+h4OXQ3IqqEuf8DOSamCc4D0V6Zk5CvJyNXI8sYR7StPhTAH/A7/2K+2S6hjLJsqLTPkMDkBQDPWhKCciZJtvnAPwr0kulCK+g+TkkJDhHRd/RgLGqATPI9ztNvfqgiWRcDfJbfF0H8CX3rL6Gja7RogENa+rhbu9zXuScjVNnvUfZX4oh3WmGO8P1fR1S9bdIwjQG6VowkcLeLJG0/hTSymSW89hDvXkO0VVGac1LkueY6+M6rOOHYu/Rg6GlcYAb1uYd6aadIGFaaNL4BklchrAyd2aByv4Wku3HpCXqQxBXesUo5iluykZUOGlDyp4Yb0OZQjkBcfc2U/A6OB+j9ByUjdEwDWklMoPNB+tN/g6A/0GD5m8B/B2qG0G3CjpoiQ4jChMl5aW1nrtJSL5l2nqlF1IptgVRjla+gePTJt33abBMZuzQG6DXoZ9rPsi56OOrl2dCHtH1YQvUPTPUdxP89wP+/0GGxmfXV/PpCiRLt/m8acjcEM+tQXM25TlXNykXaevwtM6xttDHV898lbhHLWSkX2R4Me4hnT5Eq2E6YOdJQS3frGOphZ41KaPoMq22XnqkJlp0TEsk1lfbZA1nM67vkpRb7eo+E3PgDSDquxYStUV6Xe6tQi6ycoNDVtY3rTOj1Z+pbfSxX37rcKSDUqAY/hcPtE99ahwZxsPIU9kc4tpHz4Y+17s3HA7XxwkQNc1LsJvaXinT7E0YPp+GZiopPpvmfIT5F428b9Re9RJnDWftbtMiVobesyAvaeAegHfQWkm4a5W7JAtUsqBX4vTdZhrfWp4xX+PAe5hOrZfINWt97biWM/AczZaLNM4x18cOh8PhcDgcDofD4XA4HA6Hw+FwOBwOh8PhcDgcDofD4XA4HA6Hw+FwOBwOh8PhcDgcDofD4XA4HA6Hw+FwOBwOh8PhcDgcDofD4XA4HA6Hw+FwOBwOh8PhcDgcDofD4XA4HA6Hoyb+HbHcOCcJNKUAAAAAAElFTkSuQmCC";
+const UI = {
+  bg: "#FFFFFF", tile: "#F3F2EE", tile2: "#EAE8E2", ink: "#121412", inkSoft: "#474946", mute: "#8B8D89", line: "#E7E6E1",
+  vert: "#19382C", vertSoft: "#E7EDE8", cream: "#F5F1E8", gold: "#B9985B",
+  claret: "#8A2A2A", claretSoft: "#F6E7E6", warn: "#9A6321", warnSoft: "#F6ECDD", info: "#3F5F8A", infoSoft: "#E7EDF5", ok: "#2E6349", okSoft: "#E4EFE7",
+};
+const TONE = { blocked: [UI.claret, UI.claretSoft], required: [UI.warn, UI.warnSoft], pending: [UI.info, UI.infoSoft], info: [UI.mute, UI.tile], clear: [UI.ok, UI.okSoft] };
+const CSS = `
+@keyframes avSplashIn { from { opacity: 0; transform: scale(.94); } to { opacity: 1; transform: none; } }
 @keyframes avIn { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: none; } }
-.av-splash { animation: avOut .7s ease 1.7s both; }
-.av-splash .l { animation: avLogo .9s cubic-bezier(.2,.7,.2,1) both; }
-.av-splash .w { animation: avIn .9s cubic-bezier(.2,.7,.2,1) .35s both; }
-.av-sheet { animation: avUp .42s cubic-bezier(.2,.8,.2,1) both; }
-.av-veil { animation: avVeil .25s ease both; }
+@keyframes avUp { from { transform: translateY(100%); } to { transform: none; } }
+@keyframes avVeil { from { opacity: 0; } to { opacity: 1; } }
 .av-fade { animation: avIn .28s cubic-bezier(.2,.7,.2,1) both; }
-.av-press { transition: opacity .15s ease; } .av-press:active { opacity: .6; }
+.av-sheet { animation: avUp .4s cubic-bezier(.2,.8,.2,1) both; }
+.av-veil { animation: avVeil .22s ease both; }
+.av-press { transition: opacity .15s ease; -webkit-tap-highlight-color: transparent; } .av-press:active { opacity: .6; }
 .av-x { scrollbar-width: none; } .av-x::-webkit-scrollbar { display: none; }
 select, input { -webkit-appearance: none; appearance: none; }
 input[type=number]::-webkit-inner-spin-button { -webkit-appearance: none; }
+button { font-family: inherit; }
 `;
-const TAB_H = 84, HEAD_H = 56;
+const SANS = { fontFamily: "'Jost', -apple-system, 'Helvetica Neue', sans-serif" };
+const DOCSERIF = { fontFamily: "'Cormorant Garamond', Georgia, serif", fontWeight: 500 };
+const CAT_LABEL = (c) => (CATS.find((x) => x[0] === c) || [c, c])[1];
+const daysTo = (d) => Math.round((d - TODAY) / 86400000);
+const eur = (v) => `${v.toLocaleString("fr-FR")} €`;
 
 /* ---------- primitives ---------- */
-const Logo = ({ size = 40, light }) => <img src={light ? LOGO_LIGHT : LOGO} alt="ARTVELCHIV" style={{ width: size, height: "auto", display: "block" }} />;
-const Wordmark = ({ size = 16, color = UI.vert }) => <span style={{ ...sans, fontWeight: 300, fontSize: size, letterSpacing: "0.38em", color, textTransform: "uppercase", paddingLeft: "0.1em", whiteSpace: "nowrap" }}>ARTVELCHIV</span>;
-const H1 = ({ children, sub, style }) => <div style={{ padding: "18px 0 14px", ...style }}><div style={{ ...sans, fontSize: 34, fontWeight: 500, lineHeight: 1.08, letterSpacing: "-0.015em", color: UI.ink }}>{children}</div>{sub && <div style={{ ...sans, fontSize: 15, color: UI.mute, marginTop: 8, lineHeight: 1.5 }}>{sub}</div>}</div>;
-const H2 = ({ children, right, style }) => <div style={{ display: "flex", alignItems: "baseline", justifyContent: "space-between", padding: "22px 0 10px", ...style }}><div style={{ ...sans, fontSize: 20, fontWeight: 500, color: UI.ink }}>{children}</div>{right}</div>;
-const Micro = ({ children, style }) => <div style={{ ...sans, fontSize: 12, color: UI.mute, ...style }}>{children}</div>;
-const Pill = ({ k, txt }) => { const [c, bg] = TONE[k]; return <span style={{ ...sans, display: "inline-flex", alignItems: "center", gap: 6, background: bg, color: c, fontSize: 12, fontWeight: 500, padding: "5px 10px", borderRadius: 999, whiteSpace: "nowrap" }}><span style={{ width: 6, height: 6, borderRadius: "50%", background: c }} />{txt || LABEL[k]}</span>; };
-const Btn = ({ children, onClick, primary, dark, outline, full, small, disabled }) => <button onClick={onClick} disabled={disabled} className="av-press" style={{ ...sans, fontWeight: 500, fontSize: small ? 14 : 16, padding: small ? "10px 18px" : "16px 26px", borderRadius: 999, cursor: disabled ? "default" : "pointer", border: outline ? `1px solid ${UI.ink}` : "1px solid transparent", background: primary ? UI.vert : dark ? UI.ink : outline ? "transparent" : UI.field, color: primary || dark ? "#FFFFFF" : UI.ink, width: full ? "100%" : undefined, opacity: disabled ? 0.4 : 1 }}>{children}</button>;
-const Chip = ({ children, on, onClick, icon }) => <button onClick={onClick} className="av-press" style={{ ...sans, display: "inline-flex", alignItems: "center", gap: 7, flexShrink: 0, border: "none", cursor: "pointer", padding: "10px 16px", borderRadius: 999, fontSize: 14, fontWeight: 500, background: on ? UI.vert : UI.field, color: on ? "#FFFFFF" : UI.ink }}>{icon}{children}</button>;
-const Chev = ({ open, color = UI.ink }) => <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke={color} strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" style={{ flexShrink: 0, transform: open ? "rotate(90deg)" : "none", transition: "transform .2s" }}><path d="M9 6l6 6-6 6" /></svg>;
-const Row = ({ children, onClick, last, style }) => <div onClick={onClick} className={onClick ? "av-press" : undefined} style={{ display: "flex", alignItems: "center", gap: 14, padding: "15px 0", borderBottom: last ? "none" : `1px solid ${UI.line}`, cursor: onClick ? "pointer" : "default", ...style }}>{children}</div>;
-const Field = ({ label, children }) => <div style={{ marginBottom: 18 }}><div style={{ ...sans, fontSize: 13, color: UI.mute, marginBottom: 7 }}>{label}</div>{children}</div>;
-const inp = { ...sans, width: "100%", background: "transparent", border: "none", borderBottom: `1px solid ${UI.ink}`, borderRadius: 0, padding: "10px 0", color: UI.ink, fontSize: 17, outline: "none", boxSizing: "border-box" };
-const Sel = ({ value, onChange, options }) => <div style={{ position: "relative" }}><select value={value} onChange={(e) => onChange(e.target.value)} style={{ ...inp, paddingRight: 28, cursor: "pointer" }}>{options.map((o) => Array.isArray(o) ? <option key={o[0]} value={o[0]}>{o[1]}</option> : <option key={o} value={o}>{o}</option>)}</select><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke={UI.ink} strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" style={{ position: "absolute", right: 2, top: 15, pointerEvents: "none" }}><path d="M6 9l6 6 6-6" /></svg></div>;
-const Seg = ({ value, onChange, options }) => <div style={{ display: "flex", gap: 8, flexWrap: "wrap" }}>{options.map(([v, l]) => <Chip key={v} on={value === v} onClick={() => onChange(v)}>{l}</Chip>)}</div>;
-const Tile = ({ hue, label, w = "100%", ratio = 1, radius = 0, fs = 28 }) => <div style={{ width: w, aspectRatio: String(ratio), borderRadius: radius, background: `linear-gradient(150deg, ${hue}, #14140F)`, display: "flex", alignItems: "center", justifyContent: "center", ...serifU, color: "rgba(250,245,235,0.92)", fontSize: fs, flexShrink: 0 }}>{label}</div>;
-const Ring = ({ v, size = 44 }) => { const c = v >= 95 ? UI.vert : v >= 75 ? UI.ok : v >= 55 ? UI.warn : UI.claret, r = (size - 5) / 2, circ = 2 * Math.PI * r; return <div style={{ position: "relative", width: size, height: size, flexShrink: 0 }}><svg width={size} height={size} style={{ transform: "rotate(-90deg)" }}><circle cx={size / 2} cy={size / 2} r={r} fill="none" stroke={UI.line} strokeWidth="3" /><circle cx={size / 2} cy={size / 2} r={r} fill="none" stroke={c} strokeWidth="3" strokeLinecap="round" strokeDasharray={circ} strokeDashoffset={circ * (1 - v / 100)} style={{ transition: "stroke-dashoffset .6s ease" }} /></svg><div style={{ position: "absolute", inset: 0, display: "flex", alignItems: "center", justifyContent: "center", ...sans, fontSize: size * 0.28, fontWeight: 500, color: c }}>{v}</div></div>; };
-const Ico = ({ name, active }) => { const c = active ? UI.ink : "#6F6A5F"; const p = { fill: "none", stroke: c, strokeWidth: active ? 2.1 : 1.7, strokeLinecap: "round", strokeLinejoin: "round" };
-  if (name === "accueil") return <svg width="26" height="26" viewBox="0 0 24 24"><path {...p} d="M4 11l8-7 8 7v9a1 1 0 0 1-1 1h-5v-6h-4v6H5a1 1 0 0 1-1-1z" /></svg>;
-  if (name === "recherche") return <svg width="26" height="26" viewBox="0 0 24 24"><circle {...p} cx="11" cy="11" r="7" /><path {...p} d="M20 20l-3.5-3.5" /></svg>;
-  if (name === "echeances") return <svg width="26" height="26" viewBox="0 0 24 24"><rect {...p} x="4" y="5" width="16" height="15" rx="1.5" /><path {...p} d="M4 10h16M8 3v4M16 3v4" /></svg>;
-  if (name === "archive") return <svg width="26" height="26" viewBox="0 0 24 24"><path {...p} d="M4 7h16v13H4zM3 4h18v3H3zM10 11h4" /></svg>;
-  return <svg width="26" height="26" viewBox="0 0 24 24"><circle {...p} cx="12" cy="8" r="4" /><path {...p} d="M5 20a7 7 0 0 1 14 0" /></svg>; };
-const Back = ({ onClick, label = "Retour" }) => <button onClick={onClick} className="av-press" style={{ ...sans, display: "flex", alignItems: "center", gap: 2, background: "none", border: "none", cursor: "pointer", fontSize: 16, color: UI.ink, padding: 0 }}><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke={UI.ink} strokeWidth="1.9" strokeLinecap="round" strokeLinejoin="round"><path d="M15 6l-6 6 6 6" /></svg>{label}</button>;
-const Base = ({ base }) => base && base !== "—" ? <div style={{ ...mono, fontSize: 11, color: UI.vert, marginTop: 8 }}>{base}</div> : null;
+const Wordmark = ({ h = 14, light, style }) => <img src={light ? LOGO_LIGHT : LOGO_DARK} alt="ARTVELCHIV" style={{ height: h, width: "auto", display: "block", ...style }} />;
+const Big = ({ children, style }) => <div style={{ ...SANS, fontSize: 34, fontWeight: 400, letterSpacing: "-0.015em", lineHeight: 1.08, color: UI.ink, ...style }}>{children}</div>;
+const Sub = ({ children, style }) => <div style={{ ...SANS, fontSize: 14.5, color: UI.mute, lineHeight: 1.55, ...style }}>{children}</div>;
+const Label = ({ children, style }) => <div style={{ ...SANS, fontSize: 11.5, letterSpacing: "0.08em", textTransform: "uppercase", color: UI.mute, fontWeight: 500, ...style }}>{children}</div>;
+const H = ({ children, onMore, style }) => <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", margin: "28px 0 12px", ...style }}><div style={{ ...SANS, fontSize: 20, fontWeight: 500, color: UI.ink, letterSpacing: "-0.01em" }}>{children}</div>{onMore && <button onClick={onMore} className="av-press" aria-label="Voir tout" style={{ background: "none", border: "none", cursor: "pointer", padding: 4 }}><Ico name="chev" /></button>}</div>;
+const Pill = ({ k, big }) => { const [c, bg] = TONE[k]; return <span style={{ ...SANS, display: "inline-flex", alignItems: "center", gap: 6, background: bg, color: c, fontSize: big ? 12.5 : 11, fontWeight: 500, padding: big ? "6px 11px" : "4px 9px", borderRadius: 999, whiteSpace: "nowrap" }}><span style={{ width: 6, height: 6, borderRadius: "50%", background: c }} />{KIND[k][0]}</span>; };
+const Btn = ({ children, onClick, primary, ghost, full, disabled, small, style }) => <button onClick={onClick} disabled={disabled} className="av-press" style={{ ...SANS, fontWeight: 500, fontSize: small ? 13.5 : 15.5, padding: small ? "10px 16px" : "16px 22px", borderRadius: 999, cursor: disabled ? "default" : "pointer", border: ghost ? `1px solid ${UI.ink}` : "1px solid transparent", background: primary ? UI.vert : ghost ? UI.bg : UI.tile, color: primary ? "#FFFFFF" : UI.ink, width: full ? "100%" : undefined, opacity: disabled ? 0.4 : 1, ...style }}>{children}</button>;
+const Chip = ({ active, children, onClick, icon }) => <button onClick={onClick} className="av-press" style={{ ...SANS, flexShrink: 0, display: "inline-flex", alignItems: "center", gap: 7, border: "none", cursor: "pointer", padding: "11px 16px", borderRadius: 999, fontSize: 14, fontWeight: 500, background: active ? UI.vert : UI.tile, color: active ? "#FFFFFF" : UI.ink }}>{icon && <Ico name={icon} size={16} color={active ? "#FFFFFF" : UI.ink} />}{children}</button>;
+const Row = ({ children, onClick, last, style }) => <div onClick={onClick} className={onClick ? "av-press" : undefined} style={{ display: "flex", alignItems: "center", gap: 12, padding: "14px 0", borderBottom: last ? "none" : `1px solid ${UI.line}`, cursor: onClick ? "pointer" : "default", ...style }}>{children}</div>;
+const Box = ({ children, style, pad = 0, onClick }) => <div onClick={onClick} className={onClick ? "av-press" : undefined} style={{ background: UI.bg, border: `1px solid ${UI.line}`, borderRadius: 6, padding: pad, cursor: onClick ? "pointer" : "default", ...style }}>{children}</div>;
+const Tile = ({ children, style, onClick }) => <div onClick={onClick} className={onClick ? "av-press" : undefined} style={{ background: UI.tile, borderRadius: 6, padding: 16, cursor: onClick ? "pointer" : "default", ...style }}>{children}</div>;
+const Field = ({ label, children }) => <div style={{ marginBottom: 14 }}><Label style={{ marginBottom: 7 }}>{label}</Label>{children}</div>;
+const inp = { ...SANS, width: "100%", background: UI.bg, border: `1px solid ${UI.line}`, borderRadius: 4, padding: "13px 14px", color: UI.ink, fontSize: 16, outline: "none", boxSizing: "border-box" };
+const Sel = ({ value, onChange, options }) => <div style={{ position: "relative" }}><select value={value} onChange={(e) => onChange(e.target.value)} style={{ ...inp, paddingRight: 40, cursor: "pointer" }}>{options.map((o) => Array.isArray(o) ? <option key={o[0]} value={o[0]}>{o[1]}</option> : <option key={o} value={o}>{o}</option>)}</select><div style={{ position: "absolute", right: 14, top: 15, pointerEvents: "none" }}><Ico name="down" size={14} color={UI.mute} /></div></div>;
+const Seg = ({ value, onChange, options }) => <div style={{ display: "flex", background: UI.tile, borderRadius: 999, padding: 3 }}>{options.map(([v, l]) => <button key={v} onClick={() => onChange(v)} style={{ ...SANS, flex: 1, padding: "9px 6px", fontSize: 12.5, fontWeight: 500, cursor: "pointer", background: value === v ? UI.ink : "transparent", color: value === v ? "#FFFFFF" : UI.inkSoft, border: "none", borderRadius: 999, transition: "all .18s" }}>{l}</button>)}</div>;
+const Ring = ({ v, size = 44 }) => { const c = v >= 95 ? UI.vert : v >= 75 ? UI.ok : v >= 55 ? UI.warn : UI.claret, r = (size - 5) / 2, circ = 2 * Math.PI * r; return <div style={{ position: "relative", width: size, height: size, flexShrink: 0 }}><svg width={size} height={size} style={{ transform: "rotate(-90deg)" }}><circle cx={size / 2} cy={size / 2} r={r} fill="none" stroke={UI.line} strokeWidth="3.5" /><circle cx={size / 2} cy={size / 2} r={r} fill="none" stroke={c} strokeWidth="3.5" strokeLinecap="round" strokeDasharray={circ} strokeDashoffset={circ * (1 - v / 100)} style={{ transition: "stroke-dashoffset .6s ease" }} /></svg><div style={{ position: "absolute", inset: 0, display: "flex", alignItems: "center", justifyContent: "center", ...SANS, fontSize: size * 0.27, fontWeight: 500, color: c }}>{v}</div></div>; };
+const Base = ({ children }) => <div style={{ ...mono, fontSize: 10.5, color: UI.vert, marginTop: 8, background: UI.vertSoft, display: "inline-block", padding: "4px 9px", borderRadius: 4 }}>{children}</div>;
+const Ico = ({ name, active, size = 24, color }) => {
+  const c = color || (active ? UI.ink : UI.ink), p = { fill: "none", stroke: c, strokeWidth: 1.6, strokeLinecap: "round", strokeLinejoin: "round" }, f = active ? c : "none";
+  const S = { width: size, height: size, display: "block", flexShrink: 0 };
+  switch (name) {
+    case "home": return <svg style={S} viewBox="0 0 24 24"><path {...p} fill={f} d="M4 10.5 12 4l8 6.5V20a1 1 0 0 1-1 1h-4.5v-6h-5v6H5a1 1 0 0 1-1-1v-9.5z" />{active && <path d="M9.5 21v-6h5v6" fill="#FFFFFF" />}</svg>;
+    case "search": return <svg style={S} viewBox="0 0 24 24"><circle {...p} strokeWidth={active ? 2.4 : 1.6} cx="10.5" cy="10.5" r="6.5" /><path {...p} strokeWidth={active ? 2.4 : 1.6} d="M15.5 15.5 21 21" /></svg>;
+    case "inbox": return <svg style={S} viewBox="0 0 24 24"><path {...p} fill={f} d="M4 5h16v11h-7l-4 4v-4H4z" /></svg>;
+    case "archive": return <svg style={S} viewBox="0 0 24 24"><path {...p} fill={f} d="M4 7a1 1 0 0 1 1-1h4l2 2h8a1 1 0 0 1 1 1v10a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1z" /></svg>;
+    case "profile": return <svg style={S} viewBox="0 0 24 24"><circle {...p} fill={f} cx="12" cy="8" r="4" /><path {...p} fill={f} d="M4 21c0-4 3.6-6.5 8-6.5s8 2.5 8 6.5z" /></svg>;
+    case "bell": return <svg style={S} viewBox="0 0 24 24"><path {...p} d="M6 16V11a6 6 0 0 1 12 0v5l1.5 2h-15z" /><path {...p} d="M10 20a2 2 0 0 0 4 0" /></svg>;
+    case "plus": return <svg style={S} viewBox="0 0 24 24"><path {...p} strokeWidth="2" d="M12 5v14M5 12h14" /></svg>;
+    case "back": return <svg style={S} viewBox="0 0 24 24"><path {...p} strokeWidth="2" d="M15 5l-7 7 7 7" /></svg>;
+    case "close": return <svg style={S} viewBox="0 0 24 24"><path {...p} strokeWidth="1.8" d="M6 6l12 12M18 6 6 18" /></svg>;
+    case "chev": return <svg style={S} viewBox="0 0 24 24"><path {...p} strokeWidth="1.8" d="M9 6l6 6-6 6" /></svg>;
+    case "down": return <svg style={S} viewBox="0 0 24 24"><path {...p} strokeWidth="2" d="M6 9l6 6 6-6" /></svg>;
+    case "clock": return <svg style={S} viewBox="0 0 24 24"><circle {...p} cx="12" cy="12" r="8.5" /><path {...p} d="M12 7.5V12l3 2" /></svg>;
+    case "doc": return <svg style={S} viewBox="0 0 24 24"><path {...p} d="M6 3h8l4 4v14H6z" /><path {...p} d="M14 3v4h4M9 12h6M9 16h6" /></svg>;
+    case "tag": return <svg style={S} viewBox="0 0 24 24"><path {...p} d="M3 12V4h8l9 9-8 8z" /><circle cx="7.5" cy="8.5" r="1.2" fill={c} /></svg>;
+    case "check": return <svg style={S} viewBox="0 0 24 24"><path {...p} strokeWidth="2.2" d="M5 12.5l4.5 4.5L19 7.5" /></svg>;
+    case "alert": return <svg style={S} viewBox="0 0 24 24"><path {...p} d="M12 4 2.5 20h19z" /><path {...p} strokeWidth="2" d="M12 10v4M12 17.2v.3" /></svg>;
+    case "scale": return <svg style={S} viewBox="0 0 24 24"><path {...p} d="M12 4v16M5 20h14M4 8h16M6 8l-3 6a3 3 0 0 0 6 0zM18 8l-3 6a3 3 0 0 0 6 0z" /></svg>;
+    case "camera": return <svg style={S} viewBox="0 0 24 24"><path {...p} d="M4 8h3l2-3h6l2 3h3v11H4z" /><circle {...p} cx="12" cy="13" r="3.5" /></svg>;
+    default: return null;
+  }
+};
 
-/* ---------- écrans d'entrée ---------- */
-function Splash() {
-  return <div className="av-splash" style={{ position: "fixed", inset: 0, zIndex: 100, background: UI.vertDeep, display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", gap: 26, pointerEvents: "none" }}>
-    <div className="l"><Logo size={128} light /></div>
-    <div className="w" style={{ textAlign: "center" }}><Wordmark size={26} color="#FAF5EB" /><div style={{ ...sans, fontSize: 11, letterSpacing: "0.3em", textTransform: "uppercase", color: UI.jaune, marginTop: 14 }}>The art transaction standard</div></div>
-  </div>;
+/* ---------- vignette d'œuvre (composition originale, générée) ---------- */
+const Art = ({ rec, i = 0, style }) => {
+  const d3 = ["sculpture", "religieux", "archeo", "mobilier", "bijou", "instrument", "armes", "numismatique", "naturel", "restes"].includes(rec.cat);
+  const hue = rec.hue || "#333333", v = i % 4;
+  return (
+    <svg viewBox="0 0 100 120" preserveAspectRatio="xMidYMid slice" style={{ width: "100%", height: "100%", display: "block", ...style }}>
+      {d3 ? (<>
+        <rect width="100" height="120" fill="#EEEDE8" />
+        <rect x="16" y="98" width="68" height="5" fill="#D8D5CD" />
+        {v === 0 && <><ellipse cx="50" cy="40" rx="12" ry="14" fill={hue} /><path d="M34 98 L38 62 Q50 54 62 62 L66 98 Z" fill={hue} /><path d="M38 70 L30 84 M62 70 L70 84" stroke={hue} strokeWidth="6" strokeLinecap="round" /></>}
+        {v === 1 && <><path d="M36 26 Q50 20 64 26 Q70 40 66 58 Q62 80 60 98 L40 98 Q38 80 34 58 Q30 40 36 26 Z" fill={hue} /><path d="M40 30 Q50 26 60 30" stroke="#EEEDE8" strokeWidth="2" fill="none" opacity=".45" /></>}
+        {v === 2 && <><rect x="34" y="28" width="32" height="70" rx="12" fill={hue} /><rect x="42" y="40" width="16" height="5" fill="#EEEDE8" opacity=".35" /></>}
+        {v === 3 && <><circle cx="50" cy="44" r="15" fill={hue} /><path d="M24 98 Q26 66 50 62 Q74 66 76 98 Z" fill={hue} /></>}
+      </>) : (<>
+        <rect width="100" height="120" fill="#2A2521" />
+        <rect x="3.5" y="3.5" width="93" height="113" fill="none" stroke={UI.gold} strokeWidth="1" />
+        <rect x="9" y="9" width="82" height="102" fill="#F2EEE5" />
+        <rect x="17" y="17" width="66" height="86" fill="#E9E2D3" />
+        {v === 0 && <><rect x="22" y="50" width="56" height="44" fill={hue} /><rect x="22" y="22" width="56" height="20" fill={hue} opacity=".22" /></>}
+        {v === 1 && <><circle cx="50" cy="56" r="22" fill={hue} /><rect x="62" y="82" width="12" height="12" fill={UI.gold} /></>}
+        {v === 2 && <><rect x="24" y="22" width="14" height="76" fill={hue} /><rect x="43" y="22" width="14" height="76" fill={hue} opacity=".62" /><rect x="62" y="22" width="14" height="76" fill={hue} opacity=".32" /></>}
+        {v === 3 && <><path d="M20 98 L80 30 L80 98 Z" fill={hue} /><path d="M20 22 L60 22 L20 70 Z" fill={hue} opacity=".38" /></>}
+      </>)}
+    </svg>
+  );
+};
+const Thumb = ({ rec, i, size = 56, radius = 3 }) => <div style={{ width: size, height: size, borderRadius: radius, overflow: "hidden", flexShrink: 0 }}><Art rec={rec} i={i} /></div>;
+
+/* ---------- écran de lancement (fond vert, logo, fondu) ---------- */
+function Splash({ onDone }) {
+  const [leaving, setLeaving] = useState(false);
+  useEffect(() => { const t1 = setTimeout(() => setLeaving(true), 1500); const t2 = setTimeout(onDone, 2300); return () => { clearTimeout(t1); clearTimeout(t2); }; }, []);
+  return (
+    <div aria-hidden="true" style={{ position: "fixed", inset: 0, zIndex: 100, background: UI.vert, display: "flex", alignItems: "center", justifyContent: "center", opacity: leaving ? 0 : 1, transition: "opacity .8s ease", pointerEvents: leaving ? "none" : "auto" }}>
+      <img src={LOGO_LIGHT} alt="ARTVELCHIV" style={{ width: "min(84vw, 400px)", height: "auto", animation: "avSplashIn 1s cubic-bezier(.2,.7,.2,1) both" }} />
+    </div>
+  );
 }
+
+/* ---------- accès privé ---------- */
 function Gate({ onOk, code }) {
   const [pin, setPin] = useState(""), [err, setErr] = useState(false);
   const check = () => (pin.trim().toUpperCase() === String(code).toUpperCase() ? onOk() : setErr(true));
-  return <div style={{ minHeight: "100vh", background: UI.bg, display: "flex", alignItems: "center", justifyContent: "center", padding: 28, ...sans }}>
-    <style>{FONTS}{EXTRA}</style>
-    <div className="av-fade" style={{ width: "100%", maxWidth: 360, textAlign: "center" }}>
-      <div style={{ display: "flex", justifyContent: "center" }}><Logo size={96} /></div>
-      <div style={{ marginTop: 20 }}><Wordmark size={22} /></div>
-      <div style={{ fontSize: 11, letterSpacing: "0.26em", textTransform: "uppercase", color: UI.mute, marginTop: 12 }}>Accès privé</div>
-      <input type="password" value={pin} onChange={(e) => { setPin(e.target.value); setErr(false); }} onKeyDown={(e) => e.key === "Enter" && check()} placeholder="Code d'accès" style={{ ...inp, ...mono, marginTop: 34, textAlign: "center", letterSpacing: "0.2em", borderBottomColor: err ? UI.claret : UI.ink }} />
-      {err && <div style={{ fontSize: 13, color: UI.claret, marginTop: 8 }}>Code incorrect.</div>}
-      <div style={{ marginTop: 22 }}><Btn dark full onClick={check}>Entrer</Btn></div>
-      <div style={{ fontSize: 12, color: UI.mute, marginTop: 26, lineHeight: 1.6 }}>Démonstrateur confidentiel. Données fictives ; règles validées à date par les équipes ARTVELCHIV.</div>
-    </div>
-  </div>;
-}
-function Onboarding({ onClose }) {
-  const pts = [["Décrivez", "L'œuvre, sa provenance connue, l'endroit où elle se trouve, sa destination et les parties à la vente."], ["Préparez", "Les obligations identifiées, les pièces attendues et les échéances à suivre, chacune avec sa source."], ["Documentez", "Le dossier de demande, le rapport acheteur et le projet de contrat, prêts à être relus et remis."]];
-  return <div className="av-veil" onClick={onClose} style={{ position: "fixed", inset: 0, zIndex: 60, background: "rgba(21,20,15,0.5)", display: "flex", alignItems: "flex-end", justifyContent: "center" }}>
-    <div className="av-sheet" onClick={(e) => e.stopPropagation()} style={{ width: "100%", maxWidth: 480, maxHeight: "88vh", overflowY: "auto", background: UI.bg, borderRadius: "22px 22px 0 0", padding: "12px 24px 28px", boxSizing: "border-box" }}>
-      <div style={{ width: 36, height: 4, borderRadius: 2, background: UI.line, margin: "0 auto 22px" }} />
-      <Wordmark size={14} />
-      <div style={{ ...sans, fontSize: 28, fontWeight: 500, lineHeight: 1.12, letterSpacing: "-0.01em", margin: "14px 0 8px" }}>Préparez chaque vente d'art avec un dossier clair.</div>
-      <div style={{ ...sans, fontSize: 15, color: UI.soft, lineHeight: 1.55, marginBottom: 6 }}>Identifiez les obligations liées à l'œuvre et à son parcours, réunissez les justificatifs et préparez les documents de la transaction.</div>
-      {pts.map(([t, d], i) => <Row key={t} last={i === 2} style={{ alignItems: "flex-start" }}><div style={{ ...sans, fontSize: 22, fontWeight: 300, color: UI.vert, width: 30, flexShrink: 0 }}>{i + 1}</div><div><div style={{ ...sans, fontSize: 17, fontWeight: 500 }}>{t}</div><div style={{ ...sans, fontSize: 14, color: UI.soft, lineHeight: 1.5, marginTop: 3 }}>{d}</div></div></Row>)}
-      <div style={{ marginTop: 16 }}><Btn dark full onClick={onClose}>Commencer</Btn></div>
-    </div>
-  </div>;
-}
-
-/* ---------- documents (exemples consultables) ---------- */
-function DocView({ kind, o, q, structure, vocab, onBack }) {
-  const date = "30 septembre 2026";
-  const Sec = ({ t, children }) => <div style={{ marginTop: 22 }}><div style={{ ...sans, fontSize: 11, letterSpacing: "0.18em", textTransform: "uppercase", color: UI.mute, marginBottom: 8 }}>{t}</div>{children}</div>;
-  const Line = ({ k, v }) => <div style={{ display: "grid", gridTemplateColumns: "118px 1fr", gap: 12, padding: "9px 0", borderTop: `1px solid ${UI.line}`, ...sans, fontSize: 14 }}><span style={{ color: UI.mute }}>{k}</span><span style={{ color: UI.ink, lineHeight: 1.5 }}>{v}</span></div>;
-  const titles = { rapport: "Rapport acheteur", demande: "Dossier de demande", contrat: "Projet de contrat" };
-  const customs = q.rules.find((r) => r.domain === "customs");
-  return <div className="av-fade" style={{ minHeight: "100vh", background: UI.bg }}>
-    <div style={{ position: "sticky", top: 0, zIndex: 20, background: "rgba(255,255,255,0.94)", backdropFilter: "blur(12px)", WebkitBackdropFilter: "blur(12px)", borderBottom: `1px solid ${UI.line}`, height: HEAD_H, display: "flex", alignItems: "center", justifyContent: "space-between", padding: "0 20px" }}><Back onClick={onBack} /><span style={{ ...sans, fontSize: 15, fontWeight: 500 }}>{titles[kind]}</span><span style={{ width: 70 }} /></div>
-    <div style={{ padding: "22px 20px 120px" }}>
-      <div style={{ background: UI.paper, padding: "26px 22px", border: `1px solid ${UI.line}` }}>
-        <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", borderBottom: `1px solid ${UI.ink}`, paddingBottom: 12 }}><div style={{ display: "flex", alignItems: "center", gap: 10 }}><Logo size={28} /><Wordmark size={12} /></div><span style={{ ...mono, fontSize: 11, color: UI.mute }}>{o.id}</span></div>
-        <div style={{ ...sans, fontSize: 11, letterSpacing: "0.18em", textTransform: "uppercase", color: UI.vert, marginTop: 18 }}>{titles[kind]} · exemple</div>
-        <div style={{ ...serifU, fontSize: 24, lineHeight: 1.2, marginTop: 8 }}>{o.titre || o.nom}</div>
-        <Micro style={{ marginTop: 6 }}>{o.lieu} → {o.dest} · {o.valeur.toLocaleString("fr-FR")} € · {date}</Micro>
-
-        {kind === "rapport" && <>
-          <Sec t="Ce qui a été vérifié"><Line k="Vendeur" v="Identité vérifiée, qualité justifiée, criblage sanctions négatif." /><Line k="Titre" v="Titre de propriété ou mandat, concordance avec l'identité du vendeur." /><Line k="Registres" v="Art Loss Register, Interpol, OCBC interrogés ; aucune inscription connue à la date du rapport." /></Sec>
-          <Sec t="Ce qui a été déclaré par le vendeur"><Line k="Attribution" v={o.artiste === "anonyme" ? "Non attribuée ; rapport d'expert joint." : `« ${vocab} » au sens du décret du 3 mars 1981.`} /><Line k="État" v="Rapport photographique annexé ; restaurations selon déclaration." /><Line k="Provenance" v={`Chaîne de propriété telle que déclarée${o.annee < 1946 && o.annee > 1800 ? " ; recherche de spoliations 1933-1945 effectuée" : ""}.`} /></Sec>
-          <Sec t="Obligations identifiées et statut">{q.clearance.map(([d, s]) => <Line key={d} k={d} v={<Pill k={s} />} />)}</Sec>
-          <Sec t="Douane et fiscalité"><Line k="Régime" v={customs ? customs.titre : "—"} /><Line k="TVA" v={q.original ? "Œuvre originale, 5,5 %" : "Objet de collection, marge au taux normal"} /></Sec>
-          <Sec t="Ce que ce rapport ne garantit pas"><div style={{ ...sans, fontSize: 14, color: UI.soft, lineHeight: 1.55, borderTop: `1px dashed ${UI.line}`, paddingTop: 10 }}>L'authenticité de l'œuvre en tant que telle, hors expertises jointes ; l'état mécanique ; la valeur. Les décisions des autorités saisies restent les leurs.</div></Sec>
-        </>}
-        {kind === "demande" && <>
-          {q.authorities.length ? q.authorities.map((a) => <Sec key={a.titre} t={a.titre}><Line k="Destinataire" v={a.dest} />{a.sections.map((s) => <Line key={s} k="Pièce" v={s} />)}</Sec>) : <Sec t="Autorités"><div style={{ ...sans, fontSize: 14, color: UI.soft }}>Aucune autorité à saisir pour cette vente.</div></Sec>}
-          <Sec t="Extrait du registre des objets mobiliers"><Line k="Entrée" v="Numéro d'ordre, date, description et marques, identité et pièce du vendeur, prix." /></Sec>
-          <Sec t="Ce que ce dossier ne fait pas"><div style={{ ...sans, fontSize: 14, color: UI.soft, lineHeight: 1.55, borderTop: `1px dashed ${UI.line}`, paddingTop: 10 }}>Il prépare la demande dans l'ordre attendu par son destinataire ; il ne constitue pas l'autorisation, qui relève de l'autorité compétente.</div></Sec>
-        </>}
-        {kind === "contrat" && <>
-          <Sec t="Parties"><Line k="Vendeur" v={structure === "maison" ? "Le mandant, représenté par la maison de vente" : "Le vendeur, propriétaire ou mandataire"} /><Line k="Acheteur" v={o.acheteur === "public" ? "Personne publique" : o.acheteur === "particulier" ? "Consommateur" : "Professionnel"} /></Sec>
-          <Sec t={`Clauses préparées à partir du dossier (${q.clauses.length})`}>{q.clauses.map(([k, v], i) => <Line key={i} k={k} v={v} />)}</Sec>
-          <Sec t="Statut du document"><div style={{ ...sans, fontSize: 14, color: UI.soft, lineHeight: 1.55, borderTop: `1px dashed ${UI.line}`, paddingTop: 10 }}>Projet préparé à partir des informations du dossier, à relire par les parties et leurs conseils avant signature. Annexes : rapport acheteur, déclarations signées, rapport d'état, pièces indexées, calendrier.</div></Sec>
-        </>}
-        <div style={{ marginTop: 26, paddingTop: 12, borderTop: `1px solid ${UI.ink}`, display: "flex", justifyContent: "space-between", alignItems: "center" }}><Micro>Version des règles : 3 septembre 2026</Micro><Micro>SHA-256</Micro></div>
+  return (
+    <div style={{ minHeight: "100vh", background: UI.bg, display: "flex", alignItems: "center", justifyContent: "center", padding: 24, ...SANS }}>
+      <div className="av-fade" style={{ width: "100%", maxWidth: 360, textAlign: "center" }}>
+        <div style={{ display: "flex", justifyContent: "center" }}><Wordmark h={22} /></div>
+        <div style={{ fontSize: 11, letterSpacing: "0.24em", textTransform: "uppercase", color: UI.vert, fontWeight: 500, marginTop: 14 }}>The art transaction standard</div>
+        <div style={{ marginTop: 40, textAlign: "left" }}>
+          <Label style={{ marginBottom: 8 }}>Accès privé</Label>
+          <input type="password" value={pin} onChange={(e) => { setPin(e.target.value); setErr(false); }} onKeyDown={(e) => e.key === "Enter" && check()} placeholder="Code d'accès" style={{ ...inp, ...mono, letterSpacing: "0.18em", textAlign: "center", borderColor: err ? UI.claret : UI.line }} />
+          {err && <div style={{ fontSize: 12.5, color: UI.claret, marginTop: 8 }}>Code incorrect.</div>}
+          <div style={{ marginTop: 12 }}><Btn primary full onClick={check}>Entrer</Btn></div>
+        </div>
+        <div style={{ fontSize: 12, color: UI.mute, marginTop: 26, lineHeight: 1.6 }}>Démonstrateur confidentiel. Données fictives ; règles validées à date par les équipes ARTVELCHIV.</div>
       </div>
-      <div style={{ display: "flex", gap: 10, marginTop: 18 }}><Btn outline full onClick={() => {}}>Partager</Btn><Btn dark full onClick={() => {}}>Exporter en PDF</Btn></div>
     </div>
-  </div>;
+  );
+}
+
+/* ---------- feuille (bottom sheet) ---------- */
+function Sheet({ title, onClose, children, full }) {
+  return (
+    <div className="av-veil" onClick={onClose} style={{ position: "fixed", inset: 0, zIndex: 60, background: "rgba(18,20,18,0.45)", display: "flex", alignItems: "flex-end", justifyContent: "center" }}>
+      <div className="av-sheet" onClick={(e) => e.stopPropagation()} style={{ width: "100%", maxWidth: 480, maxHeight: full ? "96vh" : "88vh", overflowY: "auto", background: UI.bg, borderRadius: "18px 18px 0 0", boxSizing: "border-box", ...SANS }}>
+        <div style={{ position: "sticky", top: 0, background: UI.bg, zIndex: 2, padding: "10px 20px 12px", borderBottom: `1px solid ${UI.line}` }}>
+          <div style={{ width: 36, height: 4, borderRadius: 2, background: UI.tile2, margin: "0 auto 12px" }} />
+          <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: 12 }}><div style={{ fontSize: 17, fontWeight: 500, color: UI.ink }}>{title}</div><button onClick={onClose} className="av-press" aria-label="Fermer" style={{ background: UI.tile, border: "none", borderRadius: "50%", width: 32, height: 32, display: "flex", alignItems: "center", justifyContent: "center", cursor: "pointer" }}><Ico name="close" size={16} /></button></div>
+        </div>
+        <div style={{ padding: "16px 20px calc(28px + env(safe-area-inset-bottom))" }}>{children}</div>
+      </div>
+    </div>
+  );
+}
+
+/* ---------- présentation (pourquoi ARTVELCHIV) ---------- */
+function Intro({ onClose }) {
+  const pts = [
+    ["Ce que reçoit votre acheteur compte", "Pour une œuvre de plusieurs centaines de milliers d'euros, un document mal présenté, traduit à la hâte ou incomplet inquiète l'acheteur au lieu de le rassurer. Un rapport clair, complet et mis en forme donne à la vente le caractère premium que l'acheteur attend."],
+    ["ARTVELCHIV prépare tout le dossier", "Vous décrivez l'œuvre en une fiche. ARTVELCHIV en déduit les règles applicables, les formalités de douane, les pièces à réunir, puis établit le rapport remis à l'acheteur, les dossiers d'autorités et le contrat de vente."],
+    ["Ce dossier vous protège", "Il fixe par écrit ce qui a été vérifié, ce que le vendeur a déclaré et ce qui reste à la charge de l'acheteur. Si une réclamation survient des années plus tard, vous disposez de la preuve datée de vos diligences, devant un tribunal comme devant une autorité."],
+  ];
+  return (
+    <Sheet title="Pourquoi ARTVELCHIV" onClose={onClose}>
+      <div style={{ display: "flex", justifyContent: "center", padding: "10px 0 6px" }}><Wordmark h={18} /></div>
+      <div style={{ fontSize: 11, letterSpacing: "0.22em", textTransform: "uppercase", color: UI.vert, fontWeight: 500, textAlign: "center", marginBottom: 22 }}>The art transaction standard</div>
+      {pts.map(([t, d], i) => (
+        <div key={t} style={{ display: "flex", gap: 14, alignItems: "flex-start", padding: "14px 0", borderTop: `1px solid ${UI.line}` }}>
+          <div style={{ width: 30, height: 30, borderRadius: "50%", background: UI.vert, color: "#FFFFFF", display: "flex", alignItems: "center", justifyContent: "center", fontSize: 13, fontWeight: 500, flexShrink: 0 }}>{i + 1}</div>
+          <div><div style={{ fontSize: 15.5, fontWeight: 500, color: UI.ink }}>{t}</div><div style={{ fontSize: 14, color: UI.inkSoft, lineHeight: 1.6, marginTop: 4 }}>{d}</div></div>
+        </div>
+      ))}
+      <div style={{ marginTop: 18 }}><Btn primary full onClick={onClose}>Commencer</Btn></div>
+      <div style={{ fontSize: 11.5, color: UI.mute, textAlign: "center", marginTop: 14, lineHeight: 1.5 }}>Démonstrateur : données fictives ; règles validées à date par les équipes ARTVELCHIV.</div>
+    </Sheet>
+  );
+}
+
+/* ---------- aperçus de documents, tels que le destinataire les reçoit ---------- */
+const THEMES = {
+  sortie: ["Sortie de France et de l'Union", "Certificat d'exportation de bien culturel au-delà des seuils de l'annexe 1 aux articles R. 111-1 du code du patrimoine (décret n° 2020-1718) ; instruction de quatre mois ; refus possible au titre des trésors nationaux. Licence d'exportation de l'Union au-delà des seuils du règlement (CE) 116/2009 pour toute sortie du territoire douanier.", ["C. patr., art. L111-2 · annexe R111-1", "Règl. (CE) 116/2009"]],
+  entree: ["Entrée dans l'Union", "Règlement (UE) 2019/880, applicable depuis le 28 juin 2025 : licence d'importation (partie B) pour les objets archéologiques et les éléments de monuments de plus de 250 ans, à toute valeur ; déclaration de l'importateur (partie C) pour les biens de plus de 200 ans et de 18 000 € au moins ; interdiction générale des biens sortis illicitement de leur pays d'origine.", ["Règl. (UE) 2019/880, art. 3 à 5", "Règl. d'exéc. (UE) 2021/1079 · système ICG"]],
+  especes: ["Espèces protégées", "Ivoire, écaille, corail, corne et bois précieux : certificat intracommunautaire pour toute vente d'un objet travaillé antérieur à 1947 ; réexportation hors Union suspendue depuis 2021 sauf instruments antérieurs à 1975 et acquisitions muséales ; permis CITES pour les autres espèces.", ["Règl. (CE) 338/97 · 865/2006", "Orientation 2021/C 528/03"]],
+  aml: ["Vigilance anti-blanchiment", "Les professionnels du marché de l'art sont assujettis dès 10 000 € : identification du client et du bénéficiaire effectif, origine des fonds, conservation cinq ans, déclaration de soupçon à Tracfin ; règlement unique européen et plafond des espèces à 10 000 € au 10 juillet 2027 ; espèces plafonnées à 1 000 € pour un résident fiscal français.", ["CMF, art. L561-2 (17°) · L112-6", "Règl. (UE) 2024/1624"]],
+};
+const DECL_Q = ["Propriétaire, ou mandataire écrit ?", "Restaurée, rentoilée ou modifiée ?", "Présentée sans succès à un comité ou à un expert ?", "Litige, revendication ou saisie ?", "Sortie d'un pays sous restriction après l'entrée en vigueur de celle-ci ?", "Matériaux d'espèces protégées ?", "Toutes les pièces de provenance connues versées ?"];
+const STEPS = ["Décrire", "Règles", "Douane", "Preuves", "Clearance", "Autorités", "Acheteur", "Contrat", "Clôture"];
+
+function DocPage({ kind, o, q, structure, vocab = "signé", decl = {}, joint = {} }) {
+  const sLabel = STRUCT[structure][0];
+  const Sec = ({ t, children }) => <div style={{ marginTop: 22 }}><div style={{ ...SANS, fontSize: 10.5, letterSpacing: "0.14em", textTransform: "uppercase", color: UI.gold, fontWeight: 500 }}>{t}</div><div style={{ ...SANS, fontSize: 13.5, color: UI.inkSoft, lineHeight: 1.65, marginTop: 6 }}>{children}</div></div>;
+  const Head = ({ type, title, sub }) => <><Wordmark h={15} /><div style={{ ...SANS, fontSize: 10.5, letterSpacing: "0.22em", textTransform: "uppercase", color: UI.mute, marginTop: 26 }}>{type}</div><div style={{ ...DOCSERIF, fontSize: 30, lineHeight: 1.12, color: UI.ink, marginTop: 10 }}>{title}</div><div style={{ ...SANS, fontSize: 12.5, color: UI.mute, marginTop: 10, lineHeight: 1.6 }}>{sub}</div><div style={{ width: 44, height: 1, background: UI.gold, margin: "18px 0 4px" }} /></>;
+  const Foot = () => <div style={{ borderTop: `1px solid ${UI.line}`, marginTop: 30, paddingTop: 12, display: "flex", justifyContent: "space-between", gap: 12, ...SANS, fontSize: 9.5, letterSpacing: "0.06em", color: UI.mute, whiteSpace: "nowrap" }}><span>ARTVELCHIV · {o.id}</span><span>{TODAY_LABEL}</span><span>SCEAU SHA-256</span></div>;
+  const catRule = q.rules.find((r) => r.titre.startsWith("Catégorie"));
+  if (kind === "buyer") return (
+    <div style={{ background: UI.bg, padding: "30px 26px 24px", boxShadow: "0 8px 30px rgba(18,20,18,0.08)", border: `1px solid ${UI.line}` }}>
+      <Head type={`Rapport acheteur · n° ${o.id}`} title={o.titre || "Œuvre sans désignation"} sub={<>Établi le {TODAY_LABEL} par {sLabel.toLowerCase() === "maison de vente" ? "la maison de vente" : `la ${sLabel.toLowerCase()}`} et remis à l'acquéreur avant la conclusion de la vente.<br />{eur(o.valeur)} · {o.lieu} → {o.dest}</>} />
+      <Sec t="L'œuvre">{CAT_LABEL(o.cat)} · {o.annee < 0 ? `${-o.annee} av. J.-C.` : o.annee}{o.tirage ? ` · tirage ${o.tirage}` : ""}. {catRule ? catRule.titre.replace("Catégorie : ", "Catégorie réglementaire : ") + "." : ""}</Sec>
+      <Sec t="Le vendeur">Identité vérifiée ; qualité de propriétaire ou de mandataire justifiée par les titres joints ; criblage des listes de sanctions et de personnes politiquement exposées effectué, résultat négatif.</Sec>
+      <Sec t="Attribution">{o.artiste === "anonyme" ? "Œuvre non attribuée ; le rapport d'expert joint précise la datation, les matériaux et les comparables." : `Œuvre « ${vocab} » au sens du décret n° 81-255 du 3 mars 1981 ; cette dénomination est reprise dans la garantie contractuelle du vendeur.`}</Sec>
+      <Sec t="Provenance">Chaîne de propriété documentée par les factures, catalogues et expositions joints ; registres des œuvres volées interrogés (Art Loss Register, Interpol, OCBC){o.annee < 1946 && o.annee > 1800 ? " ; recherche de spoliations 1933-1945 effectuée dans les bases Lost Art, ERR et MNR" : ""}.</Sec>
+      <Sec t="État">Rapport d'état photographique annexé (macrophotographie, lumière rasante, ultraviolet) ; restaurations et interventions selon les déclarations du vendeur ci-dessous.</Sec>
+      <Sec t="Statut réglementaire">{q.clearance.map(([d, s]) => <div key={d} style={{ display: "flex", justifyContent: "space-between", gap: 10, padding: "5px 0", borderBottom: `1px solid ${UI.line}` }}><span>{d}</span><span style={{ color: TONE[s][0], fontWeight: 500 }}>{KIND[s][0]}</span></div>)}</Sec>
+      <Sec t="Circulation, douane et fiscalité">{q.rules.filter((r) => ["export", "import", "customs"].includes(r.domain) && r.kind !== "clear").map((r) => r.titre).join(" ; ") || "Aucune formalité de circulation particulière"} ; {q.original ? "TVA au taux de 5,5 % (œuvre d'art originale)" : "TVA sur la marge"}.</Sec>
+      <Sec t="Déclarations du vendeur">{DECL_Q.map((qn, i) => <div key={qn} style={{ display: "flex", justifyContent: "space-between", gap: 10, padding: "5px 0", borderBottom: `1px solid ${UI.line}` }}><span style={{ flex: 1 }}>{qn}</span><span style={{ fontWeight: 500, color: UI.ink }}>{decl[i] ? (decl[i] === "NSP" ? "Ne sait pas" : decl[i]) : "—"}</span></div>)}<div style={{ marginTop: 8, fontStyle: "italic" }}>Ces déclarations sont signées par le vendeur sous identité vérifiée ; elles ont valeur d'aveu (C. civ., art. 1383) et engagent sa responsabilité en cas de dol (C. civ., art. 1137).</div></Sec>
+      <Sec t="Ce que ce rapport garantit">Les vérifications décrites ci-dessus, les déclarations du vendeur, la liste des pièces jointes et la garantie contractuelle d'attribution et d'éviction (C. civ., art. 1626) reprise au contrat.</Sec>
+      <Sec t="Ce que ce rapport ne garantit pas">L'authenticité de l'œuvre en tant que telle, son état mécanique et sa valeur, hors la garantie contractuelle et les expertises jointes. Les autorisations éventuelles relèvent des autorités compétentes.</Sec>
+      <Sec t="Vos protections">{q.seq ? "Prix consigné jusqu'à la réception conforme de l'œuvre ; " : ""}rapport d'état contradictoire à la livraison, réserves sous quarante-huit heures ; dossier complet conservé dix ans et remis sur demande.</Sec>
+      <Sec t="Pièces jointes">{q.pieces.map((p, i) => <div key={p.titre} style={{ display: "flex", gap: 10, padding: "4px 0" }}><span style={{ ...mono, fontSize: 11, color: UI.mute, width: 22, flexShrink: 0 }}>{String(i + 1).padStart(2, "0")}</span><span style={{ flex: 1 }}>{p.titre}</span><span style={{ color: joint[p.titre] ? UI.ok : UI.mute, fontSize: 12 }}>{joint[p.titre] ? "jointe" : "à joindre"}</span></div>)}</Sec>
+      <div style={{ marginTop: 28, display: "flex", justifyContent: "space-between", alignItems: "flex-end", gap: 16 }}><div style={{ ...SANS, fontSize: 11, color: UI.mute, lineHeight: 1.6 }}>Pour {sLabel.toLowerCase() === "maison de vente" ? "la maison de vente" : `la ${sLabel.toLowerCase()}`},<br />signature sous identité vérifiée</div><div style={{ width: 120, borderBottom: `1px solid ${UI.ink}`, height: 28 }} /></div>
+      <Foot />
+    </div>
+  );
+  if (kind === "authority") { const a = q.authorities[0] || { titre: "Extrait du livre de police", dest: "Présentable sur réquisition", sections: ["Numéro d'ordre, date d'entrée", "Description et marques", "Identité et pièce du vendeur", "Prix d'acquisition", "Sortie : date, acheteur, prix"] }; return (
+    <div style={{ background: UI.bg, padding: "30px 26px 24px", boxShadow: "0 8px 30px rgba(18,20,18,0.08)", border: `1px solid ${UI.line}` }}>
+      <Head type={`Dossier d'autorité · n° ${o.id}`} title={a.titre} sub={<>Destinataire : {a.dest}.<br />Objet : {o.titre || o.nom} · {eur(o.valeur)} · {o.lieu} → {o.dest}</>} />
+      <Sec t="Demandeur">{sLabel}, agissant pour le compte du vendeur en vertu du mandat joint ; identité et qualité vérifiées.</Sec>
+      <Sec t="Contenu du dossier">{a.sections.map((s, i) => <div key={s} style={{ display: "flex", gap: 10, padding: "5px 0", borderBottom: `1px solid ${UI.line}` }}><span style={{ ...mono, fontSize: 11, color: UI.mute, width: 22, flexShrink: 0 }}>{String(i + 1).padStart(2, "0")}</span><span style={{ flex: 1 }}>{s}</span><span style={{ color: UI.ok }}><Ico name="check" size={14} color={UI.ok} /></span></div>)}</Sec>
+      <Sec t="Fondement">{q.rules.filter((r) => ["export", "import", "species", "consumer"].includes(r.domain) && r.kind !== "clear").map((r) => <div key={r.titre} style={{ padding: "5px 0" }}><span style={{ color: UI.ink }}>{r.titre}</span> — <span style={{ ...mono, fontSize: 11 }}>{r.base}</span></div>)}</Sec>
+      <Sec t="Pièces annexées">{q.pieces.filter((p) => ["Provenance", "Autorités", "Attribution", "État"].includes(p.group)).map((p, i) => <div key={p.titre} style={{ display: "flex", gap: 10, padding: "4px 0" }}><span style={{ ...mono, fontSize: 11, color: UI.mute, width: 22, flexShrink: 0 }}>{String(i + 1).padStart(2, "0")}</span><span>{p.titre}</span></div>)}</Sec>
+      <Sec t="Calendrier">{q.deadlines.slice(0, 3).map((d) => <div key={d.titre} style={{ padding: "4px 0" }}>{d.titre} : <span style={{ color: UI.ink, fontWeight: 500 }}>{fmt(d.date)}</span></div>)}</Sec>
+      <Foot />
+    </div>
+  ); }
+  return (
+    <div style={{ background: UI.bg, padding: "30px 26px 24px", boxShadow: "0 8px 30px rgba(18,20,18,0.08)", border: `1px solid ${UI.line}` }}>
+      <Head type={`Contrat de vente · n° ${o.id}`} title={o.nom} sub={<>Entre {structure === "maison" ? "le mandant, représenté par la maison de vente," : "le vendeur"} et l'acheteur, {o.acheteur === "public" ? "personne publique" : o.acheteur === "particulier" ? "consommateur" : "professionnel"}.<br />{o.titre} · {eur(o.valeur)}</>} />
+      {q.clauses.map(([k, v], i) => <div key={i} style={{ display: "flex", gap: 12, padding: "10px 0", borderBottom: `1px solid ${UI.line}` }}><span style={{ ...mono, color: UI.gold, fontSize: 11, width: 24, flexShrink: 0, paddingTop: 3 }}>{String(i + 1).padStart(2, "0")}</span><div><div style={{ ...SANS, fontSize: 14, fontWeight: 500, color: UI.ink }}>{k}</div><div style={{ ...SANS, fontSize: 13, color: UI.inkSoft, lineHeight: 1.55, marginTop: 2 }}>{v}</div></div></div>)}
+      <Sec t="Annexes">Rapport acheteur, déclarations signées du vendeur, rapport d'état, pièces indexées, dossiers d'autorités, calendrier douanier.</Sec>
+      <div style={{ marginTop: 28, display: "grid", gridTemplateColumns: "1fr 1fr", gap: 20 }}>{["Le vendeur", "L'acheteur"].map((s) => <div key={s}><div style={{ ...SANS, fontSize: 11, color: UI.mute }}>{s}</div><div style={{ borderBottom: `1px solid ${UI.ink}`, height: 30 }} /></div>)}</div>
+      <Foot />
+    </div>
+  );
+}
+const SAMPLE_KINDS = { buyer: ["Rapport acheteur", "Tel que votre acheteur le reçoit"], authority: ["Dossier d'autorité", "Tel que l'administration le reçoit"], contract: ["Contrat de vente", "Bâti sur le dossier, clause par clause"] };
+function Viewer({ sample, onClose, structure }) {
+  const q = useMemo(() => analyse(sample.rec, structure), [sample, structure]);
+  const [kind, setKind] = useState(sample.kind);
+  return (
+    <div className="av-veil" style={{ position: "fixed", inset: 0, zIndex: 70, background: UI.tile2, display: "flex", justifyContent: "center", ...SANS }}>
+      <div style={{ width: "100%", maxWidth: 480, display: "flex", flexDirection: "column", height: "100%" }}>
+        <div style={{ background: UI.vert, color: "#FFFFFF", padding: "calc(12px + env(safe-area-inset-top)) 16px 12px", display: "flex", alignItems: "center", justifyContent: "space-between", gap: 10, flexShrink: 0 }}>
+          <div><div style={{ fontSize: 15, fontWeight: 500 }}>{SAMPLE_KINDS[kind][0]}</div><div style={{ fontSize: 11.5, opacity: 0.75, marginTop: 1 }}>{SAMPLE_KINDS[kind][1]} · {sample.rec.nom}</div></div>
+          <button onClick={onClose} className="av-press" aria-label="Fermer" style={{ background: "rgba(255,255,255,0.14)", border: "none", borderRadius: "50%", width: 34, height: 34, display: "flex", alignItems: "center", justifyContent: "center", cursor: "pointer" }}><Ico name="close" size={16} color="#FFFFFF" /></button>
+        </div>
+        <div className="av-x" style={{ display: "flex", gap: 8, padding: "12px 16px", overflowX: "auto", background: UI.bg, borderBottom: `1px solid ${UI.line}`, flexShrink: 0 }}>{Object.entries(SAMPLE_KINDS).map(([k, [l]]) => <Chip key={k} active={kind === k} onClick={() => setKind(k)}>{l}</Chip>)}</div>
+        <div style={{ flex: 1, overflowY: "auto", padding: "18px 16px calc(24px + env(safe-area-inset-bottom))" }}>
+          <div className="av-fade" key={kind}><DocPage kind={kind} o={sample.rec} q={q} structure={structure} vocab={sample.vocab} decl={sample.decl} joint={sample.joint} /></div>
+          <div style={{ fontSize: 11.5, color: UI.mute, textAlign: "center", marginTop: 16, lineHeight: 1.55 }}>Aperçu généré depuis le dossier ; données fictives. Le document définitif est exporté en PDF, daté, numéroté et scellé.</div>
+        </div>
+      </div>
+    </div>
+  );
 }
 
 /* ============================================================ application */
 export default function Artvelchiv({ pin = DEFAULT_PIN, locked = true }) {
   const [splash, setSplash] = useState(true);
-  useEffect(() => { const t = setTimeout(() => setSplash(false), 2500); return () => clearTimeout(t); }, []);
   const [gate, setGate] = useState(locked);
   const [intro, setIntro] = useState(() => { try { return typeof localStorage !== "undefined" && !localStorage.getItem("av_intro_v4"); } catch (e) { return true; } });
   const closeIntro = () => { try { localStorage.setItem("av_intro_v4", "1"); } catch (e) {} setIntro(false); };
   const [structure, setStructure] = useState("galerie");
   const [tab, setTab] = useState("accueil");
-  const [screen, setScreen] = useState("home");      // home | record | doc
-  const [docKind, setDocKind] = useState("rapport");
+  const [screen, setScreen] = useState("home");
+  const [sheet, setSheet] = useState(null);
+  const [sample, setSample] = useState(null);
+  const [boite, setBoite] = useState("echeances");
+  const [archiveTab, setArchiveTab] = useState("encours");
+  const [query, setQuery] = useState("");
   const [o, setO] = useState(RECORDS[0]);
   const [step, setStep] = useState(0);
   const [joint, setJoint] = useState({});
@@ -382,225 +510,311 @@ export default function Artvelchiv({ pin = DEFAULT_PIN, locked = true }) {
   const [vocab, setVocab] = useState("signé");
   const [open, setOpen] = useState(null);
   const [structDone, setStructDone] = useState({});
-  const [query, setQuery] = useState("");
-  const [catF, setCatF] = useState(null);
-  const [archSeg, setArchSeg] = useState("cours");
-  const [echSeg, setEchSeg] = useState("tous");
   const q = useMemo(() => analyse(o, structure), [o, structure]);
-  const all = useMemo(() => RECORDS.map((d, i) => ({ d, i, a: analyse(d, structure) })), [structure]);
+  const ALL = useMemo(() => RECORDS.map((r, i) => ({ r, i, a: analyse(r, structure) })), [structure]);
   const set = (k) => (v) => setO((x) => ({ ...x, [k]: v }));
-  const DECL_Q = ["Propriétaire, ou mandataire écrit ?", "Restaurée, rentoilée ou modifiée ?", "Présentée sans succès à un comité ou à un expert ?", "Litige, revendication ou saisie ?", "Sortie d'un pays sous restriction après l'entrée en vigueur de celle-ci ?", "Matériaux d'espèces protégées ?", "Toutes les pièces de provenance connues versées ?"];
   const nJ = q.pieces.filter((p) => joint[p.titre]).length, nD = Object.keys(decl).length;
   const indice = Math.round((nJ / Math.max(1, q.pieces.length)) * 70 + (nD / DECL_Q.length) * 30);
-  const STEPS = ["Décrire", "Obligations", "Douane", "Pièces", "Vérifications", "Demandes", "Rapport", "Contrat", "Clôture"];
-  const go = (s) => { setScreen(s); window.scrollTo(0, 0); };
-  const openRecord = (d, st = 0) => { setO(d); setJoint({}); setDecl({}); setStep(st); setOpen(null); go("record"); };
-  const openDoc = (d, kind) => { setO(d); setDocKind(kind); go("doc"); };
-  const [sLabel, sList] = STRUCT[structure], sd = structDone[structure] || {}, sOk = sList.filter((_, i) => sd[i] !== false).length;
+  const openRecord = (d, at = 0) => { setO(d); setJoint({}); setDecl({}); setStep(at); setOpen(null); setSheet(null); setScreen("record"); window.scrollTo(0, 0); };
+  const [sLabel, sList] = STRUCT[structure], sd = structDone[structure] || {}, isDone = (i) => (sd[i] !== undefined ? sd[i] : i < sList.length - 2), sOk = sList.filter((_, i) => isDone(i)).length;
   const groups = [...new Set(q.pieces.map((p) => p.group))];
   const GROUPS = [["Statut de l'objet", ["legal", "cultural"]], ["Circulation", ["export", "import"]], ["Douane et fiscalité", ["customs", "tax"]], ["Conformité et vente", ["aml", "sanctions", "species", "consumer"]]];
-  const STRUCT_NAMES = { galerie: "Galerie", marchand: "Marchand, antiquaire", maison: "Maison de vente", conseiller: "Conseiller, courtier" };
-  const deadlines = useMemo(() => all.flatMap(({ d, a }) => a.deadlines.map((x) => ({ ...x, rec: d }))).sort((a, b) => a.date - b.date), [all]);
+  const allDeadlines = useMemo(() => ALL.flatMap(({ r, i, a }) => a.deadlines.filter((d) => d.date >= TODAY && daysTo(d.date) <= 400).map((d) => ({ ...d, r, i }))).sort((a, b) => a.date - b.date), [ALL]);
+  const allAuthorities = useMemo(() => ALL.flatMap(({ r, i, a }) => a.authorities.map((x) => ({ ...x, r, i }))), [ALL]);
+  const alerts = useMemo(() => ALL.flatMap(({ r, i, a }) => a.rules.filter((x) => x.kind === "blocked").map((x) => ({ ...x, r, i }))), [ALL]);
+  const urgent = allDeadlines.filter((d) => d.kind !== "info" && daysTo(d.date) <= 30).length;
+  const LISTS = [["tous", "Tous les dossiers", () => true], ["conditions", "Sous conditions", (a) => a.overall === "required"], ["bloques", "Bloqués", (a) => a.overall === "blocked"], ["conformes", "Conformes", (a) => a.overall === "clear"]];
+  const found = query.trim() ? ALL.filter(({ r }) => `${r.nom} ${r.titre} ${r.id} ${r.creation} ${r.dest}`.toLowerCase().includes(query.trim().toLowerCase())) : [];
 
-  if (gate) return <>{splash && <Splash />}<Gate code={pin} onOk={() => setGate(false)} /></>;
+  const splashEl = splash ? <Splash onDone={() => setSplash(false)} /> : null;
+  if (gate) return <><style>{FONTS}{CSS}</style>{splashEl}<Gate code={pin} onOk={() => setGate(false)} /></>;
 
-  /* --- sous-composants dépendant de l'état --- */
-  const RecordRow = ({ d, i, a, last }) => <Row onClick={() => openRecord(d)} last={last}><Tile hue={d.hue} label={String(i + 1)} w={56} fs={20} /><div style={{ flex: 1, minWidth: 0 }}><div style={{ ...sans, fontSize: 16, fontWeight: 500, lineHeight: 1.25 }}>{d.nom}</div><Micro style={{ marginTop: 3, whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>{d.lieu} → {d.dest} · {d.valeur.toLocaleString("fr-FR")} €</Micro></div><Pill k={a.overall} /></Row>;
-  const RecordCard = ({ d, i, a }) => <div onClick={() => openRecord(d)} className="av-press" style={{ cursor: "pointer" }}><Tile hue={d.hue} label={String(i + 1)} ratio={0.82} fs={34} /><div style={{ ...sans, fontSize: 15, fontWeight: 500, marginTop: 10, lineHeight: 1.25 }}>{d.nom}</div><Micro style={{ marginTop: 3 }}>{d.lieu} → {d.dest}</Micro><Micro style={{ marginTop: 2, color: UI.ink }}>{d.valeur.toLocaleString("fr-FR")} €</Micro><div style={{ marginTop: 8 }}><Pill k={a.overall} /></div></div>;
-  const RuleRow = ({ r, last }) => { const isOpen = open === r.titre; return <div style={{ borderBottom: last ? "none" : `1px solid ${UI.line}` }}><Row onClick={() => setOpen(isOpen ? null : r.titre)} last><span style={{ ...sans, flex: 1, fontSize: 16, lineHeight: 1.35 }}>{r.titre}</span><Pill k={r.kind} /><Chev open={isOpen} color={UI.mute} /></Row>{isOpen && r.detail && <div className="av-fade" style={{ padding: "0 0 16px" }}><div style={{ ...sans, fontSize: 14.5, color: UI.soft, lineHeight: 1.6 }}>{r.detail}</div><Base base={r.base} /></div>}</div>; };
-  const DocCard = ({ kind, t, d, rec }) => <div onClick={() => openDoc(rec, kind)} className="av-press" style={{ cursor: "pointer", background: UI.paper, border: `1px solid ${UI.line}`, padding: "18px 16px", flex: "0 0 240px" }}><div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}><Logo size={22} /><Micro style={{ fontSize: 11, letterSpacing: "0.14em", textTransform: "uppercase" }}>Exemple</Micro></div><div style={{ ...sans, fontSize: 17, fontWeight: 500, marginTop: 16 }}>{t}</div><Micro style={{ marginTop: 4, lineHeight: 1.45 }}>{d}</Micro><Micro style={{ marginTop: 12, color: UI.vert }}>{rec.nom} →</Micro></div>;
-  const Search = ({ auto }) => <div style={{ display: "flex", alignItems: "center", gap: 10, background: UI.field, borderRadius: 999, padding: "13px 18px" }}><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke={UI.mute} strokeWidth="1.8" strokeLinecap="round"><circle cx="11" cy="11" r="7" /><path d="M20 20l-3.5-3.5" /></svg><input autoFocus={auto} value={query} onChange={(e) => setQuery(e.target.value)} onFocus={() => setTab("recherche")} placeholder="Rechercher un dossier, une œuvre, un pays" style={{ ...sans, flex: 1, background: "transparent", border: "none", outline: "none", fontSize: 16, color: UI.ink }} /></div>;
-
-  const results = all.filter(({ d }) => (!catF || d.cat === catF) && (!query || [d.nom, d.titre, d.lieu, d.dest, d.creation].join(" ").toLowerCase().includes(query.toLowerCase())));
-  const todo = all.filter((x) => x.a.overall !== "clear").sort((x, y) => ORDER[x.a.overall] - ORDER[y.a.overall]);
-
-  return <div style={{ minHeight: "100vh", background: "#EFEBE2", ...sans, color: UI.ink }}>
-    <style>{FONTS}{EXTRA}</style>
-    {splash && <Splash />}
-    {intro && screen === "home" && <Onboarding onClose={closeIntro} />}
-    <div style={{ maxWidth: 480, margin: "0 auto", minHeight: "100vh", background: UI.bg, position: "relative" }}>
-
-      {/* ================= DOCUMENT ================= */}
-      {screen === "doc" && <DocView kind={docKind} o={o} q={q} structure={structure} vocab={vocab} onBack={() => go("home")} />}
-
-      {/* ================= ACCUEIL ================= */}
-      {screen === "home" && <main style={{ padding: `0 20px ${TAB_H + 24}px` }}>
-
-        {tab === "accueil" && <div className="av-fade">
-          <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", height: HEAD_H + 8 }}><div style={{ display: "flex", alignItems: "center", gap: 10 }}><Logo size={30} /><Wordmark size={13} /></div><button onClick={() => setIntro(true)} className="av-press" aria-label="Aide" style={{ ...sans, width: 34, height: 34, borderRadius: "50%", border: `1px solid ${UI.line}`, background: "none", color: UI.ink, fontSize: 15, cursor: "pointer" }}>?</button></div>
-          <Search />
-          <div className="av-x" style={{ display: "flex", gap: 8, overflowX: "auto", margin: "14px -20px 0", padding: "0 20px 4px" }}>
-            <Chip onClick={() => openRecord({ ...NEW })} icon={<span style={{ fontSize: 18, lineHeight: 1 }}>+</span>}>Nouveau dossier</Chip>
-            <Chip onClick={() => setTab("echeances")}>Échéances</Chip>
-            <Chip onClick={() => setTab("archive")}>Archive</Chip>
-            <Chip onClick={() => { setArchSeg("modeles"); setTab("archive"); }}>Exemples de documents</Chip>
-          </div>
-          <H2 right={<button onClick={() => setTab("archive")} className="av-press" style={{ background: "none", border: "none", cursor: "pointer", padding: 0 }}><Chev color={UI.ink} /></button>}>À traiter</H2>
-          <div style={{ borderTop: `1px solid ${UI.line}` }}>{todo.slice(0, 4).map((x, k) => <RecordRow key={x.d.id} {...x} last={k === Math.min(4, todo.length) - 1} />)}</div>
-          <H2 right={<button onClick={() => setTab("archive")} className="av-press" style={{ background: "none", border: "none", cursor: "pointer", padding: 0 }}><Chev color={UI.ink} /></button>}>Dossiers récents</H2>
-          <div className="av-x" style={{ display: "flex", gap: 14, overflowX: "auto", margin: "0 -20px", padding: "0 20px 6px" }}>{all.slice(0, 6).map((x) => <div key={x.d.id} style={{ flex: "0 0 168px" }}><RecordCard {...x} /></div>)}</div>
-          <H2>Exemples de documents</H2>
-          <Micro style={{ marginBottom: 12, lineHeight: 1.5 }}>Ce que vous remettez à l'acheteur, aux autorités et aux parties, tel que le dossier le prépare.</Micro>
-          <div className="av-x" style={{ display: "flex", gap: 12, overflowX: "auto", margin: "0 -20px", padding: "0 20px 6px" }}>
-            <DocCard kind="rapport" t="Rapport acheteur" d="Le vérifié, le déclaré, et ce qui n'est pas établi." rec={RECORDS[3]} />
-            <DocCard kind="demande" t="Dossier de demande" d="Les pièces dans l'ordre attendu par l'autorité." rec={RECORDS[1]} />
-            <DocCard kind="contrat" t="Projet de contrat" d="Les clauses préparées à partir du dossier." rec={RECORDS[3]} />
-          </div>
-          <H2>Prochaines échéances</H2>
-          <div style={{ borderTop: `1px solid ${UI.line}` }}>{deadlines.slice(0, 3).map((x, k) => <Row key={x.rec.id + x.titre} onClick={() => openRecord(x.rec, 2)} last={k === 2}><div style={{ width: 52, flexShrink: 0 }}><div style={{ ...sans, fontSize: 22, fontWeight: 300, lineHeight: 1 }}>{x.date.getDate()}</div><Micro style={{ fontSize: 11, textTransform: "uppercase", letterSpacing: "0.08em" }}>{x.date.toLocaleDateString("fr-FR", { month: "short" })}</Micro></div><div style={{ flex: 1, minWidth: 0 }}><div style={{ ...sans, fontSize: 15, fontWeight: 500, lineHeight: 1.3 }}>{x.titre}</div><Micro style={{ marginTop: 2 }}>{x.rec.nom}</Micro></div><Pill k={x.kind} /></Row>)}</div>
-          <Micro style={{ marginTop: 26, textAlign: "center", lineHeight: 1.55 }}>Démonstrateur, données fictives. Règles vérifiées à la source le 3 septembre 2026.</Micro>
-        </div>}
-
-        {tab === "recherche" && <div className="av-fade">
-          <div style={{ height: 14 }} /><Search auto />
-          {query || catF ? <>
-            <H2 right={<button onClick={() => { setQuery(""); setCatF(null); }} className="av-press" style={{ ...sans, background: "none", border: "none", cursor: "pointer", fontSize: 14, color: UI.mute }}>Effacer</button>}>{results.length} dossier{results.length > 1 ? "s" : ""}</H2>
-            <div style={{ borderTop: `1px solid ${UI.line}` }}>{results.map((x, k) => <RecordRow key={x.d.id} {...x} last={k === results.length - 1} />)}</div>
-          </> : <>
-            <H2>Parcourir par nature d'œuvre</H2>
-            <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 12 }}>{CATS.filter(([k]) => all.some((x) => x.d.cat === k)).map(([k, l]) => { const n = all.filter((x) => x.d.cat === k).length, h = all.find((x) => x.d.cat === k).d.hue; return <div key={k} onClick={() => setCatF(k)} className="av-press" style={{ cursor: "pointer", background: UI.paper, border: `1px solid ${UI.line}`, padding: 16, minHeight: 96, display: "flex", flexDirection: "column", justifyContent: "space-between" }}><Micro>{n} dossier{n > 1 ? "s" : ""}</Micro><div style={{ ...sans, fontSize: 16, fontWeight: 500, lineHeight: 1.25 }}>{l}</div></div>; })}</div>
-            <H2>Par destination</H2>
-            <div style={{ display: "flex", flexWrap: "wrap", gap: 8 }}>{[...new Set(RECORDS.map((d) => d.dest))].map((p) => <Chip key={p} onClick={() => setQuery(p)}>{p}</Chip>)}</div>
-            <H2>Par statut</H2>
-            <div style={{ borderTop: `1px solid ${UI.line}` }}>{["blocked", "required", "clear"].map((k, i) => { const n = all.filter((x) => x.a.overall === k).length; return <Row key={k} last={i === 2} onClick={() => { setArchSeg(k); setTab("archive"); }}><Pill k={k} /><span style={{ flex: 1, ...sans, fontSize: 15 }}>{n} dossier{n > 1 ? "s" : ""}</span><Chev color={UI.mute} /></Row>; })}</div>
-          </>}
-        </div>}
-
-        {tab === "echeances" && <div className="av-fade">
-          <H1 sub="Tous les délais à tenir, calculés à partir des dates de vos dossiers.">Échéances</H1>
-          <div className="av-x" style={{ display: "flex", gap: 8, overflowX: "auto", margin: "0 -20px 6px", padding: "0 20px" }}>{[["tous", "Toutes"], ["blocked", "Critiques"], ["required", "À tenir"], ["info", "Pour information"]].map(([k, l]) => <Chip key={k} on={echSeg === k} onClick={() => setEchSeg(k)}>{l}</Chip>)}</div>
-          <div style={{ borderTop: `1px solid ${UI.line}`, marginTop: 12 }}>{deadlines.filter((x) => echSeg === "tous" || x.kind === echSeg).map((x, k, arr) => <Row key={x.rec.id + x.titre + k} onClick={() => openRecord(x.rec, 2)} last={k === arr.length - 1} style={{ alignItems: "flex-start" }}><div style={{ width: 58, flexShrink: 0 }}><div style={{ ...sans, fontSize: 24, fontWeight: 300, lineHeight: 1 }}>{x.date.getDate()}</div><Micro style={{ fontSize: 11, textTransform: "uppercase", letterSpacing: "0.08em" }}>{x.date.toLocaleDateString("fr-FR", { month: "short", year: "2-digit" })}</Micro></div><div style={{ flex: 1, minWidth: 0 }}><div style={{ ...sans, fontSize: 15.5, fontWeight: 500, lineHeight: 1.3 }}>{x.titre}</div><Micro style={{ marginTop: 3 }}>{x.rec.nom}</Micro><Micro style={{ marginTop: 3, color: UI.soft, lineHeight: 1.45 }}>{x.detail}</Micro></div><Pill k={x.kind} /></Row>)}</div>
-        </div>}
-
-        {tab === "archive" && <div className="av-fade">
-          <H1 sub="Vos dossiers en cours, clôturés, et les modèles de documents.">Votre archive</H1>
-          <div className="av-x" style={{ display: "flex", gap: 8, overflowX: "auto", margin: "0 -20px 6px", padding: "0 20px" }}>{[["cours", "En cours"], ["blocked", "Points à résoudre"], ["required", "À obtenir"], ["clear", "Documentés"], ["modeles", "Modèles"]].map(([k, l]) => <Chip key={k} on={archSeg === k} onClick={() => setArchSeg(k)}>{l}</Chip>)}</div>
-          {archSeg === "modeles" ? <div style={{ marginTop: 18 }}>
-            <Micro style={{ marginBottom: 14, lineHeight: 1.5 }}>Trois documents, préparés à partir d'un dossier exemple, pour voir ce que vous remettrez.</Micro>
-            {[["rapport", "Rapport acheteur", "Ce qui a été vérifié, ce qui a été déclaré, ce qui n'est pas établi, et les obligations avec leur statut.", RECORDS[3]], ["demande", "Dossier de demande", "Les pièces dans l'ordre attendu par l'autorité qui instruit : certificat, licence, déclaration.", RECORDS[1]], ["contrat", "Projet de contrat", "Conditions suspensives, douane, droit de suite, frais, réception, préparés depuis le dossier.", RECORDS[3]]].map(([k, t, d, rec], i) => <Row key={k} onClick={() => openDoc(rec, k)} last={i === 2} style={{ alignItems: "flex-start" }}><div style={{ width: 56, height: 72, background: UI.paper, border: `1px solid ${UI.line}`, display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0 }}><Logo size={22} /></div><div style={{ flex: 1 }}><div style={{ ...sans, fontSize: 16, fontWeight: 500 }}>{t}</div><Micro style={{ marginTop: 3, lineHeight: 1.45 }}>{d}</Micro><Micro style={{ marginTop: 4, color: UI.vert }}>Exemple : {rec.nom}</Micro></div><Chev color={UI.mute} /></Row>)}
-          </div> : <>
-            <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", margin: "16px 0 14px" }}><button onClick={() => openRecord({ ...NEW })} className="av-press" style={{ ...sans, display: "flex", alignItems: "center", gap: 8, background: "none", border: "none", cursor: "pointer", fontSize: 16, color: UI.ink, padding: 0 }}><span style={{ fontSize: 22, lineHeight: 1, fontWeight: 300 }}>+</span>Nouveau dossier</button><Micro>{(archSeg === "cours" ? all : all.filter((x) => x.a.overall === archSeg)).length} dossiers</Micro></div>
-            <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "24px 16px" }}>{(archSeg === "cours" ? all : all.filter((x) => x.a.overall === archSeg)).map((x) => <RecordCard key={x.d.id} {...x} />)}</div>
-          </>}
-        </div>}
-
-        {tab === "profil" && <div className="av-fade">
-          <div style={{ border: `1px solid ${UI.line}`, borderRadius: 18, padding: "28px 22px 22px", marginTop: 20, textAlign: "center" }}>
-            <div style={{ width: 84, height: 84, borderRadius: "50%", background: UI.paper, margin: "0 auto", display: "flex", alignItems: "center", justifyContent: "center" }}><Logo size={46} /></div>
-            <div style={{ ...sans, fontSize: 26, fontWeight: 500, marginTop: 16 }}>{STRUCT_NAMES[structure]}</div>
-            <Micro style={{ marginTop: 4 }}>Démonstrateur · France</Micro>
-            <div style={{ background: UI.paper, borderRadius: 14, padding: "16px 16px", marginTop: 20, display: "flex", alignItems: "center", gap: 14, textAlign: "left" }}><Ring v={Math.round((sOk / sList.length) * 100)} size={48} /><div style={{ flex: 1 }}><div style={{ ...sans, fontSize: 15, fontWeight: 500 }}>Obligations permanentes</div><Micro style={{ marginTop: 2, lineHeight: 1.45 }}>{sOk} en place sur {sList.length}. Ce qui s'impose à votre structure, indépendamment de chaque œuvre.</Micro></div></div>
-          </div>
-          <H2>Structure</H2>
-          <Seg value={structure} onChange={setStructure} options={[["galerie", "Galerie"], ["marchand", "Marchand"], ["maison", "Maison de vente"], ["conseiller", "Conseiller"]]} />
-          <H2>Obligations permanentes</H2>
-          <div style={{ borderTop: `1px solid ${UI.line}` }}>{sList.map(([t, d, base], i) => { const done = sd[i] !== false, isOpen = open === `s${i}`; return <div key={t} style={{ borderBottom: i === sList.length - 1 ? "none" : `1px solid ${UI.line}` }}><Row onClick={() => setOpen(isOpen ? null : `s${i}`)} last><span style={{ width: 8, height: 8, borderRadius: "50%", background: done ? UI.ok : UI.warn, flexShrink: 0 }} /><span style={{ flex: 1, ...sans, fontSize: 15.5, lineHeight: 1.35 }}>{t}</span><Chev open={isOpen} color={UI.mute} /></Row>{isOpen && <div className="av-fade" style={{ padding: "0 0 16px 22px" }}><div style={{ ...sans, fontSize: 14.5, color: UI.soft, lineHeight: 1.6 }}>{d}</div><Base base={base} /><div style={{ marginTop: 12 }}><Btn small outline onClick={(e) => { e.stopPropagation(); setStructDone((x) => ({ ...x, [structure]: { ...(x[structure] || {}), [i]: !done } })); }}>{done ? "Marquer à revoir" : "Marquer en place"}</Btn></div></div>}</div>; })}</div>
-          <H2>Référentiel</H2>
-          <Micro style={{ marginBottom: 6, lineHeight: 1.5 }}>Chaque règle renvoie à un texte. Vérifié à la source le 3 septembre 2026.</Micro>
-          <div style={{ borderTop: `1px solid ${UI.line}` }}>{SOURCES.map(([j, items], gi) => { const isOpen = open === `src${gi}`; return <div key={j} style={{ borderBottom: gi === SOURCES.length - 1 ? "none" : `1px solid ${UI.line}` }}><Row onClick={() => setOpen(isOpen ? null : `src${gi}`)} last><span style={{ flex: 1, ...sans, fontSize: 15.5 }}>{j}</span><Micro>{items.length}</Micro><Chev open={isOpen} color={UI.mute} /></Row>{isOpen && <div className="av-fade" style={{ padding: "0 0 12px" }}>{items.map((t) => <div key={t} style={{ ...sans, fontSize: 14, color: UI.soft, padding: "6px 0", lineHeight: 1.5 }}>{t}</div>)}</div>}</div>; })}</div>
-          <H2>Aide</H2>
-          <div style={{ borderTop: `1px solid ${UI.line}` }}><Row onClick={() => setIntro(true)}><span style={{ flex: 1, ...sans, fontSize: 15.5 }}>Comment fonctionne un dossier</span><Chev color={UI.mute} /></Row><Row onClick={() => { setArchSeg("modeles"); setTab("archive"); }}><span style={{ flex: 1, ...sans, fontSize: 15.5 }}>Exemples de documents</span><Chev color={UI.mute} /></Row><Row last><span style={{ flex: 1, ...sans, fontSize: 15.5 }}>À propos</span><Micro>Démonstrateur · v4</Micro></Row></div>
-          <Micro style={{ marginTop: 26, textAlign: "center", lineHeight: 1.55 }}>ARTVELCHIV, Monaco. Données fictives ; règles validées à date par les équipes ARTVELCHIV.</Micro>
-        </div>}
-      </main>}
-
-      {/* ================= DOSSIER ================= */}
-      {screen === "record" && <>
-        <header style={{ position: "sticky", top: 0, zIndex: 20, background: "rgba(255,255,255,0.94)", backdropFilter: "blur(12px)", WebkitBackdropFilter: "blur(12px)", borderBottom: `1px solid ${UI.line}` }}>
-          <div style={{ padding: "0 20px" }}>
-            <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", height: HEAD_H }}><Back onClick={() => go("home")} label="Archive" /><span style={{ ...mono, fontSize: 12, color: UI.mute }}>{o.id}</span><Pill k={q.overall} /></div>
-            <div style={{ display: "flex", alignItems: "center", gap: 12, paddingBottom: 12 }}><Tile hue={o.hue} label={(o.nom || "N")[0]} w={44} fs={18} /><div style={{ flex: 1, minWidth: 0 }}><div style={{ ...sans, fontSize: 16, fontWeight: 500, whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>{o.nom}</div><Micro>{q.actions} à obtenir{q.bloquantes ? ` · ${q.bloquantes} point${q.bloquantes > 1 ? "s" : ""} à résoudre` : ""} · {q.deadlines.length} échéances</Micro></div><Ring v={indice} size={40} /></div>
-            <div className="av-x" style={{ display: "flex", gap: 8, overflowX: "auto", paddingBottom: 12 }}>{STEPS.map((s, i) => <button key={s} onClick={() => { setOpen(null); setStep(i); window.scrollTo(0, 0); }} className="av-press" style={{ ...sans, flexShrink: 0, border: `1px solid ${i === step ? UI.ink : UI.line}`, cursor: "pointer", padding: "8px 14px", borderRadius: 999, fontSize: 13.5, fontWeight: 500, background: i === step ? UI.ink : "#FFFFFF", color: i === step ? "#FFFFFF" : i < step ? UI.ink : UI.mute }}>{i < step ? "✓ " : `${i + 1}. `}{s}</button>)}</div>
-          </div>
-        </header>
-
-        <main style={{ padding: "6px 20px 140px" }}>
-          {step === 0 && <div className="av-fade" key="s0">
-            <H1 sub="Décrivez-la ; le droit applicable se déduit à chaque champ.">L'œuvre</H1>
-            <Field label="Désignation"><input value={o.titre} onChange={(e) => set("titre")(e.target.value)} placeholder="Artiste, titre, technique, date" style={inp} /></Field>
-            <Field label="Nature"><Sel value={o.cat} onChange={set("cat")} options={CATS} /></Field>
-            <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 20 }}><Field label="Année (négatif : av. J.-C.)"><input type="number" inputMode="numeric" value={o.annee} onChange={(e) => set("annee")(+e.target.value)} style={{ ...inp, ...mono }} /></Field><Field label="Prix ou estimation (€)"><input type="number" inputMode="numeric" value={o.valeur} onChange={(e) => set("valeur")(+e.target.value)} style={{ ...inp, ...mono }} /></Field></div>
-            <Field label="Artiste"><Sel value={o.artiste} onChange={set("artiste")} options={ARTISTE} /></Field>
-            {TECHNIQUES[o.cat] && <Field label="Technique"><Sel value={o.technique || TECHNIQUES[o.cat][0][0]} onChange={set("technique")} options={TECHNIQUES[o.cat]} /></Field>}
-            {o.cat === "sculpture" && <Field label="Tirage (vide pour une pièce unique)"><input value={o.tirage || ""} onChange={(e) => set("tirage")(e.target.value)} placeholder="ex. 7/8, fonte posthume" style={inp} /></Field>}
-            <H2>Trajet et douane</H2>
-            <Field label="Pays de création ou de découverte"><Sel value={o.creation} onChange={set("creation")} options={PAYS} /></Field>
-            <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 20 }}><Field label="Lieu actuel"><Sel value={o.lieu} onChange={set("lieu")} options={PAYS} /></Field><Field label="Destination"><Sel value={o.dest} onChange={set("dest")} options={PAYS} /></Field></div>
-            <Field label="Statut douanier"><Sel value={o.douane} onChange={set("douane")} options={DOUANE} /></Field>
-            {(o.douane === "at" || o.douane === "ata") && <Field label={o.douane === "at" ? "Date de placement sous admission temporaire" : "Date d'émission du carnet ATA"}><input type="date" value={o.entree} onChange={(e) => set("entree")(e.target.value)} style={{ ...inp, ...mono }} /></Field>}
-            <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 20 }}><Field label="Matériau principal"><Sel value={o.materiau || "mixte"} onChange={set("materiau")} options={MATERIAUX} /></Field><Field label="Type de provenance"><Sel value={o.prov || "collection"} onChange={set("prov")} options={PROVTYPE} /></Field></div>
-            <H2>Vente</H2>
-            <Field label="Origine"><Seg value={o.source} onChange={set("source")} options={[["premier", "De l'artiste"], ["second", "Second marché"]]} /></Field>
-            <Field label="Mode de vente"><Seg value={o.mode} onChange={set("mode")} options={[["prive", "Gré à gré"], ["encheres", "Enchères"], ["distance", "À distance"]]} /></Field>
-            <Field label="Acheteur"><Seg value={o.acheteur} onChange={set("acheteur")} options={[["particulier", "Particulier"], ["pro", "Professionnel"], ["public", "Musée"]]} /></Field>
-            <Field label="Espèces protégées (ivoire, écaille, bois précieux, corail)"><Seg value={o.protege ? "oui" : "non"} onChange={(v) => set("protege")(v === "oui")} options={[["non", "Non"], ["oui", "Oui"]]} /></Field>
-            {o.cat === "religieux" && <Field label="Objet liturgique ou issu d'un monument ?"><Seg value={o.liturgique ? "oui" : "non"} onChange={(v) => set("liturgique")(v === "oui")} options={[["non", "Non"], ["oui", "Oui"]]} /></Field>}
-          </div>}
-
-          {step === 1 && <div className="av-fade" key="s1">
-            <H1 sub={`${q.age > 0 ? `${q.age} ans` : "Antiquité"} · ${q.tiers ? "bien culturel tiers" : "bien de l'Union"} · ${o.lieu === o.dest ? "sans frontière" : `${o.lieu} → ${o.dest}`}.`}>{q.bloquantes ? `${q.bloquantes} point${q.bloquantes > 1 ? "s" : ""} à résoudre, ${q.actions} à obtenir` : q.actions ? `${q.actions} obligation${q.actions > 1 ? "s" : ""} à obtenir` : "Aucune démarche particulière"}</H1>
-            {GROUPS.map(([g, doms]) => { const rs = q.rules.filter((r) => doms.includes(r.domain)).sort((a, b) => ORDER[a.kind] - ORDER[b.kind]); if (!rs.length) return null; return <div key={g}><H2>{g}</H2><div style={{ borderTop: `1px solid ${UI.line}` }}>{rs.map((r, i) => <RuleRow key={r.titre} r={r} last={i === rs.length - 1} />)}</div></div>; })}
-          </div>}
-
-          {step === 2 && <div className="av-fade" key="s2">
-            <H1 sub={q.deadlines.some((d) => d.kind === "blocked") ? "Une échéance douanière est critique : elle commande le calendrier de la vente." : "Régime, TVA à l'arrivée, et chaque délai à tenir."}>Douane et échéances</H1>
-            <div style={{ borderTop: `1px solid ${UI.line}` }}>{q.rules.filter((r) => r.domain === "customs").map((r, i, arr) => <div key={r.titre} style={{ padding: "16px 0", borderBottom: i === arr.length - 1 ? "none" : `1px solid ${UI.line}` }}><div style={{ display: "flex", gap: 12, alignItems: "flex-start" }}><div style={{ flex: 1, ...sans, fontSize: 17, fontWeight: 500, lineHeight: 1.3 }}>{r.titre}</div><Pill k={r.kind} /></div><div style={{ ...sans, fontSize: 14.5, color: UI.soft, lineHeight: 1.6, marginTop: 8 }}>{r.detail}</div><Base base={r.base} /></div>)}</div>
-            <H2>Calendrier</H2>
-            <div style={{ borderTop: `1px solid ${UI.line}` }}>{q.deadlines.map((d, i) => <Row key={d.titre} last={i === q.deadlines.length - 1} style={{ alignItems: "flex-start" }}><div style={{ width: 58, flexShrink: 0 }}><div style={{ ...sans, fontSize: 24, fontWeight: 300, lineHeight: 1 }}>{d.date.getDate()}</div><Micro style={{ fontSize: 11, textTransform: "uppercase", letterSpacing: "0.08em" }}>{d.date.toLocaleDateString("fr-FR", { month: "short", year: "2-digit" })}</Micro></div><div style={{ flex: 1 }}><div style={{ ...sans, fontSize: 15.5, fontWeight: 500, lineHeight: 1.3 }}>{d.titre}</div><Micro style={{ marginTop: 3, color: UI.soft, lineHeight: 1.45 }}>{d.detail}</Micro></div><Pill k={d.kind} /></Row>)}</div>
-            <Micro style={{ marginTop: 18, lineHeight: 1.55 }}>Points d'attention : adresse déclarée sous admission temporaire, apurement des volets ATA, valeur déclarée cohérente avec le prix, incoterm et risques, assurance clou à clou, retour en franchise trois ans.</Micro>
-          </div>}
-
-          {step === 3 && <div className="av-fade" key="s3">
-            <H1 sub="Seules les pièces exigées par ce régime ; vous les joignez, le dossier les indexe et les horodate.">Pièces et déclarations</H1>
-            {groups.map((g) => <div key={g}><H2>{g}</H2><div style={{ borderTop: `1px solid ${UI.line}` }}>{q.pieces.filter((p) => p.group === g).map((p, i, arr) => { const d = !!joint[p.titre]; return <Row key={p.titre} last={i === arr.length - 1}><div style={{ flex: 1 }}><div style={{ ...sans, fontSize: 15.5, lineHeight: 1.3 }}>{p.titre}</div><Micro style={{ marginTop: 2, color: d ? UI.ok : UI.mute }}>{d ? "Jointe · horodatée" : p.why}</Micro></div><Btn small outline={!d} dark={false} onClick={() => setJoint((j) => ({ ...j, [p.titre]: !j[p.titre] }))}>{d ? "✓ Jointe" : "Joindre"}</Btn></Row>; })}</div></div>)}
-            <H2>Le vendeur déclare</H2>
-            {o.artiste !== "anonyme" && <Field label="Dénomination de l'attribution (décret du 3 mars 1981)"><Sel value={vocab} onChange={setVocab} options={VOCAB} /></Field>}
-            <div style={{ borderTop: `1px solid ${UI.line}` }}>{DECL_Q.map((qn, i) => <div key={qn} style={{ padding: "14px 0", borderBottom: i === DECL_Q.length - 1 ? "none" : `1px solid ${UI.line}` }}><div style={{ ...sans, fontSize: 15, marginBottom: 10, lineHeight: 1.45 }}>{qn}</div><Seg value={decl[i] || ""} onChange={(v) => setDecl((d) => ({ ...d, [i]: v }))} options={[["Oui", "Oui"], ["Non", "Non"], ["NSP", "Ne sais pas"]]} /></div>)}</div>
-            <Micro style={{ marginTop: 16, lineHeight: 1.55, fontStyle: "italic" }}>« Je certifie la sincérité de mes déclarations et l'exhaustivité des pièces versées. » Signature sous identité vérifiée ; empreinte SHA-256.</Micro>
-          </div>}
-
-          {step === 4 && <div className="av-fade" key="s4">
-            <H1 sub="Six domaines, chacun avec un statut limité à son objet.">{q.overall === "blocked" ? "Un point reste à résoudre avant la vente" : q.overall === "required" ? "La vente peut se préparer, sous conditions" : "Aucun obstacle identifié"}</H1>
-            <div style={{ background: TONE[q.overall][1], borderRadius: 16, padding: 18, display: "flex", alignItems: "center", gap: 16 }}><Ring v={indice} size={56} /><div style={{ flex: 1 }}><Micro>Complétude du dossier</Micro><div style={{ ...sans, fontSize: 22, fontWeight: 500, color: TONE[q.overall][0], marginTop: 2 }}>{LABEL[q.overall]}</div><Micro style={{ marginTop: 3 }}>{q.authorities.length} demande{q.authorities.length > 1 ? "s" : ""} à préparer · {nJ}/{q.pieces.length} pièces · {nD}/{DECL_Q.length} déclarations</Micro></div></div>
-            <H2>Par domaine</H2>
-            <div style={{ borderTop: `1px solid ${UI.line}` }}>{q.clearance.map(([dom, s, doms], i) => { const first = q.rules.filter((r) => doms.includes(r.domain)).sort((a, b) => ORDER[a.kind] - ORDER[b.kind])[0]; return <Row key={dom} last={i === q.clearance.length - 1}><div style={{ flex: 1 }}><div style={{ ...sans, fontSize: 15.5, fontWeight: 500 }}>{dom}</div><Micro style={{ marginTop: 2 }}>{first ? first.titre : "—"}</Micro></div><Pill k={s} /></Row>; })}</div>
-          </div>}
-
-          {step === 5 && <div className="av-fade" key="s5">
-            <H1 sub={q.authorities.length ? `${q.authorities.length} demande${q.authorities.length > 1 ? "s" : ""} préparée${q.authorities.length > 1 ? "s" : ""} depuis le dossier. Le dépôt et la décision restent ceux de l'autorité.` : "Aucune autorité à saisir pour cette vente."}>Demandes aux autorités</H1>
-            <div style={{ borderTop: `1px solid ${UI.line}` }}>{q.authorities.map((a, i) => <div key={a.titre} style={{ padding: "16px 0", borderBottom: `1px solid ${UI.line}` }}><div style={{ ...sans, fontSize: 17, fontWeight: 500, lineHeight: 1.3 }}>{a.titre}</div><Micro style={{ marginTop: 3 }}>Destinataire : {a.dest}</Micro><div style={{ marginTop: 10 }}>{a.sections.map((s) => <div key={s} style={{ ...sans, fontSize: 14.5, color: UI.soft, padding: "4px 0", display: "flex", gap: 10 }}><span style={{ color: UI.vert }}>·</span>{s}</div>)}</div></div>)}<div style={{ padding: "16px 0" }}><div style={{ ...sans, fontSize: 17, fontWeight: 500 }}>Extrait du registre des objets mobiliers</div><Micro style={{ marginTop: 3 }}>Présentable sur réquisition</Micro></div></div>
-            <div style={{ marginTop: 18 }}><Btn outline full onClick={() => openDoc(o, "demande")}>Voir le dossier de demande</Btn></div>
-          </div>}
-
-          {step === 6 && <div className="av-fade" key="s6">
-            <H1 sub="Le vérifié, le déclaré, et ce qui n'est pas établi.">Rapport acheteur</H1>
-            <div style={{ borderTop: `1px solid ${UI.line}` }}>{[["Vendeur", "Identité vérifiée, qualité justifiée, criblage négatif"], ["Attribution", o.artiste === "anonyme" ? "Non attribuée ; rapport d'expert joint" : `« ${vocab} » au sens du décret de 1981, garantie contractuelle du vendeur`], ["Provenance", `Chaîne documentée ; registres interrogés${o.annee < 1946 && o.annee > 1800 ? " ; spoliations recherchées" : ""}`], ["État", "Rapport photographique annexé ; restaurations selon déclaration"], ["Obligations", q.clearance.map(([d, s]) => `${d} : ${LABEL[s].toLowerCase()}`).join(" · ")], ["Douane et fiscalité", `${q.rules.find((r) => r.domain === "customs")?.titre || ""} ; ${q.original ? "TVA 5,5 %" : "TVA sur la marge"}`], ["Ce que ce rapport ne garantit pas", "L'authenticité en tant que telle, l'état mécanique, la valeur, hors garantie contractuelle et expertises jointes"]].map(([k, v], i, arr) => <div key={k} style={{ padding: "14px 0", borderBottom: i === arr.length - 1 ? "none" : `1px solid ${UI.line}` }}><Micro style={{ fontSize: 11, letterSpacing: "0.14em", textTransform: "uppercase" }}>{k}</Micro><div style={{ ...sans, fontSize: 15, color: UI.ink, lineHeight: 1.5, marginTop: 4 }}>{v}</div></div>)}</div>
-            <div style={{ marginTop: 18 }}><Btn outline full onClick={() => openDoc(o, "rapport")}>Voir le rapport mis en forme</Btn></div>
-          </div>}
-
-          {step === 7 && <div className="av-fade" key="s7">
-            <H1 sub={`${q.clauses.length} clauses préparées à partir du dossier, à relire par les parties avant signature.`}>Projet de contrat</H1>
-            <div style={{ borderTop: `1px solid ${UI.line}` }}>{q.clauses.map(([k, v], i) => <Row key={i} last={i === q.clauses.length - 1} style={{ alignItems: "flex-start" }}><span style={{ ...sans, fontSize: 13, color: UI.mute, width: 24, flexShrink: 0, paddingTop: 3 }}>{String(i + 1).padStart(2, "0")}</span><div><div style={{ ...sans, fontSize: 15.5, fontWeight: 500 }}>{k}</div><div style={{ ...sans, fontSize: 14, color: UI.soft, lineHeight: 1.5, marginTop: 2 }}>{v}</div></div></Row>)}</div>
-            <div style={{ marginTop: 18 }}><Btn outline full onClick={() => openDoc(o, "contrat")}>Voir le projet mis en forme</Btn></div>
-          </div>}
-
-          {step === 8 && <div className="av-fade" key="s8">
-            <H1 sub={q.overall === "blocked" ? "Pas de clôture : le dossier reste archivé, daté, comme preuve des diligences accomplies." : "Pas à pas, jusqu'à l'archivage daté et versionné."}>Clôture</H1>
-            <div style={{ borderTop: `1px solid ${UI.line}` }}>{[["Signatures", "Contrat et déclarations sous identité vérifiée"], ...(q.seq ? [["Séquestre", "Prix consigné"]] : []), ...(q.authorities.length ? [["Autorisations", `${q.authorities.length} décision${q.authorities.length > 1 ? "s" : ""} attendue${q.authorities.length > 1 ? "s" : ""}`]] : []), ...(q.rules.some((r) => r.domain === "customs" && r.kind !== "clear") ? [["Douane", "Régime régularisé, déclaration déposée, TVA acquittée"]] : []), ["Livraison", "Transporteur agréé, assurance clou à clou"], ["Réception", "Rapport contradictoire, réserves sous 48 h"], ...(q.seq ? [["Libération", "Fonds libérés au PV"]] : []), ...(structure === "maison" ? [["Procès-verbal", "À J + 1"]] : []), ...(o.source === "second" ? [["Registre", "Sortie inscrite"]] : []), ...(q.rules.some((r) => r.titre.startsWith("Droit de suite")) ? [["Droit de suite", "Versé"]] : []), ["Archivage", "Dossier daté et versionné, conservé dix ans"]].map(([k, v], i, arr) => <Row key={k} last={i === arr.length - 1}><span style={{ ...sans, fontSize: 13, color: UI.mute, width: 24, flexShrink: 0 }}>{String(i + 1).padStart(2, "0")}</span><div style={{ flex: 1 }}><div style={{ ...sans, fontSize: 15.5, fontWeight: 500 }}>{k}</div><Micro style={{ marginTop: 1 }}>{v}</Micro></div></Row>)}</div>
-            {q.overall !== "blocked" && <div style={{ background: UI.vertDeep, color: "#FAF5EB", borderRadius: 18, padding: "30px 22px", marginTop: 22, textAlign: "center" }}><div style={{ display: "flex", justifyContent: "center" }}><Logo size={60} light /></div><div style={{ marginTop: 14 }}><Wordmark size={16} color="#FAF5EB" /></div><div style={{ ...sans, fontSize: 11, letterSpacing: "0.3em", textTransform: "uppercase", color: UI.jaune, marginTop: 12 }}>Established</div><div style={{ ...sans, fontSize: 14, color: "#C9D3CB", marginTop: 12, lineHeight: 1.5 }}>Dossier clôturé le 30 septembre 2026, version des règles du 3 septembre 2026, pièces horodatées.</div><div style={{ ...mono, fontSize: 11, color: "#8FA898", marginTop: 12 }}>{o.id} · SHA-256</div></div>}
-          </div>}
-        </main>
-
-        <div style={{ position: "fixed", bottom: 0, left: "50%", transform: "translateX(-50%)", width: "100%", maxWidth: 480, boxSizing: "border-box", background: "rgba(255,255,255,0.94)", backdropFilter: "blur(14px)", WebkitBackdropFilter: "blur(14px)", borderTop: `1px solid ${UI.line}`, padding: "12px 20px calc(14px + env(safe-area-inset-bottom))", display: "flex", gap: 10, zIndex: 30 }}>
-          <Btn outline onClick={() => { setOpen(null); step === 0 ? go("home") : setStep(step - 1); window.scrollTo(0, 0); }}>Retour</Btn>
-          <div style={{ flex: 1 }}>{step < 8 ? <Btn dark full onClick={() => { setOpen(null); setStep(step + 1); window.scrollTo(0, 0); }}>{["Voir les obligations", "Douane et échéances", "Joindre les pièces", "Vérifier", "Préparer les demandes", "Rapport acheteur", "Projet de contrat", "Clôturer"][step]}</Btn> : <Btn dark full onClick={() => openDoc(o, "rapport")}>Exporter le dossier</Btn>}</div>
-        </div>
-      </>}
-
-      {/* ================= BARRE D'ONGLETS (fixe) ================= */}
-      {screen === "home" && <nav style={{ position: "fixed", bottom: 0, left: "50%", transform: "translateX(-50%)", width: "100%", maxWidth: 480, boxSizing: "border-box", background: "rgba(255,255,255,0.96)", backdropFilter: "blur(14px)", WebkitBackdropFilter: "blur(14px)", borderTop: `1px solid ${UI.line}`, padding: "10px 6px calc(12px + env(safe-area-inset-bottom))", display: "flex", zIndex: 30 }}>
-        {[["accueil", "Accueil"], ["recherche", "Rechercher"], ["echeances", "Échéances"], ["archive", "Archive"], ["profil", "Profil"]].map(([k, l]) => <button key={k} onClick={() => { setTab(k); setOpen(null); window.scrollTo(0, 0); }} className="av-press" style={{ ...sans, flex: 1, background: "none", border: "none", cursor: "pointer", display: "flex", flexDirection: "column", alignItems: "center", gap: 5, padding: "4px 0", fontSize: 11, fontWeight: tab === k ? 500 : 400, color: tab === k ? UI.ink : "#6F6A5F" }}><Ico name={k} active={tab === k} />{l}</button>)}
-      </nav>}
+  const Section = ({ title, children, style }) => <div style={{ marginTop: 22, ...style }}>{title && <Label style={{ marginBottom: 8 }}>{title}</Label>}{children}</div>;
+  const RuleRow = ({ r, last }) => { const isOpen = open === r.titre; return <div style={{ borderBottom: last ? "none" : `1px solid ${UI.line}` }}><Row onClick={() => setOpen(isOpen ? null : r.titre)} last><span style={{ flex: 1, fontSize: 14.5, fontWeight: 400, lineHeight: 1.35, color: UI.ink }}>{r.titre}</span><Pill k={r.kind} /><span style={{ transform: isOpen ? "rotate(90deg)" : "none", transition: "transform .2s", display: "flex" }}><Ico name="chev" size={16} color={UI.mute} /></span></Row>{isOpen && r.detail && <div className="av-fade" style={{ padding: "0 0 14px" }}><div style={{ fontSize: 13.5, color: UI.inkSoft, lineHeight: 1.6 }}>{r.detail}</div><Base>{r.base}</Base></div>}</div>; };
+  const RecordCard = ({ r, i, a }) => (
+    <div onClick={() => openRecord(r)} className="av-press" style={{ cursor: "pointer", minWidth: 0 }}>
+      <div style={{ aspectRatio: "5 / 6", borderRadius: 3, overflow: "hidden", background: UI.tile }}><Art rec={r} i={i} /></div>
+      <div style={{ marginTop: 10, fontSize: 15, fontWeight: 500, color: UI.ink, lineHeight: 1.25 }}>{r.nom}</div>
+      <div style={{ fontSize: 13, color: UI.mute, marginTop: 2, whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>{r.titre}</div>
+      <div style={{ fontSize: 13.5, color: UI.ink, marginTop: 4, display: "flex", alignItems: "center", justifyContent: "space-between", gap: 8 }}><span>{eur(r.valeur)}</span><Pill k={a.overall} /></div>
     </div>
-  </div>;
+  );
+  const RecordRow = ({ r, i, a, last, sub, at }) => <Row onClick={() => openRecord(r, at)} last={last}><Thumb rec={r} i={i} size={52} /><div style={{ flex: 1, minWidth: 0 }}><div style={{ fontSize: 15, fontWeight: 500, color: UI.ink, lineHeight: 1.25 }}>{r.nom}</div><div style={{ fontSize: 12.5, color: UI.mute, marginTop: 3, whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>{sub || `${r.lieu} → ${r.dest} · ${eur(r.valeur)}`}</div></div><Pill k={a.overall} /><Ico name="chev" size={16} color={UI.mute} /></Row>;
+  const SearchBar = ({ live }) => <div style={{ display: "flex", alignItems: "center", gap: 10 }}><div onClick={live ? undefined : () => { setTab("explorer"); window.scrollTo(0, 0); }} style={{ flex: 1, display: "flex", alignItems: "center", gap: 10, background: UI.tile, borderRadius: 999, padding: "0 16px", height: 48, cursor: live ? "text" : "pointer" }}><Ico name="search" size={18} color={UI.mute} />{live ? <input autoFocus={false} value={query} onChange={(e) => setQuery(e.target.value)} placeholder="Rechercher un dossier, une œuvre, un pays" style={{ ...SANS, flex: 1, border: "none", background: "transparent", fontSize: 15.5, color: UI.ink, outline: "none", minWidth: 0 }} /> : <span style={{ ...SANS, fontSize: 15.5, color: UI.mute }}>Rechercher ARTVELCHIV</span>}<Ico name="camera" size={20} color={UI.mute} /></div>{!live && <button onClick={() => { setTab("boite"); setBoite("echeances"); window.scrollTo(0, 0); }} className="av-press" aria-label="Échéances" style={{ position: "relative", background: "none", border: "none", cursor: "pointer", padding: 6 }}><Ico name="bell" size={24} />{urgent > 0 && <span style={{ position: "absolute", top: 4, right: 4, width: 9, height: 9, borderRadius: "50%", background: UI.vert, border: "2px solid #FFFFFF" }} />}</button>}</div>;
+  const TopTabs = ({ value, onChange, options }) => <div style={{ display: "flex", borderBottom: `1px solid ${UI.line}`, margin: "0 -20px" }}>{options.map(([v, l]) => <button key={v} onClick={() => onChange(v)} className="av-press" style={{ ...SANS, flex: 1, background: "none", border: "none", borderBottom: `2px solid ${value === v ? UI.ink : "transparent"}`, marginBottom: -1, padding: "14px 0", fontSize: 15.5, fontWeight: 500, color: value === v ? UI.ink : UI.mute, cursor: "pointer" }}>{l}</button>)}</div>;
+  const Empty = ({ title, text, cta, onCta }) => <div style={{ textAlign: "center", padding: "46px 18px" }}><div style={{ fontSize: 17, fontWeight: 500, color: UI.ink, lineHeight: 1.4 }}>{title}</div><div style={{ fontSize: 14.5, color: UI.mute, lineHeight: 1.6, marginTop: 10 }}>{text}</div>{cta && <div style={{ marginTop: 22 }}><Btn primary onClick={onCta}>{cta}</Btn></div>}</div>;
+
+  return (
+    <div style={{ minHeight: "100vh", background: "#ECEBE6", ...SANS, color: UI.ink }}>
+      <style>{FONTS}{CSS}</style>
+      {splashEl}
+      {intro && !splash && screen === "home" && <Intro onClose={closeIntro} />}
+      {sample && <Viewer sample={sample} onClose={() => setSample(null)} structure={structure} />}
+      <div style={{ maxWidth: 480, margin: "0 auto", minHeight: "100vh", background: UI.bg, display: "flex", flexDirection: "column", position: "relative" }}>
+
+        {/* ===== ACCUEIL ET ONGLETS ===== */}
+        {screen === "home" && (
+          <main style={{ flex: 1, padding: "calc(16px + env(safe-area-inset-top)) 20px 120px" }}>
+
+            {tab === "accueil" && (
+              <div className="av-fade" key="accueil">
+                <SearchBar />
+                <div className="av-x" style={{ display: "flex", gap: 8, overflowX: "auto", padding: "16px 0 4px", margin: "0 -20px", paddingLeft: 20, paddingRight: 20 }}>
+                  <Chip icon="plus" onClick={() => openRecord({ ...NEW })}>Nouveau dossier</Chip>
+                  <Chip icon="clock" onClick={() => { setTab("boite"); setBoite("echeances"); }}>Échéances</Chip>
+                  <Chip icon="doc" onClick={() => { setTab("boite"); setBoite("autorites"); }}>Autorités</Chip>
+                  <Chip icon="scale" onClick={() => setSheet("referentiel")}>Le droit en mouvement</Chip>
+                </div>
+                <H onMore={() => { setTab("boite"); setBoite("echeances"); }}>Dernière activité</H>
+                <div className="av-x" style={{ display: "flex", gap: 14, overflowX: "auto", margin: "0 -20px", padding: "0 20px 4px" }}>
+                  {allDeadlines.filter((d) => d.kind !== "info").slice(0, 5).map((d, k) => <div key={k} onClick={() => openRecord(d.r, 2)} className="av-press" style={{ flexShrink: 0, width: 280, display: "flex", gap: 12, alignItems: "center", cursor: "pointer" }}><Thumb rec={d.r} i={d.i} size={68} /><div style={{ minWidth: 0 }}><div style={{ fontSize: 15, fontWeight: 500, lineHeight: 1.3, color: UI.ink }}>{d.titre}</div><div style={{ fontSize: 12.5, color: UI.mute, marginTop: 3 }}>{d.r.nom} · <span style={{ color: TONE[d.kind][0], fontWeight: 500 }}>dans {daysTo(d.date)} jour{daysTo(d.date) > 1 ? "s" : ""}</span></div></div></div>)}
+                </div>
+                <H onMore={() => { setTab("archive"); setArchiveTab("encours"); }}>Vos dossiers</H>
+                <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "22px 16px" }}>{ALL.slice(0, 6).map(({ r, i, a }) => <RecordCard key={r.id} r={r} i={i} a={a} />)}</div>
+                <div style={{ marginTop: 18 }}><Btn ghost full onClick={() => { setTab("archive"); setArchiveTab("encours"); window.scrollTo(0, 0); }}>Voir les {RECORDS.length} dossiers</Btn></div>
+                <H>Exemples de rapports</H>
+                <Sub style={{ marginTop: -4, marginBottom: 12 }}>Ce que reçoivent votre acheteur, l'administration et les parties, mis en forme depuis un dossier.</Sub>
+                <div className="av-x" style={{ display: "flex", gap: 12, overflowX: "auto", margin: "0 -20px", padding: "4px 20px 6px" }}>
+                  {[["buyer", 0], ["authority", 1], ["contract", 3]].map(([k, idx]) => <div key={k} onClick={() => setSample({ kind: k, rec: RECORDS[idx] })} className="av-press" style={{ flexShrink: 0, width: 220, cursor: "pointer" }}><div style={{ background: UI.tile, padding: "18px 16px 0", borderRadius: 4, height: 150, overflow: "hidden" }}><div style={{ background: UI.bg, padding: "16px 14px 40px", boxShadow: "0 6px 18px rgba(18,20,18,0.08)", height: "100%", boxSizing: "border-box" }}><Wordmark h={9} /><div style={{ fontSize: 8.5, letterSpacing: "0.2em", textTransform: "uppercase", color: UI.mute, marginTop: 12 }}>{SAMPLE_KINDS[k][0]}</div><div style={{ ...DOCSERIF, fontSize: 17, lineHeight: 1.15, marginTop: 6, color: UI.ink }}>{RECORDS[idx].nom}</div><div style={{ width: 26, height: 1, background: UI.gold, marginTop: 10 }} /></div></div><div style={{ fontSize: 15, fontWeight: 500, marginTop: 10, color: UI.ink }}>{SAMPLE_KINDS[k][0]}</div><div style={{ fontSize: 12.5, color: UI.mute, marginTop: 2 }}>{SAMPLE_KINDS[k][1]}</div></div>)}
+                </div>
+                <div style={{ fontSize: 11.5, color: UI.mute, lineHeight: 1.55, marginTop: 26, textAlign: "center" }}>Démonstrateur : données fictives. Le Référentiel ARTVELCHIV (règles, seuils, délais) est validé à date par les équipes ARTVELCHIV.</div>
+              </div>
+            )}
+
+            {tab === "explorer" && (
+              <div className="av-fade" key="explorer">
+                <SearchBar live />
+                {query.trim() ? (
+                  <div style={{ marginTop: 8 }}>{found.length ? found.map(({ r, i, a }, k) => <RecordRow key={r.id} r={r} i={i} a={a} last={k === found.length - 1} />) : <Empty title="Aucun dossier ne correspond." text="Essayez le nom de l'œuvre, le numéro de dossier ou un pays." cta="Ouvrir un nouveau dossier" onCta={() => openRecord({ ...NEW })} />}</div>
+                ) : (<>
+                  <H>Commencer un dossier</H>
+                  <Sub style={{ marginTop: -4, marginBottom: 12 }}>Choisissez la nature de l'œuvre ; la fiche s'ouvre déjà renseignée.</Sub>
+                  <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 10 }}>
+                    {[["peinture", "Nature", "Peinture"], ["sculpture", "Nature", "Sculpture"], ["oeuvre_papier", "Nature", "Œuvre sur papier"], ["archeo", "Nature", "Archéologie"], ["photo", "Nature", "Photographie"], ["mobilier", "Nature", "Mobilier, objets"]].map(([c, l, t]) => <Tile key={c} onClick={() => openRecord({ ...NEW, cat: c, materiau: c === "sculpture" ? "bronze" : c === "archeo" ? "pierre" : c === "mobilier" ? "bois" : "toile", annee: c === "archeo" ? -300 : 1965 })} style={{ minHeight: 84, display: "flex", flexDirection: "column", justifyContent: "center" }}><div style={{ fontSize: 12.5, color: UI.mute }}>{l}</div><div style={{ fontSize: 18, fontWeight: 500, color: UI.ink, marginTop: 4 }}>{t}</div></Tile>)}
+                  </div>
+                  <H>Explorer par thème</H>
+                  <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 12 }}>
+                    {Object.entries(THEMES).map(([k, [t]], idx) => <div key={k} onClick={() => setSheet(`theme:${k}`)} className="av-press" style={{ cursor: "pointer", position: "relative", aspectRatio: "1 / 1.15", borderRadius: 4, overflow: "hidden" }}><Art rec={{ cat: idx % 2 ? "sculpture" : "peinture", hue: ["#3B4F44", "#5A4A3C", "#2F3B4E", "#4E3A3A"][idx] }} i={idx} /><div style={{ position: "absolute", top: 14, left: 14, background: UI.bg, padding: "6px 10px", fontSize: 15, fontWeight: 500, color: UI.ink, maxWidth: "80%", lineHeight: 1.25 }}>{t}</div></div>)}
+                  </div>
+                  <H>Exemples de rapports</H>
+                  <Box>{Object.entries(SAMPLE_KINDS).map(([k, [l, s]], idx, arr) => <Row key={k} onClick={() => setSample({ kind: k, rec: RECORDS[k === "buyer" ? 0 : k === "authority" ? 1 : 3] })} last={idx === arr.length - 1} style={{ padding: "14px 16px" }}><Ico name="doc" size={22} /><div style={{ flex: 1 }}><div style={{ fontSize: 15, fontWeight: 500 }}>{l}</div><div style={{ fontSize: 12.5, color: UI.mute, marginTop: 2 }}>{s}</div></div><Ico name="chev" size={16} color={UI.mute} /></Row>)}</Box>
+                </>)}
+              </div>
+            )}
+
+            {tab === "boite" && (
+              <div className="av-fade" key="boite">
+                <TopTabs value={boite} onChange={setBoite} options={[["echeances", "Échéances"], ["autorites", "Autorités"]]} />
+                <Big style={{ margin: "22px 0 6px" }}>Boîte</Big>
+                {boite === "echeances" ? (<>
+                  <Sub style={{ marginBottom: 6 }}>Chaque délai à tenir, tous dossiers confondus, du plus proche au plus lointain.</Sub>
+                  {allDeadlines.length ? allDeadlines.map((d, k) => <Row key={k} onClick={() => openRecord(d.r, 2)} last={k === allDeadlines.length - 1} style={{ alignItems: "flex-start" }}><div style={{ width: 40, height: 40, borderRadius: 4, background: TONE[d.kind][1], color: TONE[d.kind][0], display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0 }}><Ico name="clock" size={18} color={TONE[d.kind][0]} /></div><div style={{ flex: 1, minWidth: 0 }}><div style={{ fontSize: 14.5, fontWeight: 500, lineHeight: 1.3 }}>{d.titre}</div><div style={{ fontSize: 12.5, color: UI.mute, marginTop: 3 }}>{d.r.nom} · {fmt(d.date)}</div><div style={{ fontSize: 12.5, color: UI.inkSoft, marginTop: 3, lineHeight: 1.45 }}>{d.detail}</div></div><span style={{ ...mono, fontSize: 11.5, color: TONE[d.kind][0], fontWeight: 600, flexShrink: 0 }}>J+{daysTo(d.date)}</span></Row>) : <Empty title="Aucune échéance." text="Les délais apparaissent ici dès qu'un dossier en déclenche un." />}
+                </>) : (<>
+                  <Sub style={{ marginBottom: 6 }}>Les dossiers à déposer auprès d'une autorité, générés depuis chaque dossier. Rien n'est ressaisi.</Sub>
+                  {allAuthorities.length ? allAuthorities.map((x, k) => <Row key={k} onClick={() => openRecord(x.r, 5)} last={k === allAuthorities.length - 1} style={{ alignItems: "flex-start" }}><Thumb rec={x.r} i={x.i} size={48} /><div style={{ flex: 1, minWidth: 0 }}><div style={{ fontSize: 14.5, fontWeight: 500, lineHeight: 1.3 }}>{x.titre}</div><div style={{ fontSize: 12.5, color: UI.mute, marginTop: 3 }}>{x.r.nom}</div><div style={{ fontSize: 12.5, color: UI.inkSoft, marginTop: 3, lineHeight: 1.45 }}>{x.dest}</div></div><Btn small ghost onClick={(e) => { e.stopPropagation(); setSample({ kind: "authority", rec: x.r }); }}>Aperçu</Btn></Row>) : <Empty title="Aucun dossier d'autorité à déposer." text="Ils apparaissent ici dès qu'une vente en exige un." cta="Explorer les dossiers" onCta={() => setTab("archive")} />}
+                </>)}
+              </div>
+            )}
+
+            {tab === "archive" && (
+              <div className="av-fade" key="archive">
+                <div style={{ display: "flex", justifyContent: "flex-end" }}><button onClick={() => setIntro(true)} className="av-press" aria-label="Aide" style={{ width: 30, height: 30, borderRadius: "50%", border: `1px solid ${UI.ink}`, background: "none", cursor: "pointer", fontSize: 14, color: UI.ink }}>?</button></div>
+                <Big style={{ margin: "6px 0 18px" }}>Votre archive</Big>
+                <div className="av-x" style={{ display: "flex", gap: 8, overflowX: "auto", margin: "0 -20px", padding: "0 20px 4px" }}>
+                  <Chip active={archiveTab === "encours"} icon="archive" onClick={() => setArchiveTab("encours")}>En cours</Chip>
+                  <Chip active={archiveTab === "clotures"} icon="check" onClick={() => setArchiveTab("clotures")}>Clôturés</Chip>
+                  <Chip active={archiveTab === "alertes"} icon="bell" onClick={() => setArchiveTab("alertes")}>Alertes</Chip>
+                </div>
+                {archiveTab === "encours" && (<>
+                  <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", margin: "22px 0 16px" }}><button onClick={() => openRecord({ ...NEW })} className="av-press" style={{ ...SANS, display: "flex", alignItems: "center", gap: 8, background: "none", border: "none", cursor: "pointer", fontSize: 15.5, color: UI.ink, padding: 0 }}><Ico name="plus" size={20} />Nouveau dossier</button><button onClick={() => setSheet("obligations")} className="av-press" style={{ ...SANS, display: "flex", alignItems: "center", gap: 8, background: "none", border: "none", cursor: "pointer", fontSize: 15.5, color: UI.ink, padding: 0 }}><Ico name="tag" size={20} />Votre structure</button></div>
+                  <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "24px 16px" }}>
+                    {LISTS.map(([k, l, f]) => { const items = ALL.filter(({ a }) => f(a)); return <div key={k} onClick={() => setSheet(`list:${k}`)} className="av-press" style={{ cursor: "pointer" }}><div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 3, background: UI.tile, padding: 3, borderRadius: 4, aspectRatio: "1 / 1" }}>{[0, 1, 2, 3].map((n) => items[n] ? <div key={n} style={{ overflow: "hidden", borderRadius: 2 }}><Art rec={items[n].r} i={items[n].i} /></div> : <div key={n} style={{ background: UI.tile2, borderRadius: 2, display: "flex", alignItems: "center", justifyContent: "center" }}><Ico name="archive" size={18} color="#C9C7BF" /></div>)}</div><div style={{ fontSize: 15, fontWeight: 500, marginTop: 10, color: UI.ink }}>{l}</div><div style={{ fontSize: 13, color: UI.mute, marginTop: 2 }}>{items.length} dossier{items.length > 1 ? "s" : ""}</div></div>; })}
+                  </div>
+                </>)}
+                {archiveTab === "clotures" && <Empty title="Aucune vente clôturée dans ce démonstrateur." text="Un dossier clôturé reste conservé dix ans, scellé, avec ses pièces, ses déclarations et ses documents : c'est votre preuve de diligence." cta="Voir les dossiers en cours" onCta={() => setArchiveTab("encours")} />}
+                {archiveTab === "alertes" && (<div style={{ marginTop: 12 }}><Sub style={{ marginBottom: 4 }}>Les obstacles qui empêchent une vente de se conclure en l'état.</Sub>{alerts.length ? alerts.map((x, k) => <Row key={k} onClick={() => openRecord(x.r, 1)} last={k === alerts.length - 1} style={{ alignItems: "flex-start" }}><div style={{ width: 40, height: 40, borderRadius: 4, background: UI.claretSoft, display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0 }}><Ico name="alert" size={18} color={UI.claret} /></div><div style={{ flex: 1, minWidth: 0 }}><div style={{ fontSize: 14.5, fontWeight: 500, lineHeight: 1.3 }}>{x.titre}</div><div style={{ fontSize: 12.5, color: UI.mute, marginTop: 3 }}>{x.r.nom} · {eur(x.r.valeur)}</div></div><Ico name="chev" size={16} color={UI.mute} /></Row>) : <Empty title="Aucune alerte." text="Aucun dossier n'est bloqué." />}</div>)}
+              </div>
+            )}
+
+            {tab === "profil" && (
+              <div className="av-fade" key="profil">
+                <Box style={{ padding: "28px 20px 22px", textAlign: "center", borderRadius: 10 }}>
+                  <div style={{ width: 84, height: 84, borderRadius: "50%", background: UI.tile, margin: "0 auto", display: "flex", alignItems: "center", justifyContent: "center", fontSize: 30, fontWeight: 400, color: UI.ink }}>{sLabel[0]}</div>
+                  <div style={{ fontSize: 26, fontWeight: 400, marginTop: 16, color: UI.ink, letterSpacing: "-0.01em" }}>{sLabel} de démonstration</div>
+                  <div style={{ fontSize: 14, color: UI.mute, marginTop: 4 }}>Nice, France</div>
+                  <Tile onClick={() => setSheet("obligations")} style={{ marginTop: 20, textAlign: "left", display: "flex", alignItems: "center", gap: 14 }}><div style={{ flex: 1 }}><div style={{ fontSize: 15, fontWeight: 500, color: UI.ink }}>Complétez votre structure</div><div style={{ fontSize: 13, color: UI.mute, marginTop: 3, lineHeight: 1.5 }}>{sOk} obligation{sOk > 1 ? "s" : ""} permanente{sOk > 1 ? "s" : ""} en place sur {sList.length}.</div></div><Ring v={Math.round((sOk / sList.length) * 100)} size={50} /></Tile>
+                  <div style={{ marginTop: 16 }}><Btn ghost onClick={() => setSheet("obligations")}>Compléter le profil</Btn></div>
+                </Box>
+                <Big style={{ margin: "34px 0 8px", fontSize: 30 }}>Compte</Big>
+                <Label style={{ marginTop: 18, marginBottom: 6 }}>Structure</Label>
+                <div style={{ padding: "8px 0 14px", borderBottom: `1px solid ${UI.line}` }}><Seg value={structure} onChange={setStructure} options={[["galerie", "Galerie"], ["marchand", "Marchand"], ["maison", "Maison"], ["conseiller", "Conseil"]]} /></div>
+                {[["Obligations permanentes", "tag", () => setSheet("obligations")], ["Vos dossiers", "archive", () => setTab("archive")]].map(([l, ic, fn]) => <Row key={l} onClick={fn}><Ico name={ic} size={22} /><span style={{ flex: 1, fontSize: 16.5 }}>{l}</span><Ico name="chev" size={16} color={UI.mute} /></Row>)}
+                <Label style={{ marginTop: 26, marginBottom: 6 }}>Références</Label>
+                {[["Référentiel des textes", "scale", () => setSheet("referentiel")], ["Exemples de rapports", "doc", () => setSample({ kind: "buyer", rec: RECORDS[0] })], ["Pourquoi ARTVELCHIV", "bell", () => setIntro(true)]].map(([l, ic, fn], i, arr) => <Row key={l} onClick={fn} last={i === arr.length - 1}><Ico name={ic} size={22} /><span style={{ flex: 1, fontSize: 16.5 }}>{l}</span><Ico name="chev" size={16} color={UI.mute} /></Row>)}
+                <div style={{ fontSize: 11.5, color: UI.mute, lineHeight: 1.55, marginTop: 34, textAlign: "center" }}>ARTVELCHIV · démonstrateur confidentiel · Référentiel vérifié à la source le 3 septembre 2026.</div>
+              </div>
+            )}
+          </main>
+        )}
+
+        {/* ===== DOSSIER ===== */}
+        {screen === "record" && (
+          <>
+            <header style={{ position: "sticky", top: 0, zIndex: 20, background: "rgba(255,255,255,0.94)", backdropFilter: "blur(14px)", WebkitBackdropFilter: "blur(14px)", borderBottom: `1px solid ${UI.line}` }}>
+              <div style={{ padding: "calc(10px + env(safe-area-inset-top)) 20px 0" }}>
+                <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between" }}>
+                  <button onClick={() => setScreen("home")} className="av-press" aria-label="Retour" style={{ display: "flex", alignItems: "center", gap: 2, background: "none", border: "none", cursor: "pointer", fontSize: 15, color: UI.ink, fontWeight: 500, padding: 0, marginLeft: -6 }}><Ico name="back" size={22} />Dossiers</button>
+                  <span style={{ ...mono, fontSize: 11.5, color: UI.mute }}>{o.id}</span>
+                  <Pill k={q.overall} />
+                </div>
+                <div style={{ display: "flex", alignItems: "center", gap: 12, marginTop: 12 }}><Thumb rec={o} i={RECORDS.findIndex((r) => r.id === o.id) + 1} size={44} /><div style={{ flex: 1, minWidth: 0 }}><div style={{ fontSize: 16, fontWeight: 500, whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>{o.nom}</div><div style={{ fontSize: 12, color: UI.mute, marginTop: 1 }}>{q.actions} obligations{q.bloquantes ? ` · ${q.bloquantes} bloquante${q.bloquantes > 1 ? "s" : ""}` : ""} · {q.deadlines.length} échéances</div></div><Ring v={indice} size={40} /></div>
+                <div className="av-x" style={{ display: "flex", gap: 8, overflowX: "auto", padding: "12px 0 12px" }}>{STEPS.map((s, i) => <button key={s} onClick={() => { setOpen(null); setStep(i); }} className="av-press" style={{ ...SANS, flexShrink: 0, border: "none", cursor: "pointer", padding: "8px 14px", borderRadius: 999, fontSize: 13, fontWeight: 500, background: i === step ? UI.ink : i < step ? UI.vertSoft : UI.tile, color: i === step ? "#FFFFFF" : i < step ? UI.vert : UI.mute }}>{i < step ? "✓ " : ""}{s}</button>)}</div>
+              </div>
+            </header>
+
+            <main style={{ flex: 1, padding: "18px 20px 130px" }}>
+              {step === 0 && (
+                <div className="av-fade" key="s0">
+                  <Big style={{ fontSize: 28 }}>L'œuvre</Big><Sub style={{ margin: "6px 0 16px" }}>Décrivez-la ; le droit applicable se déduit à chaque champ.</Sub>
+                  <Field label="Désignation"><input value={o.titre} onChange={(e) => set("titre")(e.target.value)} placeholder="Artiste, titre, technique, date" style={inp} /></Field>
+                  <Field label="Nature"><Sel value={o.cat} onChange={set("cat")} options={CATS} /></Field>
+                  <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 12 }}><Field label="Année (négatif : av. J.-C.)"><input type="number" inputMode="numeric" value={o.annee} onChange={(e) => set("annee")(+e.target.value)} style={{ ...inp, ...mono }} /></Field><Field label="Prix ou estimation (€)"><input type="number" inputMode="numeric" value={o.valeur} onChange={(e) => set("valeur")(+e.target.value)} style={{ ...inp, ...mono }} /></Field></div>
+                  <Field label="Artiste"><Sel value={o.artiste} onChange={set("artiste")} options={ARTISTE} /></Field>
+                  {TECHNIQUES[o.cat] && <Field label="Technique"><Sel value={o.technique || TECHNIQUES[o.cat][0][0]} onChange={set("technique")} options={TECHNIQUES[o.cat]} /></Field>}
+                  {o.cat === "sculpture" && <Field label="Tirage (vide pour une pièce unique)"><input value={o.tirage || ""} onChange={(e) => set("tirage")(e.target.value)} placeholder="ex. 7/8, fonte posthume" style={inp} /></Field>}
+                  <Section title="Trajet et douane">
+                    <Field label="Pays de création ou de découverte"><Sel value={o.creation} onChange={set("creation")} options={PAYS} /></Field>
+                    <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 12 }}><Field label="Lieu actuel"><Sel value={o.lieu} onChange={set("lieu")} options={PAYS} /></Field><Field label="Destination"><Sel value={o.dest} onChange={set("dest")} options={PAYS} /></Field></div>
+                    <Field label="Statut douanier"><Sel value={o.douane} onChange={set("douane")} options={DOUANE} /></Field>
+                    {(o.douane === "at" || o.douane === "ata") && <Field label={o.douane === "at" ? "Date de placement sous admission temporaire" : "Date d'émission du carnet ATA"}><input type="date" value={o.entree} onChange={(e) => set("entree")(e.target.value)} style={{ ...inp, ...mono }} /></Field>}
+                    <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 12 }}><Field label="Matériau principal"><Sel value={o.materiau || "mixte"} onChange={set("materiau")} options={MATERIAUX} /></Field><Field label="Type de provenance"><Sel value={o.prov || "collection"} onChange={set("prov")} options={PROVTYPE} /></Field></div>
+                  </Section>
+                  <Section title="Vente">
+                    <Field label="Origine"><Seg value={o.source} onChange={set("source")} options={[["premier", "De l'artiste"], ["second", "Second marché"]]} /></Field>
+                    <Field label="Mode de vente"><Seg value={o.mode} onChange={set("mode")} options={[["prive", "Gré à gré"], ["encheres", "Enchères"], ["distance", "À distance"]]} /></Field>
+                    <Field label="Acheteur"><Seg value={o.acheteur} onChange={set("acheteur")} options={[["particulier", "Particulier"], ["pro", "Professionnel"], ["public", "Musée"]]} /></Field>
+                    <Field label="Espèces protégées (ivoire, écaille, bois précieux, corail)"><Seg value={o.protege ? "oui" : "non"} onChange={(v) => set("protege")(v === "oui")} options={[["non", "Non"], ["oui", "Oui"]]} /></Field>
+                    {o.cat === "religieux" && <Field label="Objet liturgique ou issu d'un monument ?"><Seg value={o.liturgique ? "oui" : "non"} onChange={(v) => set("liturgique")(v === "oui")} options={[["non", "Non"], ["oui", "Oui"]]} /></Field>}
+                  </Section>
+                </div>
+              )}
+
+              {step === 1 && (
+                <div className="av-fade" key="s1">
+                  <Big style={{ fontSize: 28 }}>{q.bloquantes ? `${q.bloquantes} obstacle${q.bloquantes > 1 ? "s" : ""}, ${q.actions} obligation${q.actions > 1 ? "s" : ""}` : q.actions ? `${q.actions} obligation${q.actions > 1 ? "s" : ""}` : "Aucune démarche particulière"}</Big>
+                  <Sub style={{ margin: "6px 0 4px" }}>{q.age > 0 ? `${q.age} ans` : "Antiquité"} · {q.tiers ? "bien culturel tiers" : "bien de l'Union"} · {o.lieu === o.dest ? "sans frontière" : `${o.lieu} → ${o.dest}`}. Ce que la loi impose, et ce qu'elle interdit.</Sub>
+                  {GROUPS.map(([g, doms]) => { const rs = q.rules.filter((r) => doms.includes(r.domain)).sort((a, b) => ORDER[a.kind] - ORDER[b.kind]); if (!rs.length) return null; return <Section key={g} title={g}>{rs.map((r, i) => <RuleRow key={r.titre} r={r} last={i === rs.length - 1} />)}</Section>; })}
+                </div>
+              )}
+
+              {step === 2 && (
+                <div className="av-fade" key="s2">
+                  <Big style={{ fontSize: 28 }}>Douane et échéances</Big><Sub style={{ margin: "6px 0 16px" }}>{q.deadlines.some((d) => d.kind === "blocked") ? "Une échéance douanière est critique : elle commande le calendrier de la vente." : "Régime, TVA à l'arrivée, et chaque délai à tenir."}</Sub>
+                  {q.rules.filter((r) => r.domain === "customs").map((r) => <Box key={r.titre} pad={16} style={{ marginBottom: 12 }}><div style={{ display: "flex", gap: 12, alignItems: "flex-start" }}><div style={{ flex: 1, fontSize: 16, fontWeight: 500, lineHeight: 1.3 }}>{r.titre}</div><Pill k={r.kind} /></div><div style={{ fontSize: 13.5, color: UI.inkSoft, lineHeight: 1.6, marginTop: 8 }}>{r.detail}</div><Base>{r.base}</Base></Box>)}
+                  <Section title="Calendrier">{q.deadlines.map((d, i) => <Row key={d.titre} last={i === q.deadlines.length - 1} style={{ alignItems: "flex-start" }}><div style={{ width: 40, height: 40, borderRadius: 4, background: TONE[d.kind][1], display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0 }}><Ico name="clock" size={18} color={TONE[d.kind][0]} /></div><div style={{ flex: 1 }}><div style={{ fontSize: 14.5, fontWeight: 500 }}>{d.titre}</div><div style={{ ...mono, fontSize: 11.5, color: TONE[d.kind][0], marginTop: 3, fontWeight: 600 }}>{fmt(d.date)}</div><div style={{ fontSize: 12.5, color: UI.inkSoft, lineHeight: 1.5, marginTop: 3 }}>{d.detail}</div></div></Row>)}</Section>
+                  <div style={{ fontSize: 12, color: UI.mute, lineHeight: 1.55, marginTop: 14 }}>Points d'attention : adresse déclarée sous admission temporaire, apurement des volets ATA, valeur déclarée cohérente avec le prix, incoterm et risques, assurance clou à clou, retour en franchise trois ans.</div>
+                </div>
+              )}
+
+              {step === 3 && (
+                <div className="av-fade" key="s3">
+                  <Big style={{ fontSize: 28 }}>Preuves et déclarations</Big><Sub style={{ margin: "6px 0 4px" }}>Seules les pièces exigées par ce régime ; vous les joignez, ARTVELCHIV les indexe et les scelle.</Sub>
+                  {groups.map((g) => <Section key={g} title={g}>{q.pieces.filter((p) => p.group === g).map((p, i, arr) => { const d = !!joint[p.titre]; return <Row key={p.titre} last={i === arr.length - 1}><div style={{ flex: 1 }}><div style={{ fontSize: 14.5, fontWeight: 400 }}>{p.titre}</div><div style={{ fontSize: 12, color: d ? UI.ok : UI.mute, marginTop: 2 }}>{d ? "Jointe · horodatée · scellée" : p.why}</div></div><Btn small primary={!d} onClick={() => setJoint((j) => ({ ...j, [p.titre]: !j[p.titre] }))} style={d ? { background: UI.okSoft, color: UI.ok } : undefined}>{d ? "✓ Jointe" : "Joindre"}</Btn></Row>; })}</Section>)}
+                  <Section title="Le vendeur déclare">
+                    {o.artiste !== "anonyme" && <Field label="Dénomination de l'attribution (décret du 3 mars 1981)"><Sel value={vocab} onChange={setVocab} options={VOCAB} /></Field>}
+                    {DECL_Q.map((qn, i) => <div key={qn} style={{ padding: "12px 0", borderTop: `1px solid ${UI.line}` }}><div style={{ fontSize: 14, marginBottom: 10, lineHeight: 1.45 }}>{qn}</div><Seg value={decl[i] || ""} onChange={(v) => setDecl((d) => ({ ...d, [i]: v }))} options={[["Oui", "Oui"], ["Non", "Non"], ["NSP", "Ne sais pas"]]} /></div>)}
+                    <div style={{ borderTop: `1px solid ${UI.line}`, paddingTop: 12, fontSize: 12.5, color: UI.inkSoft, lineHeight: 1.55, fontStyle: "italic" }}>« Je certifie la sincérité de mes déclarations et l'exhaustivité des pièces versées. » — signature sous identité vérifiée, scellé SHA-256.</div>
+                  </Section>
+                </div>
+              )}
+
+              {step === 4 && (
+                <div className="av-fade" key="s4">
+                  <Big style={{ fontSize: 28 }}>{q.overall === "blocked" ? "Ne peut pas se conclure en l'état" : q.overall === "required" ? "Peut se conclure, sous conditions" : "Aucun obstacle"}</Big><Sub style={{ margin: "6px 0 16px" }}>Six domaines, un verdict.</Sub>
+                  <div style={{ display: "flex", alignItems: "center", gap: 16, background: TONE[q.overall][1], borderRadius: 6, padding: 18 }}><Ring v={indice} size={60} /><div style={{ flex: 1 }}><Label>Statut global</Label><div style={{ fontSize: 26, color: TONE[q.overall][0], lineHeight: 1.1, marginTop: 4, fontWeight: 500 }}>{KIND[q.overall][0]}</div><div style={{ fontSize: 12.5, color: UI.inkSoft, marginTop: 4 }}>{q.authorities.length} dossier{q.authorities.length > 1 ? "s" : ""} d'autorité · {nJ}/{q.pieces.length} pièces · {nD}/{DECL_Q.length} déclarations</div></div></div>
+                  <Section title="Par domaine">{q.clearance.map(([dom, s, doms], i) => { const first = q.rules.filter((r) => doms.includes(r.domain)).sort((a, b) => ORDER[a.kind] - ORDER[b.kind])[0]; return <Row key={dom} last={i === q.clearance.length - 1}><div style={{ flex: 1 }}><div style={{ fontSize: 14.5, fontWeight: 500 }}>{dom}</div><div style={{ fontSize: 12.5, color: UI.mute, marginTop: 2 }}>{first ? first.titre : "—"}</div></div><Pill k={s} /></Row>; })}</Section>
+                </div>
+              )}
+
+              {step === 5 && (
+                <div className="av-fade" key="s5">
+                  <Big style={{ fontSize: 28 }}>Autorités</Big><Sub style={{ margin: "6px 0 16px" }}>{q.authorities.length ? `${q.authorities.length} dossier${q.authorities.length > 1 ? "s" : ""} à déposer, générés depuis le dossier. Rien n'est ressaisi.` : "Aucune autorité à saisir pour cette vente ; l'extrait du livre de police reste présentable sur réquisition."}</Sub>
+                  {[...q.authorities, { titre: "Extrait du livre de police", dest: "Présentable sur réquisition", sections: ["Numéro d'ordre, date d'entrée", "Description et marques", "Identité et pièce du vendeur", "Prix d'acquisition", "Sortie : date, acheteur, prix"] }, ...(structure === "maison" && o.mode === "encheres" ? [{ titre: "Notification — droit de préemption", dest: "Ministère de la Culture, après adjudication", sections: ["Procès-verbal", "Lot", "Prix", "Délai de quinze jours"] }] : [])].map((a) => <Box key={a.titre} pad={16} style={{ marginBottom: 12 }}><div style={{ display: "flex", gap: 12, alignItems: "flex-start" }}><Ico name="doc" size={22} /><div style={{ flex: 1 }}><div style={{ fontSize: 15.5, fontWeight: 500, lineHeight: 1.3 }}>{a.titre}</div><div style={{ fontSize: 12.5, color: UI.mute, marginTop: 3 }}>Destinataire : {a.dest}</div></div></div><div style={{ marginTop: 12, borderTop: `1px solid ${UI.line}`, paddingTop: 6 }}>{a.sections.map((s) => <div key={s} style={{ display: "flex", gap: 10, fontSize: 13.5, color: UI.inkSoft, padding: "5px 0", lineHeight: 1.45, alignItems: "flex-start" }}><Ico name="check" size={14} color={UI.ok} /><span>{s}</span></div>)}</div></Box>)}
+                  <div style={{ marginTop: 6 }}><Btn ghost full onClick={() => setSample({ kind: "authority", rec: o })}>Voir le dossier tel que l'administration le reçoit</Btn></div>
+                </div>
+              )}
+
+              {step === 6 && (
+                <div className="av-fade" key="s6">
+                  <Big style={{ fontSize: 28 }}>Rapport acheteur</Big><Sub style={{ margin: "6px 0 16px" }}>Le vérifié, le déclaré, et ce qui reste à sa charge. C'est le document que votre acheteur conserve.</Sub>
+                  <Box pad={16}><div style={{ display: "flex", gap: 12, alignItems: "center" }}><Thumb rec={o} i={RECORDS.findIndex((r) => r.id === o.id) + 1} size={48} /><div><Label>Rapport acheteur · {o.id}</Label><div style={{ ...mono, fontSize: 11.5, color: UI.mute, marginTop: 3 }}>{eur(o.valeur)} · {o.lieu} → {o.dest} · {TODAY_LABEL}</div></div></div><div style={{ ...DOCSERIF, fontSize: 21, marginTop: 14, lineHeight: 1.25 }}>{o.titre || "Œuvre sans désignation"}</div></Box>
+                  <Section title="Contenu">{[["Vendeur", "Identité vérifiée, qualité justifiée, criblage négatif"], ["Attribution", o.artiste === "anonyme" ? "Non attribuée ; rapport d'expert joint" : `« ${vocab} » au sens du décret de 1981, garantie contractuelle du vendeur`], ["Provenance", `Chaîne documentée ; registres interrogés${o.annee < 1946 && o.annee > 1800 ? " ; spoliations recherchées" : ""}`], ["État", "Rapport photographique annexé ; restaurations selon déclaration"], ["Statut réglementaire", q.clearance.map(([d, s]) => `${d} : ${KIND[s][0].toLowerCase()}`).join(" · ")], ["Douane et fiscalité", `${q.rules.find((r) => r.domain === "customs")?.titre || ""} ; ${q.original ? "TVA 5,5 %" : "TVA sur la marge"}`], ["Ce que ce rapport ne garantit pas", "L'authenticité en tant que telle, l'état mécanique, la valeur, hors garantie contractuelle et expertises jointes"], ["Vos protections", `Déclarations à valeur d'aveu ; ${q.seq ? "prix consigné jusqu'à réception conforme ; " : ""}rapport contradictoire ; dossier conservé dix ans`]].map(([k, v], i, arr) => <Row key={k} last={i === arr.length - 1} style={{ flexDirection: "column", alignItems: "flex-start", gap: 4 }}><Label>{k}</Label><div style={{ fontSize: 13.5, color: UI.inkSoft, lineHeight: 1.5 }}>{v}</div></Row>)}</Section>
+                  <div style={{ marginTop: 18 }}><Btn ghost full onClick={() => setSample({ kind: "buyer", rec: o, vocab, decl, joint })}>Voir le rapport tel que l'acheteur le reçoit</Btn></div>
+                </div>
+              )}
+
+              {step === 7 && (
+                <div className="av-fade" key="s7">
+                  <Big style={{ fontSize: 28 }}>Contrat de vente</Big><Sub style={{ margin: "6px 0 16px" }}>Bâti sur le dossier, pas sur un modèle : {q.clauses.length} clauses, chacune justifiée par le régime.</Sub>
+                  <Box pad={16} style={{ marginBottom: 12 }}><div style={{ ...DOCSERIF, fontSize: 21 }}>{o.nom}</div><div style={{ fontSize: 12.5, color: UI.mute, marginTop: 4 }}>Entre {structure === "maison" ? "le mandant représenté par la maison de vente" : "le vendeur"} et l'acheteur {o.acheteur === "public" ? "personne publique" : o.acheteur === "particulier" ? "consommateur" : "professionnel"}</div></Box>
+                  {q.clauses.map(([k, v], i) => <Row key={i} last={i === q.clauses.length - 1} style={{ alignItems: "flex-start" }}><span style={{ ...mono, color: UI.vert, fontSize: 11, width: 24, flexShrink: 0, paddingTop: 3, fontWeight: 600 }}>{String(i + 1).padStart(2, "0")}</span><div><div style={{ fontSize: 14, fontWeight: 500 }}>{k}</div><div style={{ fontSize: 13, color: UI.inkSoft, lineHeight: 1.5, marginTop: 2 }}>{v}</div></div></Row>)}
+                  <div style={{ fontSize: 12, color: UI.mute, marginTop: 14, lineHeight: 1.5 }}>Annexes : rapport, déclarations signées, rapport d'état, pièces indexées, dossiers d'autorités, calendrier douanier.</div>
+                  <div style={{ marginTop: 18 }}><Btn ghost full onClick={() => setSample({ kind: "contract", rec: o })}>Voir le contrat mis en forme</Btn></div>
+                </div>
+              )}
+
+              {step === 8 && (
+                <div className="av-fade" key="s8">
+                  <Big style={{ fontSize: 28 }}>Clôture</Big><Sub style={{ margin: "6px 0 4px" }}>{q.overall === "blocked" ? "Pas de clôture : le dossier reste archivé comme preuve de diligence." : "Pas à pas, jusqu'au sceau."}</Sub>
+                  {[["Signatures", "Contrat et déclarations sous identité vérifiée"], ...(q.seq ? [["Séquestre", "Prix consigné"]] : []), ...(q.authorities.length ? [["Autorisations", `${q.authorities.length} décision${q.authorities.length > 1 ? "s" : ""} obtenue${q.authorities.length > 1 ? "s" : ""}`]] : []), ...(q.rules.some((r) => r.domain === "customs" && r.kind !== "clear") ? [["Douane", "Régime régularisé, déclaration déposée, TVA acquittée"]] : []), ["Livraison", "Transporteur agréé, assurance clou à clou"], ["Réception", "Rapport contradictoire, réserves sous 48 h"], ...(q.seq ? [["Libération", "Fonds libérés au PV"]] : []), ...(structure === "maison" ? [["Procès-verbal", "À J + 1"]] : []), ...(o.source === "second" ? [["Livre de police", "Sortie inscrite"]] : []), ...(q.rules.some((r) => r.titre.startsWith("Droit de suite")) ? [["Droit de suite", "Versé"]] : []), ["Archivage", "Dossier scellé, dix ans"]].map(([k, v], i, arr) => <Row key={k} last={i === arr.length - 1}><span style={{ width: 28, height: 28, borderRadius: "50%", background: UI.vertSoft, color: UI.vert, display: "flex", alignItems: "center", justifyContent: "center", fontSize: 12, fontWeight: 600, flexShrink: 0 }}>{i + 1}</span><div style={{ flex: 1 }}><div style={{ fontSize: 14.5, fontWeight: 500 }}>{k}</div><div style={{ fontSize: 12.5, color: UI.mute, marginTop: 1 }}>{v}</div></div></Row>)}
+                  {q.overall !== "blocked" && <div style={{ background: UI.vert, color: UI.cream, borderRadius: 8, padding: "34px 22px", marginTop: 22, textAlign: "center" }}><div style={{ display: "flex", justifyContent: "center" }}><Wordmark h={18} light /></div><div style={{ fontSize: 10.5, letterSpacing: "0.3em", textTransform: "uppercase", color: UI.gold, marginTop: 16, fontWeight: 500 }}>Established</div><div style={{ ...DOCSERIF, fontStyle: "italic", fontSize: 17, color: "#D5DCD3", marginTop: 12, lineHeight: 1.45 }}>This work and this transaction have been established and secured through ARTVELCHIV.</div><div style={{ ...mono, fontSize: 10.5, color: "#9FB0A2", marginTop: 14 }}>{o.id} · SHA-256 · 30/09/2026</div></div>}
+                </div>
+              )}
+            </main>
+          </>
+        )}
+
+        {/* ===== feuilles ===== */}
+        {sheet === "obligations" && (
+          <Sheet title="Obligations permanentes" onClose={() => setSheet(null)}>
+            <Sub style={{ marginBottom: 12 }}>Ce qui s'impose en permanence à votre structure, indépendamment de chaque œuvre.</Sub>
+            <Seg value={structure} onChange={setStructure} options={[["galerie", "Galerie"], ["marchand", "Marchand"], ["maison", "Maison"], ["conseiller", "Conseil"]]} />
+            <div style={{ display: "flex", alignItems: "center", gap: 14, marginTop: 16, padding: 14, background: UI.tile, borderRadius: 6 }}><Ring v={Math.round((sOk / sList.length) * 100)} size={50} /><div><div style={{ fontSize: 15.5, fontWeight: 500 }}>{sLabel}</div><div style={{ fontSize: 13, color: UI.mute, marginTop: 2 }}>{sOk} obligation{sOk > 1 ? "s" : ""} en place sur {sList.length}</div></div></div>
+            <div style={{ marginTop: 8 }}>{sList.map(([t, d, base], i) => { const done = isDone(i), isOpen = open === `s${i}`; return <div key={t} style={{ borderBottom: i === sList.length - 1 ? "none" : `1px solid ${UI.line}` }}><Row onClick={() => setOpen(isOpen ? null : `s${i}`)} last><span style={{ width: 22, height: 22, borderRadius: "50%", background: done ? UI.okSoft : UI.warnSoft, color: done ? UI.ok : UI.warn, display: "flex", alignItems: "center", justifyContent: "center", fontSize: 12, fontWeight: 700, flexShrink: 0 }}>{done ? "✓" : "!"}</span><span style={{ flex: 1, fontSize: 14.5, lineHeight: 1.35 }}>{t}</span><span style={{ transform: isOpen ? "rotate(90deg)" : "none", transition: "transform .2s", display: "flex" }}><Ico name="chev" size={16} color={UI.mute} /></span></Row>{isOpen && <div className="av-fade" style={{ padding: "0 0 14px 34px" }}><div style={{ fontSize: 13.5, color: UI.inkSoft, lineHeight: 1.6 }}>{d}</div><Base>{base}</Base><div style={{ marginTop: 10 }}><Btn small ghost onClick={(e) => { e.stopPropagation(); setStructDone((x) => ({ ...x, [structure]: { ...(x[structure] || {}), [i]: !done } })); }}>{done ? "Marquer à revoir" : "Marquer en place"}</Btn></div></div>}</div>; })}</div>
+          </Sheet>
+        )}
+        {sheet === "referentiel" && (
+          <Sheet title="Référentiel" onClose={() => setSheet(null)}>
+            <Sub style={{ marginBottom: 6 }}>Chaque règle renvoie à un texte. Vérifié à la source le 3 septembre 2026 ; 241 920 combinaisons testées sans erreur.</Sub>
+            {SOURCES.map(([j, items]) => <Section key={j} title={j}>{items.map((t, i) => <Row key={t} last={i === items.length - 1} style={{ padding: "11px 0" }}><span style={{ fontSize: 13.5, color: UI.inkSoft, lineHeight: 1.5 }}>{t}</span></Row>)}</Section>)}
+          </Sheet>
+        )}
+        {sheet && sheet.startsWith("theme:") && (() => { const [t, d, refs] = THEMES[sheet.slice(6)]; return (
+          <Sheet title={t} onClose={() => setSheet(null)}>
+            <div style={{ fontSize: 15, color: UI.inkSoft, lineHeight: 1.65 }}>{d}</div>
+            <div style={{ marginTop: 10 }}>{refs.map((r) => <div key={r} style={{ marginRight: 8, display: "inline-block" }}><Base>{r}</Base></div>)}</div>
+            <div style={{ marginTop: 22 }}><Btn primary full onClick={() => openRecord({ ...NEW })}>Appliquer à une œuvre</Btn></div>
+          </Sheet>
+        ); })()}
+        {sheet && sheet.startsWith("list:") && (() => { const [k, l, f] = LISTS.find((x) => x[0] === sheet.slice(5)); const items = ALL.filter(({ a }) => f(a)); return (
+          <Sheet title={l} onClose={() => setSheet(null)}>
+            {items.length ? items.map(({ r, i, a }, n) => <RecordRow key={r.id} r={r} i={i} a={a} last={n === items.length - 1} />) : <Empty title="Aucun dossier dans cette liste." text="" />}
+          </Sheet>
+        ); })()}
+
+        {/* ===== barre d'onglets (fixe) ===== */}
+        {screen === "home" && (
+          <nav style={{ position: "fixed", bottom: 0, left: "50%", transform: "translateX(-50%)", width: "100%", maxWidth: 480, boxSizing: "border-box", background: "rgba(255,255,255,0.94)", backdropFilter: "blur(16px)", WebkitBackdropFilter: "blur(16px)", borderTop: `1px solid ${UI.line}`, padding: "8px 6px calc(8px + env(safe-area-inset-bottom))", display: "flex", zIndex: 30 }}>
+            {[["accueil", "Accueil", "home"], ["explorer", "Explorer", "search"], ["boite", "Boîte", "inbox"], ["archive", "Archive", "archive"], ["profil", "Profil", "profile"]].map(([k, l, ic]) => <button key={k} onClick={() => { setTab(k); setOpen(null); setSheet(null); window.scrollTo(0, 0); }} className="av-press" style={{ ...SANS, flex: 1, background: "none", border: "none", cursor: "pointer", display: "flex", flexDirection: "column", alignItems: "center", gap: 4, padding: "6px 0", fontSize: 11, fontWeight: 400, color: tab === k ? UI.ink : UI.inkSoft, position: "relative" }}><Ico name={ic} active={tab === k} />{l}{k === "boite" && urgent > 0 && <span style={{ position: "absolute", top: 2, right: "calc(50% - 16px)", width: 8, height: 8, borderRadius: "50%", background: UI.vert }} />}</button>)}
+          </nav>
+        )}
+        {screen === "record" && (
+          <div style={{ position: "fixed", bottom: 0, left: "50%", transform: "translateX(-50%)", width: "100%", maxWidth: 480, boxSizing: "border-box", background: "rgba(255,255,255,0.94)", backdropFilter: "blur(16px)", WebkitBackdropFilter: "blur(16px)", borderTop: `1px solid ${UI.line}`, padding: "12px 20px calc(14px + env(safe-area-inset-bottom))", display: "flex", gap: 10, zIndex: 30 }}>
+            <Btn ghost onClick={() => { setOpen(null); step === 0 ? setScreen("home") : setStep(step - 1); window.scrollTo(0, 0); }}>Retour</Btn>
+            <div style={{ flex: 1 }}>{step < 8 ? <Btn primary full onClick={() => { setOpen(null); setStep(step + 1); window.scrollTo(0, 0); }}>{["Voir les règles", "Douane et échéances", "Joindre les preuves", "Lancer la clearance", "Dossiers d'autorités", "Rapport acheteur", "Générer le contrat", "Clôturer"][step]}</Btn> : <Btn primary full onClick={() => setSample({ kind: "buyer", rec: o, vocab, decl, joint })}>Exporter le dossier (PDF)</Btn>}</div>
+          </div>
+        )}
+      </div>
+    </div>
+  );
 }
