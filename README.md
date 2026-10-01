@@ -6,7 +6,7 @@ Dépôt statique, sans étape de construction : chaque fichier se sert tel quel 
 
 | Chemin | Rôle |
 | --- | --- |
-| `index.html` | Site public (ordinateur et mobile). Le lien « Accès privé » (pied de page et menu mobile) ouvre `app/`. |
+| `index.html` | Site public (ordinateur et mobile). Le lien « Accès privé » (accueil, pied de page et menu mobile) ouvre `app/`. |
 | `app/index.html` | Application complète en une seule page. Elle charge React depuis cdnjs et embarque le code de l'application ; aucun fichier de build n'est nécessaire. |
 | `app/manifest.webmanifest`, `app/icon-*.png`, `app/apple-touch-icon.png` | Permettent d'ajouter l'application à l'écran d'accueil d'un iPhone ou d'un Android pendant la phase de test (icône verte, plein écran). |
 | `assets/logo-wordmark-*.png` | Logotype détouré, version sombre (fond clair) et claire (fond vert). |
@@ -67,8 +67,13 @@ L'application ouvre alors un dossier pré-rempli ; chaque champ reste à confirm
 3. Redéployer (Vercel → Deployments → Redeploy) pour que les variables soient prises en compte.
 4. Tester : ouvrir l'application, toucher l'appareil photo, photographier une œuvre. En l'absence de clés, l'application affiche un message clair et permet de décrire l'œuvre à la main.
 
-`repo/app/index.html` contient la ligne `window.ARTVELCHIV_API_URL = ""` : le service est appelé sur le même domaine. Pour héberger la fonction ailleurs, indiquer son adresse dans cette variable.
+`app/index.html` contient, dans la balise script précédant le code de l'application, `window.ARTVELCHIV_API_URL=""` : le service est appelé sur le même domaine. Pour héberger la fonction ailleurs, indiquer son adresse dans cette variable.
 
 ### Confidentialité et coût
 
 Les photographies transitent par Google Cloud et Anthropic pour l'analyse ; selon les conditions de ces services, elles ne servent pas à l'entraînement de leurs modèles et ne sont pas publiées, ce qui doit être vérifié dans les conditions en vigueur et repris dans les conditions d'utilisation d'ARTVELCHIV, avec le consentement du professionnel avant l'envoi. Le coût est de l'ordre de quelques millièmes d'euro par photographie ; les deux services offrent un quota gratuit mensuel.
+
+## Version du 1er octobre 2026
+
+- Site : promesse « une photo pour commencer », trois étapes (Photographiez · Confirmez · Préparez), dossier exemple avec pages intérieures, quatre usages du dossier (archive de l'œuvre, dossier d'autorité, dossier acheteur, projet de contrat), sélecteur de trajet (pays de départ, pays d'arrivée, motif), section acheteur positive, menu « Comment ça marche · Vos dossiers · Exemples · À l'international », bouton « Réserver une démonstration », lien « Accès privé ».
+- Application : quatre onglets (Accueil, Œuvres, À suivre, Ma galerie), photo comme action principale, états explicites (À compléter, Prêt à relire, Autorisation nécessaire, Information à confirmer…), dossier en quatre vues (Vue d'ensemble, L'œuvre, Démarches, Documents), formulaire allégé, informations proposées à partir de la photo signalées jusqu'à vérification.
