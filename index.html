@@ -1,7 +1,7 @@
 <!doctype html>
 <html lang="fr"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="theme-color" content="#ffffff"><meta name="description" content="L’art de vendre, en toute sérénité. ARTVELCHIV prépare les dossiers d’autorités, le rapport acheteur et le contrat des professionnels de l’art : un acheteur rassuré, un professionnel protégé."><title>ARTVELCHIV — L’art de vendre. En toute sérénité.</title><link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' fill='%2319382c'/%3E%3C/svg%3E"><link rel="preconnect" href="https://fonts.googleapis.com"><link href="https://fonts.googleapis.com/css2?family=Instrument+Sans:wght@400;500;600&display=swap" rel="stylesheet"><style>/* ARTVELCHIV — feuille de style, refonte du 30 septembre 2026.
    Direction : blanc, noir, gris, touches de vert ; une seule famille sans-serif ; blocs aérés ; angles droits ; boutons en pilule. */
-:root{--forest:#19382c;--green:#1c4634;--green-soft:#eaf1ec;--ink:#000;--text:#1f1f1f;--muted:#707070;--line:#e5e5e5;--tile:#f7f7f7;--white:#fff;--sans:'Instrument Sans',-apple-system,'Helvetica Neue',Arial,sans-serif}
+:root{--forest:#19382c;--green:#1c4634;--green-soft:#eaf1ec;--rose:#f2dfd9;--ciel:#dbe7ee;--sauge:#dfe9df;--paille:#f4ebcf;--lilas:#e6e0ef;--sable:#f1ece3;--ink:#000;--text:#1f1f1f;--muted:#707070;--line:#e5e5e5;--tile:#f7f7f7;--white:#fff;--sans:'Instrument Sans',-apple-system,'Helvetica Neue',Arial,sans-serif}
 *{box-sizing:border-box}
 html{scroll-behavior:smooth;scroll-padding-top:90px}
 body{margin:0;background:var(--white);color:var(--ink);font:400 16px/1.6 var(--sans);-webkit-font-smoothing:antialiased}
@@ -51,7 +51,7 @@ em{font-style:normal;color:var(--green)}
 .hero-audience{font-size:12px;letter-spacing:.1em;margin-top:34px;color:var(--muted)}
 .hero-art{display:flex;flex-direction:column;min-width:0}
 .art-index{display:flex;justify-content:space-between;gap:14px;font-size:11px;letter-spacing:.12em;margin-bottom:14px;color:var(--muted)}
-.hero-frame{background:var(--tile);padding:32px;width:100%;margin:0}
+.hero-frame{background:var(--rose);padding:32px;width:100%;margin:0}
 .hero-frame>img{object-fit:contain;width:100%;height:420px}
 .hero-frame figcaption{display:flex;justify-content:space-between;font-size:13px;color:var(--text);margin-top:18px;gap:16px}
 .hero-frame figcaption span+span{color:var(--muted)}
@@ -98,9 +98,10 @@ p{line-height:1.6}
 .gallery-heading p{font-size:15px;color:var(--muted);margin:0}
 .gallery-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:32px 24px}
 .art-card{margin:0;min-width:0}
-.art-mat{background:var(--tile);height:340px;display:flex;align-items:center;justify-content:center;padding:28px;overflow:hidden}
+.art-mat{background:var(--sable);height:340px;display:flex;align-items:center;justify-content:center;padding:28px;overflow:hidden}
 .art-mat img{width:100%;height:100%;object-fit:contain;transition:transform .5s}
 .art-card:hover img{transform:scale(1.02)}
+.art-card:nth-child(6n+1) .art-mat{background:var(--rose)}.art-card:nth-child(6n+2) .art-mat{background:var(--ciel)}.art-card:nth-child(6n+3) .art-mat{background:var(--paille)}.art-card:nth-child(6n+4) .art-mat{background:var(--sauge)}.art-card:nth-child(6n+5) .art-mat{background:var(--lilas)}.art-card:nth-child(6n+6) .art-mat{background:var(--sable)}
 .art-card figcaption{display:flex;flex-direction:column;gap:3px;padding-top:12px;font-size:14px;font-weight:500}
 .art-card figcaption span+span{font-size:13px;font-weight:400;color:var(--muted)}
 .gallery-controls{display:none}
@@ -114,8 +115,9 @@ p{line-height:1.6}
 .document-tabs button span{font-size:11px;display:inline-block;margin-right:12px;color:var(--muted)}
 .document-tabs button[aria-selected=true]{border-bottom-color:var(--ink);color:var(--ink)}
 .document-panel{display:grid;grid-template-columns:1fr 1fr;gap:8%;align-items:center}
-.document-stage{background:var(--tile);min-height:520px;position:relative;display:flex;align-items:center;justify-content:center;padding:48px 32px 64px}
+.document-stage{background:var(--ciel);min-height:520px;position:relative;display:flex;align-items:center;justify-content:center;padding:48px 32px 64px}
 .paper-shadow{display:none}
+#panel-buyer .document-stage{background:var(--sauge)}#panel-contract .document-stage{background:var(--paille)}
 .paper{width:min(320px,100%);height:400px;background:var(--white);border:1px solid var(--line);box-shadow:0 12px 30px rgba(0,0,0,.06);position:relative;padding:28px;display:flex;flex-direction:column}
 .paper-brand img{height:11px;width:auto}
 .paper-type{font-size:9px;letter-spacing:.2em;color:var(--muted);margin-top:28px}
@@ -134,11 +136,11 @@ p{line-height:1.6}
 .document-copy .text-link{font-size:14px}
 
 /* ---------- aperçus ---------- */
-.report-showcase h2{max-width:820px}
+.report-showcase{background:var(--sable)}.report-showcase h2{max-width:820px}
 .report-intro{max-width:640px;color:var(--muted);font-size:15px;margin:22px 0 40px}
 .report-cards{display:grid;grid-template-columns:1fr 1fr;gap:32px}
 .report-cards>article{min-width:0}
-.report-mini{background:var(--white);border:1px solid var(--line);padding:36px;min-height:360px;display:flex;flex-direction:column}
+.report-mini{background:var(--white);border:1px solid transparent;padding:36px;min-height:360px;display:flex;flex-direction:column}
 .report-mini>span:first-child img{height:12px;width:auto}
 .report-mini>small{font-size:10px;letter-spacing:.2em;color:var(--muted);margin-top:26px}
 .report-mini h3{font-size:36px;margin:30px 0 18px;letter-spacing:-.02em;font-weight:400}
@@ -203,13 +205,13 @@ p{line-height:1.6}
 .compare-toggle{display:none}
 .compare{display:grid;grid-template-columns:1fr 1fr;gap:24px}
 .compare-col{padding:32px;min-width:0}
-.compare-col.before{background:var(--tile)}
-.compare-col.after{background:var(--white);border:1px solid var(--green)}
+.compare-col.before{background:var(--sable)}
+.compare-col.after{background:var(--sauge);border:1px solid var(--green)}
 .compare-col h3{font-size:20px;margin:0 0 18px;letter-spacing:-.01em}
 .compare-col.after h3{color:var(--green)}
 .compare-list{list-style:none;padding:0;margin:0}
 .compare-list li{padding:13px 0;border-top:1px solid var(--line);font-size:15px;line-height:1.55;color:var(--text)}
-.compare-col.after .compare-list li{border-top-color:#d5e1d9}
+.compare-col.after .compare-list li{border-top-color:#c9d8cb}
 .compare-result{margin-top:22px;font-size:16px;line-height:1.5;font-weight:500;color:var(--ink)}
 .compare-col.after .compare-result{color:var(--green)}
 .why-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:40px;margin-top:72px;padding-top:40px;border-top:1px solid var(--line)}
@@ -217,7 +219,7 @@ p{line-height:1.6}
 .why-grid h3{font-size:22px;margin:16px 0 12px}
 .why-grid p{font-size:15px;color:var(--text);line-height:1.65;margin:0}
 .why-grid .legal{font-size:13px;color:var(--muted);margin-top:14px;line-height:1.6}
-.protection-close{margin-top:64px;display:flex;justify-content:space-between;align-items:center;gap:40px;padding:28px 32px;background:var(--green-soft)}
+.protection-close{margin-top:64px;display:flex;justify-content:space-between;align-items:center;gap:40px;padding:28px 32px;background:var(--paille)}
 .protection-close p{margin:0;font-size:16px;line-height:1.6;max-width:680px;color:var(--ink)}
 
 /* ---------- international ---------- */
@@ -227,7 +229,7 @@ p{line-height:1.6}
 .jurisdiction-tabs button{background:none;border:0;border-bottom:2px solid transparent;margin-bottom:-1px;white-space:nowrap;padding:14px 0;font:500 15px var(--sans);color:var(--muted)}
 .jurisdiction-tabs button[aria-selected=true]{border-color:var(--ink);color:var(--ink)}
 .geo-panel{display:grid;grid-template-columns:1fr 1fr;gap:8%;align-items:center;min-height:300px;padding:44px 0}
-.geo-name{font-size:clamp(56px,6vw,92px);line-height:1;letter-spacing:-.03em}
+.geo-name{font-size:clamp(56px,6vw,92px);line-height:1;letter-spacing:-.03em;background:var(--lilas);padding:44px 36px}
 .geo-name span{display:block;font-size:11px;letter-spacing:.2em;color:var(--green);margin-top:22px;font-weight:500}
 .geo-detail h3{font-size:26px;margin:14px 0;font-weight:400}
 .geo-detail>p:last-child{color:var(--muted);font-size:14px;max-width:460px}
@@ -235,10 +237,10 @@ p{line-height:1.6}
 
 /* ---------- méthode ---------- */
 .method-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:40px;margin-top:56px}
-.method-grid article{border-top:1px solid var(--line);padding-top:20px}
+.method-grid article{padding:28px 28px 32px;background:var(--rose)}.method-grid article:nth-child(2){background:var(--ciel)}.method-grid article:nth-child(3){background:var(--sauge)}
 .step-number{font-size:12px;letter-spacing:.14em;color:var(--green);font-weight:500}
-.method-grid h3{font-size:30px;margin:26px 0 12px;font-weight:400}
-.method-grid p{font-size:15px;color:var(--muted);max-width:320px}
+.method-grid h3{font-size:30px;margin:22px 0 12px;font-weight:400}
+.method-grid p{font-size:15px;color:var(--text);max-width:320px}
 .method-cta{display:flex;justify-content:space-between;align-items:center;margin-top:56px;border-top:1px solid var(--line);padding-top:28px;gap:30px}
 .method-cta p{margin:0;font-size:18px;line-height:1.5}
 .method-cta strong{font-weight:500}
@@ -256,7 +258,7 @@ p{line-height:1.6}
 
 /* ---------- engagements ---------- */
 .confidence{display:grid;grid-template-columns:repeat(3,1fr);gap:40px;padding:64px 5%;border-top:1px solid var(--line);border-bottom:1px solid var(--line)}
-.confidence-number{color:var(--green);font-size:13px;letter-spacing:.14em;font-weight:500}
+.confidence-number{color:var(--green);font-size:13px;letter-spacing:.14em;font-weight:500;display:inline-block;padding:6px 10px;background:var(--paille)}.confidence>div:nth-child(2) .confidence-number{background:var(--lilas)}.confidence>div:nth-child(3) .confidence-number{background:var(--ciel)}
 .confidence h3{font-size:22px;margin:14px 0 10px}
 .confidence p{font-size:14px;color:var(--muted);margin:0;max-width:300px}
 
@@ -327,9 +329,9 @@ h2{font-size:32px}
 .protection-close{display:block;margin-top:30px;padding:22px}.protection-close p{font-size:15px}.protection-close .button{margin-top:18px}
 .international-head{grid-template-columns:1fr;gap:16px}.international-head p{font-size:14px}
 .jurisdiction-tabs{margin-top:26px;gap:22px}.jurisdiction-tabs button{font-size:14px;padding:12px 0}
-.geo-panel{grid-template-columns:1fr;gap:22px;padding:30px 0;min-height:0}.geo-name{font-size:52px}.geo-name span{margin-top:12px}.geo-detail h3{font-size:22px;margin:10px 0}.geo-detail>p:last-child{font-size:14px}
+.geo-panel{grid-template-columns:1fr;gap:22px;padding:30px 0;min-height:0}.geo-name{font-size:48px;padding:26px 22px}.geo-name span{margin-top:12px}.geo-detail h3{font-size:22px;margin:10px 0}.geo-detail>p:last-child{font-size:14px}
 .international-bottom{display:block;font-size:12px}.international-bottom a{display:flex;width:fit-content;margin-top:16px}
-.method-grid{grid-template-columns:1fr;gap:0;margin-top:26px}.method-grid article{display:grid;grid-template-columns:36px 1fr;column-gap:12px;padding:18px 0}.method-grid h3{font-size:24px;margin:0}.method-grid p{grid-column:2;margin:8px 0 0;max-width:none;font-size:14px}.step-number{margin-top:8px}
+.method-grid{grid-template-columns:1fr;gap:10px;margin-top:26px}.method-grid article{display:grid;grid-template-columns:36px 1fr;column-gap:12px;padding:18px 18px 20px}.method-grid h3{font-size:24px;margin:0}.method-grid p{grid-column:2;margin:8px 0 0;max-width:none;font-size:14px}.step-number{margin-top:8px}
 .method-cta{display:block;margin-top:26px;padding-top:22px}.method-cta p{font-size:16px}.method-cta .button{margin-top:18px}
 .professions{grid-template-columns:1fr;gap:22px}.profession-intro .eyebrow{margin-bottom:14px}.profession-list summary{font-size:19px;padding:16px 0}.profession-list details p{font-size:14px;margin-bottom:18px}
 .confidence{gap:0;padding:8px 5%;grid-template-columns:1fr}.confidence>div{display:grid;grid-template-columns:36px 1fr;column-gap:12px;padding:18px 0;border-top:1px solid var(--line)}.confidence>div:first-child{border-top:0}.confidence h3{margin:0;font-size:19px}.confidence p{grid-column:2;max-width:none;margin-top:6px;font-size:13px}

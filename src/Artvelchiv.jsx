@@ -1,4 +1,4 @@
-import { useState, useMemo, useEffect } from "react";
+import { useState, useMemo, useEffect, useRef } from "react";
 
 /* ============================================================
    ARTVELCHIV — The art transaction standard.
@@ -9,7 +9,7 @@ import { useState, useMemo, useEffect } from "react";
    aperçus de rapports tels que leurs destinataires les reçoivent.
    ============================================================ */
 
-const DEFAULT_PIN = "ARTVELCHIV";
+const DEFAULT_PIN = "arttest";
 
 const FONTS = `
 @import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400;1,500&family=Jost:wght@300;400;500;600&family=IBM+Plex+Mono:wght@400;600&display=swap');
@@ -247,8 +247,11 @@ const LOGO_DARK = "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAmoAAABUCAYAAAA
 const UI = {
   bg: "#FFFFFF", tile: "#F7F7F7", tile2: "#E8E8E8", ink: "#000000", inkSoft: "#3A3A3A", mute: "#707070", line: "#E5E5E5",
   vert: "#1C4634", vertSoft: "#EAF1EC", splash: "#19382C", cream: "#F5F1E8", gold: "#B9985B",
+  rose: "#F2DFD9", ciel: "#DBE7EE", sauge: "#DFE9DF", paille: "#F4EBCF", lilas: "#E6E0EF", sable: "#F1ECE3",
   claret: "#8A2A2A", claretSoft: "#F6E7E6", warn: "#9A6321", warnSoft: "#F6ECDD", info: "#3F5F8A", infoSoft: "#E7EDF5", ok: "#2E6349", okSoft: "#E4EFE7",
 };
+const PASTEL = ["#F2DFD9", "#DBE7EE", "#F4EBCF", "#DFE9DF", "#E6E0EF", "#F1ECE3"];
+const pastel = (i) => PASTEL[((i % PASTEL.length) + PASTEL.length) % PASTEL.length];
 const TONE = { blocked: [UI.claret, UI.claretSoft], required: [UI.warn, UI.warnSoft], pending: [UI.info, UI.infoSoft], info: [UI.mute, UI.tile], clear: [UI.ok, UI.okSoft] };
 const CSS = `
 @import url('https://fonts.googleapis.com/css2?family=Instrument+Sans:wght@400;500;600&display=swap');
@@ -256,6 +259,7 @@ const CSS = `
 @keyframes avIn { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: none; } }
 @keyframes avUp { from { transform: translateY(100%); } to { transform: none; } }
 @keyframes avVeil { from { opacity: 0; } to { opacity: 1; } }
+@keyframes avScan { from { transform: translateX(-30%); } to { transform: translateX(230%); } }
 .av-fade { animation: avIn .28s cubic-bezier(.2,.7,.2,1) both; }
 .av-sheet { animation: avUp .4s cubic-bezier(.2,.8,.2,1) both; }
 .av-veil { animation: avVeil .22s ease both; }
@@ -279,7 +283,7 @@ const Label = ({ children, style }) => <div style={{ ...SANS, fontSize: 11.5, le
 const H = ({ children, onMore, style }) => <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", margin: "28px 0 12px", ...style }}><div style={{ ...SANS, fontSize: 20, fontWeight: 500, color: UI.ink, letterSpacing: "-0.01em" }}>{children}</div>{onMore && <button onClick={onMore} className="av-press" aria-label="Voir tout" style={{ background: "none", border: "none", cursor: "pointer", padding: 4 }}><Ico name="chev" /></button>}</div>;
 const Pill = ({ k, big }) => { const [c, bg] = TONE[k]; return <span style={{ ...SANS, display: "inline-flex", alignItems: "center", gap: 6, background: bg, color: c, fontSize: big ? 12.5 : 11, fontWeight: 500, padding: big ? "6px 11px" : "4px 9px", borderRadius: 999, whiteSpace: "nowrap" }}><span style={{ width: 6, height: 6, borderRadius: "50%", background: c }} />{KIND[k][0]}</span>; };
 const Btn = ({ children, onClick, primary, ghost, full, disabled, small, style }) => <button onClick={onClick} disabled={disabled} className="av-press" style={{ ...SANS, fontWeight: 500, fontSize: small ? 13.5 : 15.5, padding: small ? "10px 16px" : "16px 22px", borderRadius: 999, cursor: disabled ? "default" : "pointer", border: ghost ? `1px solid ${UI.ink}` : "1px solid transparent", background: primary ? UI.vert : ghost ? UI.bg : UI.tile, color: primary ? "#FFFFFF" : UI.ink, width: full ? "100%" : undefined, opacity: disabled ? 0.4 : 1, ...style }}>{children}</button>;
-const Chip = ({ active, children, onClick, icon }) => <button onClick={onClick} className="av-press" style={{ ...SANS, flexShrink: 0, display: "inline-flex", alignItems: "center", gap: 7, border: "none", cursor: "pointer", padding: "11px 16px", borderRadius: 999, fontSize: 14, fontWeight: 500, background: active ? UI.vert : UI.tile, color: active ? "#FFFFFF" : UI.ink }}>{icon && <Ico name={icon} size={16} color={active ? "#FFFFFF" : UI.ink} />}{children}</button>;
+const Chip = ({ active, children, onClick, icon, tone }) => <button onClick={onClick} className="av-press" style={{ ...SANS, flexShrink: 0, display: "inline-flex", alignItems: "center", gap: 7, border: "none", cursor: "pointer", padding: "11px 16px", borderRadius: 999, fontSize: 14, fontWeight: 500, background: active ? UI.vert : tone || UI.tile, color: active ? "#FFFFFF" : UI.ink }}>{icon && <Ico name={icon} size={16} color={active ? "#FFFFFF" : UI.ink} />}{children}</button>;
 const Row = ({ children, onClick, last, style }) => <div onClick={onClick} className={onClick ? "av-press" : undefined} style={{ display: "flex", alignItems: "center", gap: 12, padding: "14px 0", borderBottom: last ? "none" : `1px solid ${UI.line}`, cursor: onClick ? "pointer" : "default", ...style }}>{children}</div>;
 const Box = ({ children, style, pad = 0, onClick }) => <div onClick={onClick} className={onClick ? "av-press" : undefined} style={{ background: UI.bg, border: `1px solid ${UI.line}`, borderRadius: 0, padding: pad, cursor: onClick ? "pointer" : "default", ...style }}>{children}</div>;
 const Tile = ({ children, style, onClick }) => <div onClick={onClick} className={onClick ? "av-press" : undefined} style={{ background: UI.tile, borderRadius: 0, padding: 16, cursor: onClick ? "pointer" : "default", ...style }}>{children}</div>;
@@ -317,26 +321,28 @@ const Ico = ({ name, active, size = 24, color }) => {
 
 /* ---------- vignette d'œuvre (composition originale, générée) ---------- */
 const Art = ({ rec, i = 0, style }) => {
+  if (rec.photo) return <img src={rec.photo} alt="" style={{ width: "100%", height: "100%", objectFit: "cover", display: "block", background: UI.tile, ...style }} />;
   const d3 = ["sculpture", "religieux", "archeo", "mobilier", "bijou", "instrument", "armes", "numismatique", "naturel", "restes"].includes(rec.cat);
-  const hue = rec.hue || "#333333", v = i % 4;
+  const hue = rec.hue || "#333333", v = i % 4, bg = pastel(i);
   return (
     <svg viewBox="0 0 100 120" preserveAspectRatio="xMidYMid slice" style={{ width: "100%", height: "100%", display: "block", ...style }}>
       {d3 ? (<>
-        <rect width="100" height="120" fill="#EEEDE8" />
-        <rect x="16" y="98" width="68" height="5" fill="#D8D5CD" />
+        <rect width="100" height="120" fill={bg} />
+        <rect x="16" y="98" width="68" height="5" fill="rgba(0,0,0,0.08)" />
         {v === 0 && <><ellipse cx="50" cy="40" rx="12" ry="14" fill={hue} /><path d="M34 98 L38 62 Q50 54 62 62 L66 98 Z" fill={hue} /><path d="M38 70 L30 84 M62 70 L70 84" stroke={hue} strokeWidth="6" strokeLinecap="round" /></>}
         {v === 1 && <><path d="M36 26 Q50 20 64 26 Q70 40 66 58 Q62 80 60 98 L40 98 Q38 80 34 58 Q30 40 36 26 Z" fill={hue} /><path d="M40 30 Q50 26 60 30" stroke="#EEEDE8" strokeWidth="2" fill="none" opacity=".45" /></>}
         {v === 2 && <><rect x="34" y="28" width="32" height="70" rx="12" fill={hue} /><rect x="42" y="40" width="16" height="5" fill="#EEEDE8" opacity=".35" /></>}
         {v === 3 && <><circle cx="50" cy="44" r="15" fill={hue} /><path d="M24 98 Q26 66 50 62 Q74 66 76 98 Z" fill={hue} /></>}
       </>) : (<>
-        <rect width="100" height="120" fill="#2A2521" />
-        <rect x="3.5" y="3.5" width="93" height="113" fill="none" stroke={UI.gold} strokeWidth="1" />
-        <rect x="9" y="9" width="82" height="102" fill="#F2EEE5" />
-        <rect x="17" y="17" width="66" height="86" fill="#E9E2D3" />
-        {v === 0 && <><rect x="22" y="50" width="56" height="44" fill={hue} /><rect x="22" y="22" width="56" height="20" fill={hue} opacity=".22" /></>}
-        {v === 1 && <><circle cx="50" cy="56" r="22" fill={hue} /><rect x="62" y="82" width="12" height="12" fill={UI.gold} /></>}
-        {v === 2 && <><rect x="24" y="22" width="14" height="76" fill={hue} /><rect x="43" y="22" width="14" height="76" fill={hue} opacity=".62" /><rect x="62" y="22" width="14" height="76" fill={hue} opacity=".32" /></>}
-        {v === 3 && <><path d="M20 98 L80 30 L80 98 Z" fill={hue} /><path d="M20 22 L60 22 L20 70 Z" fill={hue} opacity=".38" /></>}
+        <rect width="100" height="120" fill={bg} />
+        <rect x="12" y="12" width="76" height="96" fill="#2A2521" />
+        <rect x="14.5" y="14.5" width="71" height="91" fill="none" stroke={UI.gold} strokeWidth="0.8" />
+        <rect x="18" y="18" width="64" height="84" fill="#F2EEE5" />
+        <rect x="24" y="24" width="52" height="72" fill="#E9E2D3" />
+        {v === 0 && <><rect x="28" y="52" width="44" height="38" fill={hue} /><rect x="28" y="28" width="44" height="17" fill={hue} opacity=".22" /></>}
+        {v === 1 && <><circle cx="50" cy="56" r="18" fill={hue} /><rect x="60" y="78" width="10" height="10" fill={UI.gold} /></>}
+        {v === 2 && <><rect x="29" y="29" width="11" height="62" fill={hue} /><rect x="44.5" y="29" width="11" height="62" fill={hue} opacity=".62" /><rect x="60" y="29" width="11" height="62" fill={hue} opacity=".32" /></>}
+        {v === 3 && <><path d="M26 92 L74 36 L74 92 Z" fill={hue} /><path d="M26 28 L58 28 L26 66 Z" fill={hue} opacity=".38" /></>}
       </>)}
     </svg>
   );
@@ -357,7 +363,7 @@ function Splash({ onDone }) {
 /* ---------- accès privé ---------- */
 function Gate({ onOk, code }) {
   const [pin, setPin] = useState(""), [err, setErr] = useState(false);
-  const check = () => (pin.trim().toUpperCase() === String(code).toUpperCase() ? onOk() : setErr(true));
+  const check = () => (pin.trim().toUpperCase() === String(code).toUpperCase() ? onOk(pin.trim()) : setErr(true));
   return (
     <div style={{ minHeight: "100vh", background: UI.bg, display: "flex", alignItems: "center", justifyContent: "center", padding: 24, ...SANS }}>
       <div className="av-fade" style={{ width: "100%", maxWidth: 360, textAlign: "center" }}>
@@ -490,6 +496,77 @@ function Viewer({ sample, onClose, structure }) {
   );
 }
 
+/* ---------- reconnaissance par photo (Google Cloud Vision + Claude, via api/recognize) ---------- */
+/* Adresse du service : window.ARTVELCHIV_API_URL ("" = même domaine que l'application, cas du déploiement Vercel) ; absente = reconnaissance désactivée. */
+const API_URL = typeof window !== "undefined" && window.ARTVELCHIV_API_URL !== undefined ? String(window.ARTVELCHIV_API_URL).replace(/\/$/, "") : null;
+const STATUT_LABEL = { vivant: "artiste vivant", moins70: "décédé depuis moins de 70 ans", plus70: "décédé depuis plus de 70 ans", anonyme: "anonyme, atelier ou non attribué" };
+function shrinkImage(file, max = 1400, quality = 0.85) {
+  return new Promise((resolve, reject) => {
+    const url = URL.createObjectURL(file), img = new Image();
+    img.onload = () => {
+      const k = Math.min(1, max / Math.max(img.width, img.height)), w = Math.round(img.width * k), h = Math.round(img.height * k);
+      const c = document.createElement("canvas"); c.width = w; c.height = h;
+      c.getContext("2d").drawImage(img, 0, 0, w, h);
+      URL.revokeObjectURL(url);
+      const dataUrl = c.toDataURL("image/jpeg", quality);
+      resolve({ dataUrl, b64: dataUrl.split(",")[1], mime: "image/jpeg", w, h });
+    };
+    img.onerror = () => { URL.revokeObjectURL(url); reject(new Error("Photographie illisible")); };
+    img.src = url;
+  });
+}
+async function recognise(b64, mime, key) {
+  if (API_URL === null) throw new Error("La reconnaissance par photo n'est pas encore activée sur cette installation.");
+  let r;
+  try { r = await fetch(`${API_URL}/api/recognize`, { method: "POST", headers: { "Content-Type": "application/json", "X-Artvelchiv-Key": key || "" }, body: JSON.stringify({ image: b64, mime }) }); }
+  catch (e) { throw new Error("Service de reconnaissance injoignable. Vérifiez la connexion, puis réessayez."); }
+  let j = null; try { j = await r.json(); } catch (e) {}
+  if (!r.ok) throw new Error((j && j.error) || (r.status === 404 ? "Service de reconnaissance non installé à cette adresse." : `Service indisponible (${r.status}).`));
+  return j;
+}
+function prefillFrom(result, dataUrl) {
+  const f = result.fiche || {}, a = f.artiste || {};
+  const cat = CATS.some((c) => c[0] === f.nature) ? f.nature : "peinture";
+  const nom = a.nom_probable || a.ecole || (result.meilleureHypothese && result.meilleureHypothese[0]) || CAT_LABEL(cat);
+  const titre = [a.nom_probable || a.ecole, f.periode_texte].filter(Boolean).join(", ") || nom;
+  return { ...NEW, id: "photo-" + Date.now().toString(36).slice(-5).toUpperCase(), nom: nom.length > 34 ? nom.slice(0, 33) + "…" : nom, titre, cat, technique: f.technique || undefined, materiau: f.materiau || "mixte", annee: Number.isFinite(f.annee_estimee) ? f.annee_estimee : 1950, artiste: a.statut || "anonyme", protege: !!f.espece_protegee_possible, photo: dataUrl, reco: result, hue: "#3A3A3A" };
+}
+function PhotoSheet({ photo, onClose, onOpen, onRetry }) {
+  const { dataUrl, status, result, error } = photo;
+  const f = (result && result.fiche) || null, a = (f && f.artiste) || {};
+  const pct = (v) => `${Math.round((v || 0) * 100)} %`;
+  const Line = ({ k, v, last }) => v ? <div style={{ display: "flex", gap: 12, padding: "11px 0", borderBottom: last ? "none" : `1px solid ${UI.line}` }}><div style={{ width: 96, flexShrink: 0, fontSize: 12.5, color: UI.mute, paddingTop: 2 }}>{k}</div><div style={{ flex: 1, fontSize: 14.5, color: UI.ink, lineHeight: 1.5 }}>{v}</div></div> : null;
+  return (
+    <Sheet title="Reconnaissance par photo" onClose={onClose} full>
+      <div style={{ background: UI.tile, display: "flex", justifyContent: "center", maxHeight: 240, overflow: "hidden" }}><img src={dataUrl} alt="" style={{ maxHeight: 240, maxWidth: "100%", objectFit: "contain", display: "block" }} /></div>
+      {status === "loading" && <div style={{ padding: "26px 0 10px", textAlign: "center" }}><div style={{ height: 3, background: UI.line, overflow: "hidden", margin: "0 40px 18px" }}><div style={{ height: 3, width: "40%", background: UI.vert, animation: "avScan 1.2s ease-in-out infinite alternate" }} /></div><div style={{ fontSize: 15, fontWeight: 500 }}>Analyse de la photographie</div><div style={{ fontSize: 13.5, color: UI.mute, marginTop: 6, lineHeight: 1.55 }}>Description de l'œuvre, puis recherche des pages où cette image apparaît déjà. Quelques secondes.</div></div>}
+      {status === "error" && <div style={{ padding: "24px 0 8px" }}><div style={{ fontSize: 15, fontWeight: 500, color: UI.claret }}>La reconnaissance n'a pas abouti.</div><div style={{ fontSize: 14, color: UI.inkSoft, marginTop: 6, lineHeight: 1.55 }}>{error}</div><div style={{ display: "flex", gap: 10, marginTop: 18 }}><Btn primary onClick={onRetry}>Reprendre une photo</Btn><Btn ghost onClick={() => onOpen(null)}>Décrire à la main</Btn></div></div>}
+      {status === "done" && result && (<>
+        {f ? (<>
+          <H style={{ margin: "22px 0 4px" }}>Fiche proposée</H>
+          <Sub style={{ marginBottom: 8 }}>Chaque champ reste à confirmer par vous ; confiance globale {pct(f.confiance_globale)}.</Sub>
+          <Line k="Nature" v={CAT_LABEL(f.nature === "autre" ? "peinture" : f.nature) + (f.nature === "autre" ? " (à préciser)" : "")} />
+          <Line k="Matériau" v={[(MATERIAUX.find((m) => m[0] === f.materiau) || [])[1], f.technique ? (TECHNIQUES.oeuvre_papier.concat(TECHNIQUES.manuscrit).find((t) => t[0] === f.technique) || [])[1] : null].filter(Boolean).join(" · ")} />
+          <Line k="Période" v={[f.periode_texte, Number.isFinite(f.annee_estimee) ? `(vers ${f.annee_estimee < 0 ? -f.annee_estimee + " av. J.-C." : f.annee_estimee})` : null].filter(Boolean).join(" ")} />
+          <Line k="Artiste" v={<>{a.nom_probable ? <b style={{ fontWeight: 500 }}>{a.nom_probable}</b> : a.ecole ? a.ecole : "non identifié"}{a.nom_probable && a.ecole ? ` · ${a.ecole}` : ""} — {STATUT_LABEL[a.statut] || a.statut}{a.confiance ? ` · confiance ${pct(a.confiance)}` : ""}</>} />
+          <Line k="Signature" v={f.signature_visible ? `Visible${f.inscriptions ? ` : « ${f.inscriptions} »` : ""}` : f.inscriptions ? `Inscriptions : « ${f.inscriptions} »` : "Aucune signature visible"} />
+          <Line k="Dimensions" v={f.dimensions_estimees} />
+          <Line k="État apparent" v={f.etat_apparent} />
+          <Line k="Description" v={f.description} last />
+          {(f.espece_protegee_possible || (f.points_de_vigilance && f.points_de_vigilance.length > 0)) && <div style={{ background: UI.warnSoft, padding: 14, marginTop: 14 }}><div style={{ fontSize: 12.5, fontWeight: 500, color: UI.warn, letterSpacing: "0.06em", textTransform: "uppercase" }}>Points de vigilance</div>{f.espece_protegee_possible && <div style={{ fontSize: 13.5, color: UI.inkSoft, marginTop: 6, lineHeight: 1.5 }}>Matériau réglementé possible (ivoire, écaille, corail, corne ou bois précieux) : le régime des espèces protégées sera appliqué.</div>}{(f.points_de_vigilance || []).map((t) => <div key={t} style={{ fontSize: 13.5, color: UI.inkSoft, marginTop: 6, lineHeight: 1.5 }}>{t}</div>)}</div>}
+        </>) : <Sub style={{ marginTop: 20 }}>La description automatique n'est pas disponible ; les occurrences en ligne ci-dessous restent utilisables.</Sub>}
+        <H style={{ margin: "26px 0 4px" }}>{`Occurrences en ligne (${(result.occurrences || []).length})`}</H>
+        <Sub style={{ marginBottom: 6 }}>{(result.occurrences || []).length ? "Pages où cette image, ou une image très proche, apparaît déjà : ventes passées, publications, collections. À verser au dossier de provenance." : "Aucune page connue ne reprend cette image. Cela ne prouve ni l'inédit ni la régularité de la provenance."}</Sub>
+        {(result.occurrences || []).slice(0, 12).map((p, i, arr) => <a key={p.url} href={p.url} target="_blank" rel="noopener" style={{ display: "flex", alignItems: "center", gap: 12, padding: "12px 0", borderBottom: i === arr.length - 1 ? "none" : `1px solid ${UI.line}`, textDecoration: "none", color: UI.ink }}><div style={{ flex: 1, minWidth: 0 }}><div style={{ fontSize: 14.5, whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>{p.titre || p.url}</div><div style={{ fontSize: 12.5, color: UI.mute, marginTop: 2 }}>{p.source}</div></div><span style={{ ...SANS, fontSize: 11, fontWeight: 500, color: p.exact ? UI.ok : UI.info, background: p.exact ? UI.okSoft : UI.infoSoft, padding: "4px 9px", borderRadius: 999, whiteSpace: "nowrap" }}>{p.exact ? "image identique" : "image proche"}</span><Ico name="chev" size={16} color={UI.mute} /></a>)}
+        {((result.meilleureHypothese || []).length > 0 || (result.entites || []).length > 0) && <div style={{ marginTop: 16 }}><Label style={{ marginBottom: 8 }}>Ce qu'internet associe à cette image</Label><div style={{ display: "flex", flexWrap: "wrap", gap: 6 }}>{[...(result.meilleureHypothese || []), ...(result.entites || []).slice(0, 8).map((e) => e.nom)].filter((v, i, arr) => v && arr.indexOf(v) === i).map((t) => <span key={t} style={{ ...SANS, fontSize: 12.5, background: UI.tile, padding: "6px 11px", borderRadius: 999 }}>{t}</span>)}</div></div>}
+        {(result.avertissements || []).length > 0 && <div style={{ fontSize: 12, color: UI.mute, marginTop: 14, lineHeight: 1.5 }}>{result.avertissements.join(" ")}</div>}
+        <div style={{ fontSize: 12, color: UI.mute, marginTop: 14, lineHeight: 1.5 }}>{result.mention}</div>
+        <div style={{ display: "flex", flexDirection: "column", gap: 10, marginTop: 20 }}><Btn primary full onClick={() => onOpen(result)}>Ouvrir un dossier avec cette fiche</Btn><Btn ghost full onClick={onRetry}>Reprendre une photo</Btn></div>
+      </>)}
+    </Sheet>
+  );
+}
+
 /* ============================================================ application */
 export default function Artvelchiv({ pin = DEFAULT_PIN, locked = true }) {
   const [splash, setSplash] = useState(true);
@@ -511,8 +588,21 @@ export default function Artvelchiv({ pin = DEFAULT_PIN, locked = true }) {
   const [vocab, setVocab] = useState("signé");
   const [open, setOpen] = useState(null);
   const [structDone, setStructDone] = useState({});
+  const [accessKey, setAccessKey] = useState(locked ? "" : pin);
+  const [created, setCreated] = useState([]);
+  const [photo, setPhoto] = useState(null);
+  const fileRef = useRef(null);
   const q = useMemo(() => analyse(o, structure), [o, structure]);
-  const ALL = useMemo(() => RECORDS.map((r, i) => ({ r, i, a: analyse(r, structure) })), [structure]);
+  const ALL = useMemo(() => [...created, ...RECORDS].map((r, i) => ({ r, i, a: analyse(r, structure) })), [structure, created]);
+  const takePhoto = () => { if (fileRef.current) { fileRef.current.value = ""; fileRef.current.click(); } };
+  const onPhotoFile = async (e) => {
+    const file = e.target.files && e.target.files[0]; if (!file) return;
+    let img; try { img = await shrinkImage(file); } catch (err) { setPhoto({ dataUrl: "", status: "error", error: err.message }); return; }
+    setPhoto({ dataUrl: img.dataUrl, status: "loading" });
+    try { const result = await recognise(img.b64, img.mime, accessKey); setPhoto({ dataUrl: img.dataUrl, status: "done", result }); }
+    catch (err) { setPhoto({ dataUrl: img.dataUrl, status: "error", error: err.message }); }
+  };
+  const openFromPhoto = (result) => { const d = result ? prefillFrom(result, photo.dataUrl) : { ...NEW, id: "photo-" + Date.now().toString(36).slice(-5).toUpperCase(), photo: photo.dataUrl, hue: "#3A3A3A" }; setCreated((c) => [d, ...c]); setPhoto(null); openRecord(d); };
   const set = (k) => (v) => setO((x) => ({ ...x, [k]: v }));
   const nJ = q.pieces.filter((p) => joint[p.titre]).length, nD = Object.keys(decl).length;
   const indice = Math.round((nJ / Math.max(1, q.pieces.length)) * 70 + (nD / DECL_Q.length) * 30);
@@ -528,7 +618,7 @@ export default function Artvelchiv({ pin = DEFAULT_PIN, locked = true }) {
   const found = query.trim() ? ALL.filter(({ r }) => `${r.nom} ${r.titre} ${r.id} ${r.creation} ${r.dest}`.toLowerCase().includes(query.trim().toLowerCase())) : [];
 
   const splashEl = splash ? <Splash onDone={() => setSplash(false)} /> : null;
-  if (gate) return <><style>{FONTS}{CSS}</style>{splashEl}<Gate code={pin} onOk={() => setGate(false)} /></>;
+  if (gate) return <><style>{FONTS}{CSS}</style>{splashEl}<Gate code={pin} onOk={(k) => { setAccessKey(k); setGate(false); }} /></>;
 
   const Section = ({ title, children, style }) => <div style={{ marginTop: 22, ...style }}>{title && <Label style={{ marginBottom: 8 }}>{title}</Label>}{children}</div>;
   const RuleRow = ({ r, last }) => { const isOpen = open === r.titre; return <div style={{ borderBottom: last ? "none" : `1px solid ${UI.line}` }}><Row onClick={() => setOpen(isOpen ? null : r.titre)} last><span style={{ flex: 1, fontSize: 14.5, fontWeight: 400, lineHeight: 1.35, color: UI.ink }}>{r.titre}</span><Pill k={r.kind} /><span style={{ transform: isOpen ? "rotate(90deg)" : "none", transition: "transform .2s", display: "flex" }}><Ico name="chev" size={16} color={UI.mute} /></span></Row>{isOpen && r.detail && <div className="av-fade" style={{ padding: "0 0 14px" }}><div style={{ fontSize: 13.5, color: UI.inkSoft, lineHeight: 1.6 }}>{r.detail}</div><Base>{r.base}</Base></div>}</div>; };
@@ -541,7 +631,7 @@ export default function Artvelchiv({ pin = DEFAULT_PIN, locked = true }) {
     </div>
   );
   const RecordRow = ({ r, i, a, last, sub, at }) => <Row onClick={() => openRecord(r, at)} last={last}><Thumb rec={r} i={i} size={52} /><div style={{ flex: 1, minWidth: 0 }}><div style={{ fontSize: 15, fontWeight: 500, color: UI.ink, lineHeight: 1.25 }}>{r.nom}</div><div style={{ fontSize: 12.5, color: UI.mute, marginTop: 3, whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>{sub || `${r.lieu} → ${r.dest} · ${eur(r.valeur)}`}</div></div><Pill k={a.overall} /><Ico name="chev" size={16} color={UI.mute} /></Row>;
-  const SearchBar = ({ live }) => <div style={{ display: "flex", alignItems: "center", gap: 10 }}><div onClick={live ? undefined : () => { setTab("explorer"); window.scrollTo(0, 0); }} style={{ flex: 1, display: "flex", alignItems: "center", gap: 10, background: UI.tile, borderRadius: 999, padding: "0 16px", height: 48, cursor: live ? "text" : "pointer" }}><Ico name="search" size={18} color={UI.mute} />{live ? <input autoFocus={false} value={query} onChange={(e) => setQuery(e.target.value)} placeholder="Rechercher un dossier, une œuvre, un pays" style={{ ...SANS, flex: 1, border: "none", background: "transparent", fontSize: 15.5, color: UI.ink, outline: "none", minWidth: 0 }} /> : <span style={{ ...SANS, fontSize: 15.5, color: UI.mute }}>Rechercher ARTVELCHIV</span>}<Ico name="camera" size={20} color={UI.mute} /></div>{!live && <button onClick={() => { setTab("boite"); setBoite("echeances"); window.scrollTo(0, 0); }} className="av-press" aria-label="Échéances" style={{ position: "relative", background: "none", border: "none", cursor: "pointer", padding: 6 }}><Ico name="bell" size={24} />{urgent > 0 && <span style={{ position: "absolute", top: 4, right: 4, width: 9, height: 9, borderRadius: "50%", background: UI.vert, border: "2px solid #FFFFFF" }} />}</button>}</div>;
+  const SearchBar = ({ live }) => <div style={{ display: "flex", alignItems: "center", gap: 10 }}><div onClick={live ? undefined : () => { setTab("explorer"); window.scrollTo(0, 0); }} style={{ flex: 1, display: "flex", alignItems: "center", gap: 10, background: UI.tile, borderRadius: 999, padding: "0 16px", height: 48, cursor: live ? "text" : "pointer" }}><Ico name="search" size={18} color={UI.mute} />{live ? <input autoFocus={false} value={query} onChange={(e) => setQuery(e.target.value)} placeholder="Rechercher un dossier, une œuvre, un pays" style={{ ...SANS, flex: 1, border: "none", background: "transparent", fontSize: 15.5, color: UI.ink, outline: "none", minWidth: 0 }} /> : <span style={{ ...SANS, fontSize: 15.5, color: UI.mute }}>Rechercher ARTVELCHIV</span>}<button onClick={(e) => { e.stopPropagation(); takePhoto(); }} className="av-press" aria-label="Reconnaître une œuvre par photo" style={{ background: "none", border: "none", padding: 4, cursor: "pointer", display: "flex" }}><Ico name="camera" size={20} color={UI.ink} /></button></div>{!live && <button onClick={() => { setTab("boite"); setBoite("echeances"); window.scrollTo(0, 0); }} className="av-press" aria-label="Échéances" style={{ position: "relative", background: "none", border: "none", cursor: "pointer", padding: 6 }}><Ico name="bell" size={24} />{urgent > 0 && <span style={{ position: "absolute", top: 4, right: 4, width: 9, height: 9, borderRadius: "50%", background: UI.vert, border: "2px solid #FFFFFF" }} />}</button>}</div>;
   const TopTabs = ({ value, onChange, options }) => <div style={{ display: "flex", borderBottom: `1px solid ${UI.line}`, margin: "0 -20px" }}>{options.map(([v, l]) => <button key={v} onClick={() => onChange(v)} className="av-press" style={{ ...SANS, flex: 1, background: "none", border: "none", borderBottom: `2px solid ${value === v ? UI.ink : "transparent"}`, marginBottom: -1, padding: "14px 0", fontSize: 15.5, fontWeight: 500, color: value === v ? UI.ink : UI.mute, cursor: "pointer" }}>{l}</button>)}</div>;
   const Empty = ({ title, text, cta, onCta }) => <div style={{ textAlign: "center", padding: "46px 18px" }}><div style={{ fontSize: 17, fontWeight: 500, color: UI.ink, lineHeight: 1.4 }}>{title}</div><div style={{ fontSize: 14.5, color: UI.mute, lineHeight: 1.6, marginTop: 10 }}>{text}</div>{cta && <div style={{ marginTop: 22 }}><Btn primary onClick={onCta}>{cta}</Btn></div>}</div>;
 
@@ -551,6 +641,8 @@ export default function Artvelchiv({ pin = DEFAULT_PIN, locked = true }) {
       {splashEl}
       {intro && !splash && screen === "home" && <Intro onClose={closeIntro} />}
       {sample && <Viewer sample={sample} onClose={() => setSample(null)} structure={structure} />}
+      <input ref={fileRef} type="file" accept="image/*" capture="environment" onChange={onPhotoFile} style={{ display: "none" }} aria-hidden="true" />
+      {photo && <PhotoSheet photo={photo} onClose={() => setPhoto(null)} onOpen={openFromPhoto} onRetry={() => { setPhoto(null); takePhoto(); }} />}
       <div style={{ maxWidth: 480, margin: "0 auto", minHeight: "100vh", background: UI.bg, display: "flex", flexDirection: "column", position: "relative" }}>
 
         {/* ===== ACCUEIL ET ONGLETS ===== */}
@@ -561,10 +653,10 @@ export default function Artvelchiv({ pin = DEFAULT_PIN, locked = true }) {
               <div className="av-fade" key="accueil">
                 <SearchBar />
                 <div className="av-x" style={{ display: "flex", gap: 8, overflowX: "auto", padding: "16px 0 4px", margin: "0 -20px", paddingLeft: 20, paddingRight: 20 }}>
-                  <Chip icon="plus" onClick={() => openRecord({ ...NEW })}>Nouveau dossier</Chip>
-                  <Chip icon="clock" onClick={() => { setTab("boite"); setBoite("echeances"); }}>Échéances</Chip>
-                  <Chip icon="doc" onClick={() => { setTab("boite"); setBoite("autorites"); }}>Autorités</Chip>
-                  <Chip icon="scale" onClick={() => setSheet("referentiel")}>Le droit en mouvement</Chip>
+                  <Chip tone={UI.sauge} icon="plus" onClick={() => openRecord({ ...NEW })}>Nouveau dossier</Chip>
+                  <Chip tone={UI.paille} icon="clock" onClick={() => { setTab("boite"); setBoite("echeances"); }}>Échéances</Chip>
+                  <Chip tone={UI.ciel} icon="doc" onClick={() => { setTab("boite"); setBoite("autorites"); }}>Autorités</Chip>
+                  <Chip tone={UI.lilas} icon="scale" onClick={() => setSheet("referentiel")}>Le droit en mouvement</Chip>
                 </div>
                 <H onMore={() => { setTab("boite"); setBoite("echeances"); }}>Dernière activité</H>
                 <div className="av-x" style={{ display: "flex", gap: 14, overflowX: "auto", margin: "0 -20px", padding: "0 20px 4px" }}>
@@ -576,7 +668,7 @@ export default function Artvelchiv({ pin = DEFAULT_PIN, locked = true }) {
                 <H>Exemples de rapports</H>
                 <Sub style={{ marginTop: -4, marginBottom: 12 }}>Ce que reçoivent votre acheteur, l'administration et les parties, mis en forme depuis un dossier.</Sub>
                 <div className="av-x" style={{ display: "flex", gap: 12, overflowX: "auto", margin: "0 -20px", padding: "4px 20px 6px" }}>
-                  {[["buyer", 0], ["authority", 1], ["contract", 3]].map(([k, idx]) => <div key={k} onClick={() => setSample({ kind: k, rec: RECORDS[idx] })} className="av-press" style={{ flexShrink: 0, width: 220, cursor: "pointer" }}><div style={{ background: UI.tile, padding: "18px 16px 0", borderRadius: 0, height: 150, overflow: "hidden" }}><div style={{ background: UI.bg, padding: "16px 14px 40px", boxShadow: "0 6px 18px rgba(18,20,18,0.08)", height: "100%", boxSizing: "border-box" }}><Wordmark h={9} /><div style={{ fontSize: 8.5, letterSpacing: "0.2em", textTransform: "uppercase", color: UI.mute, marginTop: 12 }}>{SAMPLE_KINDS[k][0]}</div><div style={{ ...DOCSERIF, fontSize: 17, lineHeight: 1.15, marginTop: 6, color: UI.ink }}>{RECORDS[idx].nom}</div><div style={{ width: 26, height: 1, background: UI.gold, marginTop: 10 }} /></div></div><div style={{ fontSize: 15, fontWeight: 500, marginTop: 10, color: UI.ink }}>{SAMPLE_KINDS[k][0]}</div><div style={{ fontSize: 12.5, color: UI.mute, marginTop: 2 }}>{SAMPLE_KINDS[k][1]}</div></div>)}
+                  {[["buyer", 0, UI.sauge], ["authority", 1, UI.ciel], ["contract", 3, UI.paille]].map(([k, idx, bg]) => <div key={k} onClick={() => setSample({ kind: k, rec: RECORDS[idx] })} className="av-press" style={{ flexShrink: 0, width: 220, cursor: "pointer" }}><div style={{ background: bg, padding: "18px 16px 0", borderRadius: 0, height: 150, overflow: "hidden" }}><div style={{ background: UI.bg, padding: "16px 14px 40px", boxShadow: "0 6px 18px rgba(18,20,18,0.08)", height: "100%", boxSizing: "border-box" }}><Wordmark h={9} /><div style={{ fontSize: 8.5, letterSpacing: "0.2em", textTransform: "uppercase", color: UI.mute, marginTop: 12 }}>{SAMPLE_KINDS[k][0]}</div><div style={{ ...DOCSERIF, fontSize: 17, lineHeight: 1.15, marginTop: 6, color: UI.ink }}>{RECORDS[idx].nom}</div><div style={{ width: 26, height: 1, background: UI.gold, marginTop: 10 }} /></div></div><div style={{ fontSize: 15, fontWeight: 500, marginTop: 10, color: UI.ink }}>{SAMPLE_KINDS[k][0]}</div><div style={{ fontSize: 12.5, color: UI.mute, marginTop: 2 }}>{SAMPLE_KINDS[k][1]}</div></div>)}
                 </div>
                 <div style={{ fontSize: 11.5, color: UI.mute, lineHeight: 1.55, marginTop: 26, textAlign: "center" }}>Démonstrateur : données fictives. Le Référentiel ARTVELCHIV (règles, seuils, délais) est validé à date par les équipes ARTVELCHIV.</div>
               </div>
@@ -591,7 +683,7 @@ export default function Artvelchiv({ pin = DEFAULT_PIN, locked = true }) {
                   <H>Commencer un dossier</H>
                   <Sub style={{ marginTop: -4, marginBottom: 12 }}>Choisissez la nature de l'œuvre ; la fiche s'ouvre déjà renseignée.</Sub>
                   <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 10 }}>
-                    {[["peinture", "Nature", "Peinture"], ["sculpture", "Nature", "Sculpture"], ["oeuvre_papier", "Nature", "Œuvre sur papier"], ["archeo", "Nature", "Archéologie"], ["photo", "Nature", "Photographie"], ["mobilier", "Nature", "Mobilier, objets"]].map(([c, l, t]) => <Tile key={c} onClick={() => openRecord({ ...NEW, cat: c, materiau: c === "sculpture" ? "bronze" : c === "archeo" ? "pierre" : c === "mobilier" ? "bois" : "toile", annee: c === "archeo" ? -300 : 1965 })} style={{ minHeight: 84, display: "flex", flexDirection: "column", justifyContent: "center" }}><div style={{ fontSize: 12.5, color: UI.mute }}>{l}</div><div style={{ fontSize: 18, fontWeight: 500, color: UI.ink, marginTop: 4 }}>{t}</div></Tile>)}
+                    {[["peinture", "Nature", "Peinture"], ["sculpture", "Nature", "Sculpture"], ["oeuvre_papier", "Nature", "Œuvre sur papier"], ["archeo", "Nature", "Archéologie"], ["photo", "Nature", "Photographie"], ["mobilier", "Nature", "Mobilier, objets"]].map(([c, l, t], k) => <Tile key={c} onClick={() => openRecord({ ...NEW, cat: c, materiau: c === "sculpture" ? "bronze" : c === "archeo" ? "pierre" : c === "mobilier" ? "bois" : "toile", annee: c === "archeo" ? -300 : 1965 })} style={{ minHeight: 84, display: "flex", flexDirection: "column", justifyContent: "center", background: pastel(k) }}><div style={{ fontSize: 12.5, color: UI.mute }}>{l}</div><div style={{ fontSize: 18, fontWeight: 500, color: UI.ink, marginTop: 4 }}>{t}</div></Tile>)}
                   </div>
                   <H>Explorer par thème</H>
                   <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 12 }}>
@@ -629,7 +721,7 @@ export default function Artvelchiv({ pin = DEFAULT_PIN, locked = true }) {
                 {archiveTab === "encours" && (<>
                   <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", margin: "22px 0 16px" }}><button onClick={() => openRecord({ ...NEW })} className="av-press" style={{ ...SANS, display: "flex", alignItems: "center", gap: 8, background: "none", border: "none", cursor: "pointer", fontSize: 15.5, color: UI.ink, padding: 0 }}><Ico name="plus" size={20} />Nouveau dossier</button><button onClick={() => setSheet("obligations")} className="av-press" style={{ ...SANS, display: "flex", alignItems: "center", gap: 8, background: "none", border: "none", cursor: "pointer", fontSize: 15.5, color: UI.ink, padding: 0 }}><Ico name="tag" size={20} />Votre structure</button></div>
                   <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "24px 16px" }}>
-                    {LISTS.map(([k, l, f]) => { const items = ALL.filter(({ a }) => f(a)); return <div key={k} onClick={() => setSheet(`list:${k}`)} className="av-press" style={{ cursor: "pointer" }}><div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 3, background: UI.tile, padding: 3, borderRadius: 0, aspectRatio: "1 / 1", border: `1px solid ${UI.line}` }}>{[0, 1, 2, 3].map((n) => items[n] ? <div key={n} style={{ overflow: "hidden", borderRadius: 2 }}><Art rec={items[n].r} i={items[n].i} /></div> : <div key={n} style={{ background: UI.tile2, borderRadius: 2, display: "flex", alignItems: "center", justifyContent: "center" }}><Ico name="archive" size={18} color="#C9C7BF" /></div>)}</div><div style={{ fontSize: 15, fontWeight: 500, marginTop: 10, color: UI.ink }}>{l}</div><div style={{ fontSize: 13, color: UI.mute, marginTop: 2 }}>{items.length} dossier{items.length > 1 ? "s" : ""}</div></div>; })}
+                    {LISTS.map(([k, l, f]) => { const items = ALL.filter(({ a }) => f(a)); return <div key={k} onClick={() => setSheet(`list:${k}`)} className="av-press" style={{ cursor: "pointer" }}><div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 3, background: UI.bg, padding: 3, borderRadius: 0, aspectRatio: "1 / 1", border: `1px solid ${UI.line}` }}>{[0, 1, 2, 3].map((n) => items[n] ? <div key={n} style={{ overflow: "hidden", borderRadius: 2 }}><Art rec={items[n].r} i={items[n].i} /></div> : <div key={n} style={{ background: UI.tile2, borderRadius: 2, display: "flex", alignItems: "center", justifyContent: "center" }}><Ico name="archive" size={18} color="#C9C7BF" /></div>)}</div><div style={{ fontSize: 15, fontWeight: 500, marginTop: 10, color: UI.ink }}>{l}</div><div style={{ fontSize: 13, color: UI.mute, marginTop: 2 }}>{items.length} dossier{items.length > 1 ? "s" : ""}</div></div>; })}
                   </div>
                 </>)}
                 {archiveTab === "clotures" && <Empty title="Aucune vente clôturée dans ce démonstrateur." text="Un dossier clôturé reste conservé dix ans, scellé, avec ses pièces, ses déclarations et ses documents : c'est votre preuve de diligence." cta="Voir les dossiers en cours" onCta={() => setArchiveTab("encours")} />}
@@ -643,7 +735,7 @@ export default function Artvelchiv({ pin = DEFAULT_PIN, locked = true }) {
                   <div style={{ width: 84, height: 84, borderRadius: "50%", background: UI.tile, margin: "0 auto", display: "flex", alignItems: "center", justifyContent: "center", fontSize: 30, fontWeight: 400, color: UI.ink }}>{sLabel[0]}</div>
                   <div style={{ fontSize: 26, fontWeight: 400, marginTop: 16, color: UI.ink, letterSpacing: "-0.01em" }}>{sLabel} de démonstration</div>
                   <div style={{ fontSize: 14, color: UI.mute, marginTop: 4 }}>Nice, France</div>
-                  <Tile onClick={() => setSheet("obligations")} style={{ marginTop: 20, textAlign: "left", display: "flex", alignItems: "center", gap: 14 }}><div style={{ flex: 1 }}><div style={{ fontSize: 15, fontWeight: 500, color: UI.ink }}>Complétez votre structure</div><div style={{ fontSize: 13, color: UI.mute, marginTop: 3, lineHeight: 1.5 }}>{sOk} obligation{sOk > 1 ? "s" : ""} permanente{sOk > 1 ? "s" : ""} en place sur {sList.length}.</div></div><Ring v={Math.round((sOk / sList.length) * 100)} size={50} /></Tile>
+                  <Tile onClick={() => setSheet("obligations")} style={{ marginTop: 20, textAlign: "left", display: "flex", alignItems: "center", gap: 14, background: UI.sauge }}><div style={{ flex: 1 }}><div style={{ fontSize: 15, fontWeight: 500, color: UI.ink }}>Complétez votre structure</div><div style={{ fontSize: 13, color: UI.mute, marginTop: 3, lineHeight: 1.5 }}>{sOk} obligation{sOk > 1 ? "s" : ""} permanente{sOk > 1 ? "s" : ""} en place sur {sList.length}.</div></div><Ring v={Math.round((sOk / sList.length) * 100)} size={50} /></Tile>
                   <div style={{ marginTop: 16 }}><Btn ghost onClick={() => setSheet("obligations")}>Compléter le profil</Btn></div>
                 </Box>
                 <Big style={{ margin: "34px 0 8px", fontSize: 30 }}>Compte</Big>
@@ -677,6 +769,8 @@ export default function Artvelchiv({ pin = DEFAULT_PIN, locked = true }) {
               {step === 0 && (
                 <div className="av-fade" key="s0">
                   <Big style={{ fontSize: 28 }}>L'œuvre</Big><Sub style={{ margin: "6px 0 16px" }}>Décrivez-la ; le droit applicable se déduit à chaque champ.</Sub>
+                  {o.reco && <Tile onClick={() => setPhoto({ dataUrl: o.photo, status: "done", result: o.reco })} style={{ marginBottom: 16, display: "flex", gap: 12, alignItems: "center" }}><Thumb rec={o} size={48} /><div style={{ flex: 1, minWidth: 0 }}><div style={{ fontSize: 14.5, fontWeight: 500 }}>Fiche pré-remplie depuis la photographie</div><div style={{ fontSize: 12.5, color: UI.mute, marginTop: 2, lineHeight: 1.45 }}>Chaque champ reste à confirmer. {(o.reco.occurrences || []).length} occurrence{(o.reco.occurrences || []).length > 1 ? "s" : ""} en ligne à verser à la provenance.</div></div><Ico name="chev" size={16} color={UI.mute} /></Tile>}
+                  {!o.reco && o.id === "nouveau" && <Tile onClick={takePhoto} style={{ marginBottom: 16, display: "flex", gap: 12, alignItems: "center" }}><Ico name="camera" size={22} /><div style={{ flex: 1 }}><div style={{ fontSize: 14.5, fontWeight: 500 }}>Photographier l'œuvre</div><div style={{ fontSize: 12.5, color: UI.mute, marginTop: 2 }}>La fiche se remplit d'après la photo ; vous confirmez.</div></div><Ico name="chev" size={16} color={UI.mute} /></Tile>}
                   <Field label="Désignation"><input value={o.titre} onChange={(e) => set("titre")(e.target.value)} placeholder="Artiste, titre, technique, date" style={inp} /></Field>
                   <Field label="Nature"><Sel value={o.cat} onChange={set("cat")} options={CATS} /></Field>
                   <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 12 }}><Field label="Année (négatif : av. J.-C.)"><input type="number" inputMode="numeric" value={o.annee} onChange={(e) => set("annee")(+e.target.value)} style={{ ...inp, ...mono }} /></Field><Field label="Prix ou estimation (€)"><input type="number" inputMode="numeric" value={o.valeur} onChange={(e) => set("valeur")(+e.target.value)} style={{ ...inp, ...mono }} /></Field></div>
