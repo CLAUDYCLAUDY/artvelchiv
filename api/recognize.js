@@ -42,7 +42,7 @@ function corsHeaders(req, res) {
   const origin = req.headers.origin || "";
   if (allowed.includes("*")) res.setHeader("Access-Control-Allow-Origin", "*");
   else if (allowed.includes(origin)) { res.setHeader("Access-Control-Allow-Origin", origin); res.setHeader("Vary", "Origin"); }
-  res.setHeader("Access-Control-Allow-Methods", "POST, OPTIONS");
+  res.setHeader("Access-Control-Allow-Methods", "GET, POST, OPTIONS");
   res.setHeader("Access-Control-Allow-Headers", "Content-Type, X-Artvelchiv-Key");
   res.setHeader("Access-Control-Max-Age", "86400");
 }
@@ -123,6 +123,10 @@ async function claudeFiche(b64, mime, indices) {
 export default async function handler(req, res) {
   corsHeaders(req, res);
   if (req.method === "OPTIONS") return res.status(204).end();
+  if (req.method === "GET") {
+    const noms = Object.keys(process.env).filter((k) => /VISION|ANTHROPIC|ARTVELCHIV|APP_ACCESS|ALLOWED/i.test(k));
+    return res.status(200).json({ service: "artvelchiv-recognize", etat: "en ligne", google_vision_configuree: Boolean(process.env.GOOGLE_VISION_API_KEY), anthropic_configuree: Boolean(process.env.ANTHROPIC_API_KEY), variables_vues: noms, modele: process.env.ANTHROPIC_MODEL || "claude-sonnet-5-5 (défaut)" });
+  }
   if (req.method !== "POST") return res.status(405).json({ error: "Méthode non autorisée" });
   const token = process.env.APP_ACCESS_TOKEN === undefined ? "arttest" : process.env.APP_ACCESS_TOKEN;
   if (token && String(req.headers["x-artvelchiv-key"] || "").trim().toLowerCase() !== token.toLowerCase()) return res.status(401).json({ error: "Code d'accès invalide" });
