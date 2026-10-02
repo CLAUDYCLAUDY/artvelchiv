@@ -71,10 +71,11 @@ async function visionWebDetection(b64) {
   const rep = (j.responses && j.responses[0]) || {};
   if (rep.error) throw new Error("Google Vision : " + rep.error.message);
   const web = rep.webDetection || {};
-  const pages = (web.pagesWithMatchingImages || []).map((p) => ({ url: p.url, titre: (p.pageTitle || "").replace(/<[^>]+>/g, "").trim(), source: domainOf(p.url), exact: !!(p.fullMatchingImages && p.fullMatchingImages.length) }));
+  const pages = (web.pagesWithMatchingImages || []).map((p) => { const full = (p.fullMatchingImages || [])[0], part = (p.partialMatchingImages || [])[0]; return { url: p.url, titre: (p.pageTitle || "").replace(/<[^>]+>/g, "").trim(), source: domainOf(p.url), exact: !!full, type: full ? "identique" : part ? "partielle" : "proche", image: (full && full.url) || (part && part.url) || null }; });
+  pages.sort((x, y) => (y.type === "identique") - (x.type === "identique") || (y.type === "partielle") - (x.type === "partielle"));
   return {
     occurrences: pages,
-    similaires: (web.visuallySimilarImages || []).map((i) => i.url).slice(0, 8),
+    similaires: (web.visuallySimilarImages || []).map((i) => i.url).slice(0, 12),
     imagesIdentiques: (web.fullMatchingImages || []).map((i) => i.url).slice(0, 8),
     entites: (web.webEntities || []).filter((e) => e.description).map((e) => ({ nom: e.description, score: Math.round((e.score || 0) * 100) / 100 })),
     meilleureHypothese: (web.bestGuessLabels || []).map((l) => l.label).filter(Boolean),
@@ -83,7 +84,7 @@ async function visionWebDetection(b64) {
   };
 }
 
-async function claudeFiche(b64, mime, indices) {
+async function claudeFiche(b64, mime, indices, choix) {
   const key = process.env.ANTHROPIC_API_KEY;
   if (!key) return { skipped: "ANTHROPIC_API_KEY absente" };
   const model = process.env.ANTHROPIC_MODEL || "claude-sonnet-5-5";
@@ -95,6 +96,7 @@ async function claudeFiche(b64, mime, indices) {
       (indices.texte ? "- Texte lisible sur l'image : " + indices.texte.slice(0, 200) + "\n" : "") +
       (indices.occurrences && indices.occurrences.length ? "- Pages où l'image apparaît : " + indices.occurrences.slice(0, 5).map((p) => p.titre || p.source).join(" ; ") + "\n" : "");
   }
+  if (choix && (choix.titre || choix.url)) texte += "\n\nL'utilisateur a indiqué que l'œuvre photographiée est celle présentée sur cette page : « " + (choix.titre || "") + " » (" + (choix.url || "") + "). Déduis-en, avec prudence, l'artiste, le titre, la date et la technique lorsque le titre de la page les contient ; mets ces éléments dans la fiche (artiste.nom_probable, description) et indique dans points_de_vigilance que l'identification repose sur une page internet choisie par l'utilisateur, à vérifier. Dans ce cas, confiance_globale peut atteindre 0,7 au plus.";
   const r = await fetch("https://api.anthropic.com/v1/messages", {
     method: "POST",
     headers: { "Content-Type": "application/json", "x-api-key": key, "anthropic-version": "2023-06-01" },
@@ -133,6 +135,7 @@ export default async function handler(req, res) {
   let body;
   try { body = await readBody(req); } catch (e) { return res.status(400).json({ error: e.message }); }
   const image = typeof body.image === "string" ? body.image : "";
+  const choix = body.choix && typeof body.choix === "object" ? { titre: String(body.choix.titre || "").slice(0, 300), url: String(body.choix.url || "").slice(0, 500) } : null;
   const mime = ["image/jpeg", "image/png", "image/webp"].includes(body.mime) ? body.mime : "image/jpeg";
   const b64 = image.replace(/^data:[^;]+;base64,/, "").replace(/\s+/g, "");
   if (!b64) return res.status(400).json({ error: "Image manquante" });
@@ -142,12 +145,13 @@ export default async function handler(req, res) {
   let vision = null, fiche = null;
   try { vision = await visionWebDetection(b64); if (vision.skipped) { avertissements.push("Recherche d'occurrences en ligne non activée (" + vision.skipped + ")."); vision = null; } }
   catch (e) { avertissements.push("Recherche d'occurrences en ligne indisponible : " + e.message); vision = null; }
-  try { fiche = await claudeFiche(b64, mime, vision); if (fiche.skipped) { avertissements.push("Analyse de la photographie non activée (" + fiche.skipped + ")."); fiche = null; } }
+  try { fiche = await claudeFiche(b64, mime, vision, choix); if (fiche.skipped) { avertissements.push("Analyse de la photographie non activée (" + fiche.skipped + ")."); fiche = null; } }
   catch (e) { avertissements.push("Analyse de la photographie indisponible : " + e.message); fiche = null; }
   if (!vision && !fiche) return res.status(503).json({ error: "Service de reconnaissance non configuré", avertissements });
 
   return res.status(200).json({
     fiche,
+    choix,
     occurrences: vision ? vision.occurrences : [],
     similaires: vision ? vision.similaires : [],
     imagesIdentiques: vision ? vision.imagesIdentiques : [],
