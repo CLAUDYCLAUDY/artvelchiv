@@ -1,0 +1,3 @@
+{
+  "functions": { "api/recognize.js": { "maxDuration": 60 }, "api/analyse.js": { "maxDuration": 60 } }
+}
