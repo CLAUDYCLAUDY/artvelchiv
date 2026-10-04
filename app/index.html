@@ -47,6 +47,23 @@
 @media(prefers-reduced-motion:reduce){.brand-opening,.brand-wordmark,.brand-rule,.brand-baseline{animation:none}.brand-signature{transform:none}}
 
 @media(max-width:720px){.topbar{position:relative}.topbar>span.mobile-only{position:absolute;left:50%;transform:translateX(-50%);margin:0;pointer-events:none}.topbar>.icon-btn.mobile-only{margin:0}}
+/* Photo → proposed record → confirmation. */
+.photo-review{border:1px solid #d8dfd3;background:#f9faf5;border-radius:9px;padding:25px;margin:22px 0}.photo-review-head{display:flex;gap:20px;align-items:center}.photo-review-head>img{width:105px;height:132px;object-fit:contain;background:#ebece3;border-radius:4px;padding:7px}.photo-review-head>div{min-width:0;flex:1}.photo-review-head h2{font:400 27px/1.2 Georgia,serif;margin:10px 0;overflow-wrap:anywhere}.photo-review-head p{font-size:13px;line-height:1.6;color:#657363;margin:0}.photo-review .eyebrow{font-size:9px;letter-spacing:.12em}.photo-facts{display:grid;grid-template-columns:135px minmax(0,1fr);gap:0;margin:24px 0 16px;font-size:13px;line-height:1.5}.photo-facts dt,.photo-facts dd{margin:0;padding:12px 0;border-top:1px solid #e0e4da;overflow-wrap:anywhere}.photo-facts dt{color:#66735f;padding-right:12px}.photo-facts dd{font-weight:500}.photo-facts input,.photo-facts select{margin:0;padding:9px;font-size:14px;min-height:40px;width:100%;box-sizing:border-box}.not-found{font-weight:400;color:#7b8473;font-size:12px}.photo-evidence{font-size:12px;line-height:1.7;color:#66735f;border-left:2px solid #a7b49c;padding-left:13px;margin:20px 0}.photo-actions{display:flex;flex-wrap:wrap;gap:6px 18px;align-items:center}.photo-actions .primary{min-height:46px}.photo-review>.small{font-size:11px;color:#7b8473}.match-previews{margin:24px 0 10px}.match-previews>.row{justify-content:space-between;gap:8px}.match-previews .text-btn{font-size:11px}.match-preview-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px}.match-preview-grid button{padding:0;border:0;background:none;color:inherit;text-align:left;min-width:0}.match-preview-grid img,.match-preview-grid .match-placeholder{width:100%;height:100px;object-fit:contain;background:#eeeee6;border-radius:3px;display:grid;place-items:center;padding:5px;box-sizing:border-box}.match-preview-grid button>span:last-child{display:block;font-size:10px;margin-top:7px;overflow:hidden;white-space:nowrap;text-overflow:ellipsis;color:#727d6b}.match-result{display:flex;gap:17px;padding:20px 0;border-bottom:1px solid #e0e4da;align-items:flex-start}.match-result>img,.match-result>.match-placeholder{width:90px;height:115px;object-fit:contain;background:#f0f0e8;flex-shrink:0;display:grid;place-items:center}.match-result>div{min-width:0}.match-result h3{font:400 20px/1.3 Georgia,serif;margin:0 0 10px;overflow-wrap:anywhere}.match-result a,.match-result button{font-size:12px;display:block}.similar-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px;margin-top:20px}.similar-grid img{width:100%;height:120px;object-fit:contain;background:#f0f0e8}.recent-item{display:flex;align-items:center;min-width:0}.recent-item>button:first-child{min-width:0;flex:1}.recent-item .recent-menu{width:30px;min-width:30px;min-height:42px;display:grid;place-items:center;padding:0;margin:0}.art-card-wrap{position:relative;min-width:0}.art-card-wrap .art-card{width:100%}.art-card-menu{position:absolute;top:8px;right:8px;background:#fffffff2;border-radius:50%;width:36px;height:36px}.delete-action{color:#914636}.details-photo{max-height:190px}.dialog .photo-review{margin-top:0}
+@media(max-width:720px){.photo-review{padding:18px;margin:20px 0;border-radius:8px}.photo-review-head{gap:14px}.photo-review-head>img{width:78px;height:105px}.photo-review-head h2{font-size:23px}.photo-review-head p{font-size:12px}.photo-facts{grid-template-columns:103px minmax(0,1fr);font-size:12px}.photo-facts input{font-size:16px}.photo-actions{display:block}.photo-actions .primary{width:100%;justify-content:center}.photo-actions>.text-btn{display:block;margin:4px auto}.match-preview-grid img,.match-preview-grid .match-placeholder{height:79px}.match-result>img,.match-result>.match-placeholder{width:75px;height:96px}.match-result h3{font-size:18px}.similar-grid img{height:95px}.recent-item .recent-menu{min-width:40px;min-height:44px}}
+/* Photo research, bilingual workspace */
+.language-switch{display:inline-flex;align-items:center;gap:2px;flex-shrink:0;padding:3px;border:1px solid #d9dfd5;border-radius:999px;background:#f8f8f2}
+.language-switch button{min-width:34px;min-height:32px;padding:4px 7px;border:0;border-radius:999px;background:transparent;color:#6b756b;font-size:10px;letter-spacing:.05em;font-weight:600;cursor:pointer}
+.language-switch button[aria-pressed=true]{background:#214632;color:#fff}
+.topbar>.language-switch{order:5;margin-left:auto}.topbar>.documents-button{margin-left:10px}.access>.language-switch{position:absolute;right:24px;top:max(24px,env(safe-area-inset-top))}
+.photo-review{scroll-margin-top:22px}.photo-review-head h2{font-size:clamp(26px,3vw,36px);line-height:1.12;overflow-wrap:anywhere}.photo-review-head p{font-size:14px;line-height:1.5}
+.photo-facts dt{font-size:12px;color:#758070}.photo-facts dd{font-size:15px;line-height:1.55}.photo-facts .not-found{font-size:13px;color:#879080}
+.photo-evidence{border-left:0;border-top:1px solid #dce1d5;margin:10px 0 20px;padding:14px 0 0;font-size:13px;line-height:1.6}.photo-evidence summary{cursor:pointer;color:#486049;font-size:12px}.photo-evidence p{margin:12px 0}.source-link{display:inline-block;margin:5px 10px 0 0;color:#244b39;font-size:12px;text-decoration:underline;text-underline-offset:3px}
+.photo-next{margin-top:22px;padding-top:16px;border-top:1px solid #dce1d5}.photo-next p{font-size:13px;line-height:1.6;color:#697561;margin:0 0 8px}.photo-next .text-btn{display:inline-flex;align-items:center;gap:7px}
+.recognition-loader{display:flex;gap:5px;margin:22px 0}.recognition-loader span{width:6px;height:6px;border-radius:50%;background:#719177;animation:recognition-pulse 1.2s infinite}.recognition-loader span:nth-child(2){animation-delay:.15s}.recognition-loader span:nth-child(3){animation-delay:.3s}@keyframes recognition-pulse{50%{opacity:.2;transform:translateY(-3px)}}
+.match-preview-grid button{background:#f0f2e9;padding:7px;border-radius:8px}.match-preview-grid img{width:100%;height:108px;object-fit:contain}.match-preview-grid span{display:block;font-size:10px;line-height:1.4;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;margin:6px 0 2px}.match-previews .eyebrow{font-size:10px;letter-spacing:.12em}
+@media(max-width:720px){.topbar>.language-switch{margin-left:auto}.language-switch button{min-width:29px;min-height:32px;font-size:9px;padding:4px}.topbar .work-title{min-width:0;flex:1}.topbar .work-title>span{max-width:145px}.topbar .documents-button{margin-left:5px}.photo-review{padding:20px 17px}.photo-review-head{gap:13px;align-items:center}.photo-review-head img{width:78px;height:108px}.photo-review-head h2{font-size:26px}.photo-facts{grid-template-columns:90px minmax(0,1fr);gap:0 14px}.photo-facts dd{font-size:14px}.photo-facts dt{font-size:11px}.photo-actions .btn{min-height:48px}.match-preview-grid img{height:83px}.photo-next p{font-size:12px}.access>.language-switch{right:18px;top:max(18px,env(safe-area-inset-top))}}
+@media(prefers-reduced-motion:reduce){.recognition-loader span{animation:none}}
+.identification-tag{display:inline-block;padding:6px 10px;background:#e9eddf;color:#53654a;border-radius:5px;font-size:11px;margin:4px 0 10px}
 </style></head><body><div id="root"></div><script src="https://cdnjs.cloudflare.com/ajax/libs/react/18.3.1/umd/react.production.min.js"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/react-dom/18.3.1/umd/react-dom.production.min.js"></script><script>window.ARTVELCHIV_API_URL="";window.require=n=>n==='react'?window.React:n==='react-dom/client'?window.ReactDOM:null;</script><script>(()=>{var Mt=(e=>typeof require<"u"?require:typeof Proxy<"u"?new Proxy(e,{get:(A,n)=>(typeof require<"u"?require:A)[n]}):e)(function(e){if(typeof require<"u")return require.apply(this,arguments);throw Error('Dynamic require of "'+e+'" is not supported')});var di=Mt("react-dom/client");var q=Mt("react"),hi="arttest",Kt=`
 @import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400;1,500&family=Jost:wght@300;400;500;600&family=IBM+Plex+Mono:wght@400;600&display=swap');
 @keyframes avFade { from { opacity: 0; transform: translateY(4px); } to { opacity: 1; transform: none; } }
@@ -73,7 +90,7 @@ button { font-family: inherit; }
 </script><script>/* Pure domain helpers. Unknown facts stay unknown. Legal source pack is preserved separately. */
 (function(root){
   const L=root.AVLegacy;
-  const labels={titre:'Titre ou description',artisteNom:'Artiste',cat:'Nature',annee:'Année',lieu:'Lieu actuel',dest:'Destination',creation:'Pays de création',valeur:'Prix ou valeur (€)',artiste:'Situation de l’artiste',materiau:'Matériau',technique:'Technique',prov:'Provenance',tirage:'Tirage et fonte',protege:'Matériaux protégés',role:'Votre rôle',operation:'Projet',acheteur:'Type d’acheteur',mode:'Mode de vente',source:'Origine de l’acquisition',douane:'Situation douanière',vocab:'Attribution retenue',dimensions:'Dimensions',etat:'État de conservation',provenanceTexte:'Historique de propriété',restauration:'Restaurations',litige:'Litige ou revendication',sortie:'Historique des sorties',expertise:'Avis d’experts',vendeurNom:'Vendeur',acheteurNom:'Acheteur',paiement:'Modalités de paiement',livraison:'Livraison et assurance',frais:'Frais convenus',fiscalite:'Fiscalité à retenir',droitApplicable:'Droit applicable et règlement des litiges',mandant:'Propriétaire représenté',materiauxDetail:'Détail des matériaux',proprietaireNom:'Identité du propriétaire',achatPays:'Pays du dernier achat',arrivee:'Comment l’œuvre est arrivée',motifArrivee:'Motif de l’arrivée',douaneDocument:'Document de transport ou de douane',douaneEvidence:'Justificatif de la situation douanière'};
+  const labels={origineCulturelle:'École, atelier ou origine',titre:'Titre ou description',periode:'Période proposée',techniqueDetail:'Technique et support',description:'Description',artisteNom:'Artiste',cat:'Nature',annee:'Année',lieu:'Lieu actuel',dest:'Destination',creation:'Pays de création',valeur:'Prix ou valeur (€)',artiste:'Situation de l’artiste',materiau:'Matériau',technique:'Technique',prov:'Provenance',tirage:'Tirage et fonte',protege:'Matériaux protégés',role:'Votre rôle',operation:'Projet',acheteur:'Type d’acheteur',mode:'Mode de vente',source:'Origine de l’acquisition',douane:'Situation douanière',vocab:'Attribution retenue',dimensions:'Dimensions',etat:'État de conservation',provenanceTexte:'Historique de propriété',restauration:'Restaurations',litige:'Litige ou revendication',sortie:'Historique des sorties',expertise:'Avis d’experts',vendeurNom:'Vendeur',acheteurNom:'Acheteur',paiement:'Modalités de paiement',livraison:'Livraison et assurance',frais:'Frais convenus',fiscalite:'Fiscalité à retenir',droitApplicable:'Droit applicable et règlement des litiges',mandant:'Propriétaire représenté',materiauxDetail:'Détail des matériaux',proprietaireNom:'Identité du propriétaire',achatPays:'Pays du dernier achat',arrivee:'Comment l’œuvre est arrivée',motifArrivee:'Motif de l’arrivée',douaneDocument:'Document de transport ou de douane',douaneEvidence:'Justificatif de la situation douanière'};
   const purpose=[['vente','Préparer une vente'],['archiver','Archiver une œuvre'],['achat','Préparer un achat'],['deplacement','Déplacer une œuvre'],['importation','Importer une œuvre'],['exportation','Exporter une œuvre']];
   const options={arrivee:[['sur_place','Elle était déjà dans ce pays'],['importee','Elle est arrivée d’un autre pays'],['inconnue','Je ne sais pas']],motifArrivee:[['achat','Un achat'],['exposition','Une exposition ou un prêt'],['restauration','Une restauration'],['stockage','Un dépôt ou un stockage'],['autre','Autre raison']],douaneDocument:[['ata','Un carnet ATA'],['admission','Un document d’admission temporaire'],['import','Un document d’importation définitive'],['entrepot','Un document d’entrepôt douanier'],['autre','Un autre document'],['aucun','Je n’ai pas de document']],achatPays:L.countries.map(x=>[x,x]),operation:purpose,cat:L.categories.map(([v,t])=>[v,t.replace(', horlogerie','')]),lieu:L.countries.map(x=>[x,x]),dest:L.countries.map(x=>[x,x]),creation:L.countries.map(x=>[x,x]),materiau:L.materials,artiste:L.artistStates,prov:L.provenances,douane:L.customs,role:[['proprietaire','Je suis propriétaire'],['mandataire','Je représente le propriétaire']],acheteur:[['particulier','Un particulier'],['professionnel','Un professionnel']],mode:[['prive','De gré à gré'],['distance','À distance'],['encheres','Aux enchères']],source:[['premier','Directement auprès de l’artiste'],['second','Une acquisition précédente']],protege:[['oui','Oui'],['non','Non'],['inconnu','Je ne sais pas']],vocab:[['signé','Signé de'],['attribué','Attribué à'],['atelier','Atelier de'],['entourage','Entourage de'],['école','École de'],["d’après","D’après"],['anonyme','Sans attribution']]};
   const truth=v=>v!==null&&v!==undefined&&v!=='';
@@ -131,7 +148,26 @@ button { font-family: inherit; }
   function safePatch(p){const out={};if(!p||typeof p!=='object'||Array.isArray(p))return out;for(const [k,v]of Object.entries(p)){if(!labels[k]&&!['materiauxDetail'].includes(k))continue;if(v===null){out[k]=null;continue;}if(k==='annee'||k==='valeur'){if(typeof v==='number'&&Number.isFinite(v)&&(k==='annee'?v>=-10000&&v<=new Date().getFullYear():v>0&&v<=1e12))out[k]=v;continue;}if(typeof v!=='string'||v.length>3000)continue;if(options[k]&&!options[k].some(x=>x[0]===v))continue;out[k]=v.trim();}if(out.douane&&!out.douaneEvidence)delete out.douane;return out;}
   function audienceRecord(r,kind){if(r.ownerPrivate===false||!['buyer','contract'].includes(kind))return r;const names=[r.proprietaireNom,r.mandant,...(r.role==='proprietaire'?[r.vendeurNom]:[])].filter(n=>typeof n==='string'&&n.trim().length>2);const hide=text=>typeof text==='string'?names.reduce((v,n)=>{let out='',at=0,found;const lower=v.toLocaleLowerCase('fr-FR'),needle=n.toLocaleLowerCase('fr-FR');while((found=lower.indexOf(needle,at))!==-1){out+=v.slice(at,found)+'propriétaire privé';at=found+n.length;}return out+v.slice(at);},text):text;const out=Object.fromEntries(Object.entries(r).map(([k,v])=>[k,typeof v==='string'&&!['photo','id','updatedAt','createdAt'].includes(k)?hide(v):v]));out.mandant='Identité confidentielle';out.proprietaireNom='Identité confidentielle';if(r.role==='proprietaire')out.vendeurNom='Identité à communiquer avant signature';return out;}
   function audienceFiles(r,kind){return (r.files||[]).filter(f=>kind==='archive'||((f.audiences||[]).includes(kind)&&(r.ownerPrivate===false||!['buyer','contract'].includes(kind)||f.privacyReviewed===true)));}
-  root.AV={customsHelp,audienceRecord,audienceFiles,labels,options,purpose,truth,sale,value,fresh,sample,questions,next,missing,patch,warnings,assess,docs,documentKinds,safePatch};
+  function photoPatch(f){
+    if(!f)return {};
+    const p=safePatch({titre:f.titre||f.description?.split(/(?<=[.!?])\s/)[0]?.slice(0,180),artisteNom:f.artiste?.nom_probable,origineCulturelle:f.artiste?.ecole,...(f.type_objet==='reproduction'&&f.artiste?.nom_probable?{vocab:'d’après'}:{}),cat:f.nature,annee:f.annee_estimee,periode:f.periode_texte,technique:f.technique,techniqueDetail:f.technique_texte,materiau:f.materiau,materiauxDetail:f.materiaux_texte,description:f.description,etat:f.etat_apparent,...(f.espece_protegee_possible===true?{protege:'inconnu'}:{})});
+    return Object.fromEntries(Object.entries(p).filter(([k,v])=>truth(v)));
+  }
+  function photoRequest(record,file,language='fr',choice=null){const main=record.photo||file.dataUrl;const photos=[...(record.files||[]).filter(f=>['Œuvre','Détail de l’œuvre',''].includes(f.purpose||'')&&f.mime?.startsWith('image/')),file].map(f=>f.dataUrl).filter((url,i,all)=>url&&url!==main&&all.indexOf(url)===i).slice(-2);const image=url=>({image:url.split(',')[1],mime:url.match(/^data:([^;]+)/)?.[1]||file.mime});return {language:language==='en'?'en':'fr',...image(main),images:photos.map(image),...(choice?{choix:choice}:{})};}
+  root.AV={photoRequest,photoPatch,customsHelp,audienceRecord,audienceFiles,labels,options,purpose,truth,sale,value,fresh,sample,questions,next,missing,patch,warnings,assess,docs,documentKinds,safePatch};
+})(typeof window!=='undefined'?window:globalThis);
+</script><script>/* Curated British English for the art trade. Source data and enum codes stay unchanged. */
+(function(root){
+const EN={"Image proche":"Related image","CORRESPONDANCES VISUELLES":"VISUAL REFERENCES","Tout voir ↗":"Explore all ↗","Fiche proposée depuis la photo":"Suggested artwork record","Votre photo de l’œuvre":"Your artwork photograph","LECTURE DE VOTRE PHOTO":"LOOKING CLOSER","FICHE PROPOSÉE":"YOUR DRAFT RECORD","VOTRE PHOTO":"YOUR PHOTOGRAPH","Votre fiche se prépare.":"From photograph to artwork record.","Votre œuvre":"Your artwork","Retrouvons votre œuvre.":"Let’s identify your artwork.","Image, inscriptions et correspondances visuelles.":"Examining the image, inscriptions and visual references.","Vérifiez les informations, puis validez.":"Review the details. Make them yours.","Votre photo est conservée. Vous pouvez relancer la lecture.":"Your photograph is saved. Try the search again when you’re ready.","Non identifié sur cette photo":"Not established from this image","Valider cette fiche":"Confirm these details","Terminer les corrections":"Done editing","Corriger ou compléter":"Edit details","Ne pas conserver ces propositions":"Discard these suggestions","Relancer la reconnaissance":"Search again","Choisir…":"Select…","Vérifiez ce montant ou cette année.":"Please check the amount or year.","La prochaine étape":"WHAT’S NEXT","Continuer":"Continue","Je préciserai plus tard":"Add this later","Les références sont momentanément indisponibles.":"References are temporarily unavailable.","Sources et références":"Sources and references","Consultées le":"Accessed on",". Les informations documentaires ne prouvent ni l’attribution de l’œuvre ni la disponibilité des droits.":". Reference information does not establish attribution or clear reproduction rights.","REPÈRES SUR L’ARTISTE":"ARTIST REFERENCE","VOCABULAIRE DE L’ŒUVRE":"MATERIALS & TECHNIQUES","Naissance :":"Born:","· Décès :":"· Died:","La notice Getty est temporairement inaccessible.":"The Getty record is temporarily unavailable.","À préciser":"To be confirmed","Les références ne sont pas accessibles. Vous pouvez continuer et réessayer plus tard.":"References are unavailable right now. Continue with your record and try again later.","La fiche de l’artiste":"Artist reference","Préciser un matériau ou une technique":"Find a material or technique","Confirmez la bonne personne. Ses repères et leurs sources rejoindront le dossier.":"Select the right artist to add their reference information and sources to this record.","Retrouvez un terme de référence sans modifier votre description de l’œuvre.":"Find a recognised term to support your own description.","Nom de l’artiste":"Artist’s name","Matériau ou technique":"Material or technique","Rechercher":"Search","Recherche des références…":"Finding references…","C’est bien cet artiste":"Select this artist","Conserver cette référence":"Add this reference","Voir les autres résultats":"See other results","Aucune correspondance. Essayez un autre nom ou poursuivez votre dossier.":"No match found. Try another name or continue with your record.","ŒUVRE & MÉMOIRE":"ARTWORK & ARCHIVE","À L’ATTENTION DE L’ACHETEUR":"FOR THE BUYER","PIÈCES & CIRCULATION":"DOCUMENTATION & MOVEMENT","VENTE & CONDITIONS":"SALE & TERMS","Préparé le":"Prepared on","Projet à compléter et à faire valider avant signature.":"Draft for completion and review before signature.","Document en préparation · informations et pièces renseignées au dossier.":"Document in preparation · based on the information and supporting material on file.","01 — L’œuvre":"01 — The artwork","Désignation à préciser":"Description to be confirmed","Datation à préciser.":"Dating to be confirmed.","Artiste ou attribution à préciser.":"Artist or attribution to be confirmed.","Attribution retenue :":"Attribution wording:",". Justificatifs à rapprocher de cette formulation.":". Supporting evidence must be reviewed against this wording.","Repères documentaires":"Reference information","02 — Provenance et état":"02 — Provenance and condition","Historique de propriété à documenter au moyen des factures, catalogues et autres pièces disponibles.":"Document the ownership history using invoices, catalogues and other available evidence.","État de conservation à décrire. Un rapport d’état peut être annexé.":"Condition to be described. A condition report may be attached.","Restaurations connues :":"Known restoration:","Avis d’experts :":"Expert opinions:","Litige ou revendication signalé :":"Disclosed dispute or claim:","Historique de circulation :":"Movement history:","03 — Conservation du dossier":"03 — Record keeping","Lieu actuel":"Current location","Pays de création":"Country of origin","Professionnel":"Art professional","À renseigner":"To be completed","Propriétaire":"Owner","Les informations de cette archive pourront être reprises pour une future vente ou un déplacement.":"This archive can be used again when the artwork is sold or moved.","03 — Informations pour l’acquisition":"03 — Acquisition details","Les conditions de vente figurent dans le projet de contrat associé. L’attribution, l’état et la provenance sont présentés selon les informations et justificatifs communiqués.":"The proposed terms of sale appear in the accompanying draft agreement. Attribution, condition and provenance reflect the information and supporting documents provided.","03 — Le déplacement prévu":"03 — Proposed movement","Propriétaire :":"Owner:","Identité à compléter pour les communications nécessaires.":"Identity to be provided where disclosure is required.","Destinataires identifiés par le dossier":"Relevant authorities","Ce dossier rassemble les éléments préparatoires. Aucune demande ni autorisation n’est réputée déposée ou obtenue par sa seule génération.":"This file brings together the preparatory material. Generating it does not submit an application or obtain a permit.","Suivi renseigné par le professionnel":"Progress recorded by the professional","Matériaux à examiner :":"Materials requiring review:","Le parcours administratif sera précisé après complément des informations manquantes.":"The required formalities can be clarified once the missing information has been added.","03 — Projet d’accord":"03 — Draft agreement","Version de consultation confidentielle. L’identité des parties et les pouvoirs de représentation devront être complétés dans les conditions requises avant toute signature.":"Confidential review copy. The parties’ identities and any authority to act on their behalf must be properly completed before signature.","Parties":"Parties","Désignation et prix":"Description and price","Paiement et remise":"Payment and delivery","Droit et règlement des litiges":"Governing law and dispute resolution","Conditions liées à l’opération":"Transaction-specific terms","Les autorisations de circulation, les garanties, les modalités de transfert de propriété et les règles de protection de l’acheteur devront être arrêtées en fonction du dossier et du droit applicable. Aucun taux, séquestre ni délai de réserve n’est présumé convenu.":"Movement permits, warranties, transfer of title and buyer protection provisions must be settled in light of the transaction and applicable law. No rate, escrow arrangement or reservation period is presumed agreed.","Le vendeur":"Seller","Signature à recueillir":"Signature required","L’acheteur":"Buyer","04 — Déclarations renseignées":"04 — Recorded disclosures","À compléter":"To be completed","Réponses saisies au dossier ; elles ne constituent pas une déclaration signée.":"These answers are recorded on file; they do not constitute a signed declaration.","— Pièces annexes":"— Supporting documents","Jointe · à examiner":"Attached · awaiting review","Aucune pièce affectée à ce document.":"No attachments have been assigned to this document.","Les pièces internes ne sont pas incluses dans ce document.":"Internal attachments are excluded from this document.","Informations de cadrage renseignées. Les justificatifs et vérifications propres à l’opération restent à examiner.":"The core details are recorded. Transaction-specific evidence and checks still require review.","· Version du":"· Version dated","La sauvegarde sur cet appareil n’est pas disponible. Gardez cet onglet ouvert.":"Saving is unavailable on this device. Please keep this tab open.","La sauvegarde n’a pas abouti. Libérez de l’espace puis réessayez ; gardez cet onglet ouvert.":"Your changes could not be saved. Free up storage and try again; keep this tab open.","Nous relions cette arrivée à votre projet pour identifier les documents utiles.":"We’ll use this movement history to identify the documents your project needs.","Nous conservons les informations de l’œuvre, sans ouvrir de vente.":"Your artwork record is ready to build. No sale has been opened.","Les informations seront reprises dans les documents de ce projet.":"These details will carry through to your project documents.","Cette destination servira à préparer son parcours.":"We’ll use this destination to plan the next steps.","Nous gardons ce point à examiner et préparons les pièces utiles.":"We’ll keep this point open for review and prepare the relevant documentation.","C’est noté. Vos documents reprennent cette information.":"Saved. Your documents will use this information.","Précisons ensemble le dossier.":"Let’s complete the next detail.","Votre accès doit être confirmé pour reprendre la conversation. Les choix ci-dessous restent disponibles.":"Please confirm your access to continue the conversation. You can still use the options below.","Je n’ai pas pu lire votre réponse pour le moment. Elle reste dans la conversation. Vous pouvez réessayer ou utiliser les choix ci-dessous.":"Your message is saved, but I couldn’t process it just now. Try again or use the options below.","Lecture interrompue.":"Processing was interrupted.","Code incorrect.":"That access code is incorrect.","Accès indisponible. Réessayez dans un instant.":"Access is temporarily unavailable. Please try again shortly.","Impossible de vérifier l’accès. Réessayez dans un instant.":"We couldn’t verify your access. Please try again shortly.","Vérifiez l’année proposée.":"Please check the proposed year.","Je valide cette fiche.":"I confirm these details.","Votre fiche est enregistrée. Précisons seulement la suite du projet.":"Your artwork record is saved. Let’s choose what comes next.","Votre fiche est prête à être vérifiée. Validez les informations proposées ou corrigez-les directement.":"Your draft record is ready. Review the details and confirm or edit them.","Des rapprochements visuels sont disponibles ci-dessous. Choisissez la page qui correspond pour préciser la fiche.":"We found visual references. Select the relevant page to refine your record.","Je n’ai pas pu identifier cette œuvre. Une vue plus nette, une signature ou le dos de l’œuvre peuvent aider.":"This image was not enough to identify the artwork. A clearer view, a signature or the reverse may help.","La lecture de votre photo n’a pas abouti. Elle reste visible dans le dossier ; vous pouvez réessayer.":"We couldn’t complete the image analysis. Your photograph is saved; you can try again.","Choisissez un document de moins de 8 Mo.":"Please choose a file smaller than 8 MB.","Choisissez un PDF ou une photo JPG, PNG ou WebP.":"Choose a PDF or a JPG, PNG or WebP image.","Je prépare les informations à confirmer.":"I’m preparing the details for your review.","Vous pouvez me demander d’en extraire les informations.":"Ask me to read it and suggest the relevant details.","Ce fichier n’a pas pu être ajouté. Réessayez avec une autre version.":"This file could not be added. Please try another version.","Ouverture de votre espace…":"Opening your workspace…","VOTRE ESPACE PROFESSIONNEL":"YOUR ART WORKSPACE","L’art mérite":"Your eye for art.","toute votre attention.":"Our attention to detail.","Retrouvez vos œuvres et préparez la suite,":"Your artworks, records and next steps,","simplement.":"all in one place.","Votre code d’accès":"Your access code","Œuvres. Transactions. Sérénité.":"Less paperwork. More room for art.","Fermer le menu":"Close menu","Nouvelle œuvre":"New artwork","Navigation principale":"Main navigation","Mon espace":"Workspace","Mes œuvres":"My artworks","Corbeille":"Trash","RÉCEMMENT OUVERTES":"RECENTLY OPENED","Options pour":"Options for","cette œuvre":"this artwork","Ouvrir le menu":"Open menu","Votre projet":"Your project","VOTRE ESPACE, EN TOUTE SIMPLICITÉ":"MORE TIME FOR ART","Mes documents":"My documents","Fermer le message":"Dismiss message","VOTRE COLLECTION":"YOUR ARTWORKS","La corbeille.":"Trash.","Chaque œuvre,":"Every artwork,","son histoire.":"its own story.","Ajouter une œuvre":"Add an artwork","Rechercher une œuvre":"Search artworks","Rechercher une œuvre, un artiste…":"Search for an artwork or artist…","Restaurer le dossier":"Restore record","Reprendre le dossier":"Open record","Aucune œuvre ne correspond à cette recherche.":"No artworks match your search.","Conversation avec Artvelchiv":"Conversation with Artvelchiv","L’ESPACE DES PROFESSIONNELS DE L’ART":"BUILT FOR THE ART WORLD","Chaque œuvre.":"A photograph.","Toute son histoire.":"A head start.","Photographiez votre œuvre.":"Start with a photograph.","Nous vous guidons pour l’archiver ou la vendre.":"We prepare the details. You review, archive or sell.","Photographier une œuvre":"Photograph an artwork","Importer une photo ou un document":"Upload a photograph or document","Préparer une vente":"Prepare a sale","Archiver":"Build an archive","Autre projet":"Another project","Voir les œuvres":"View artworks","Dossier d’œuvre":"Artwork record","Votre prochaine œuvre":"Your next artwork","commence ici.":"starts here.","UNE ŒUVRE. UN DOSSIER. TOUT EST RÉUNI.":"ONE ARTWORK. ONE RECORD. EVERYTHING TOGETHER.","Archive":"Archive","Vente":"Sale","Circulation":"Movement","VOTRE ŒUVRE":"YOUR ARTWORK","Informations à confirmer":"Details to review","Fiche artiste associée":"Artist reference linked","Compléter la fiche de l’artiste":"Add artist information","Rechercher les repères de l’artiste":"Find artist references","Je vous accompagne, une étape à la fois. Vos documents se préparent au fil de nos échanges.":"A few details from you. A complete picture, step by step.","Voir les échanges précédents":"See earlier messages","Lecture en cours":"Working on your record","Réessayer la lecture":"Try again","Lire":"Read","la photo":"the photograph","auteur":"artist","le document":"the document","Garder sans analyser":"Keep without analysing","CE QUE J’AI RETENU":"READY FOR YOUR REVIEW","On garde ces informations ?":"Add these details?","Oui, conserver ces informations.":"Yes, add these details.","Le dossier est à jour.":"Your record is up to date.","Oui, conserver":"Confirm details","Ne pas retenir":"Discard","Je préciserai plus tard.":"I’ll add this later.","Nous gardons cette information à compléter, sans bloquer la préparation.":"We’ll leave this detail open so you can keep moving.","VOTRE DOSSIER PREND FORME":"YOUR RECORD IS TAKING SHAPE","L’œuvre a maintenant son espace.":"Your artwork has a home.","Les bases de votre projet sont posées.":"Your project is taking shape.","Les informations en attente restent accessibles. Vos documents se complètent avec vous.":"You can add any outstanding details later. Your documents will update as you go.","Retrouvez les informations, ajoutez vos pièces et relisez les documents préparés.":"Review your details, add supporting documents and explore your draft files.","Voir mes documents":"View my documents","Préparer une vente avec cette œuvre":"Prepare this artwork for sale","Me guider pour la suite":"Guide me through the next steps","Transport et situation douanière":"Transport and customs status","J’ai un document : le lire pour moi":"I have a document — read it for me","Informations de l’œuvre":"Artwork details","Pièces jointes":"Attachments","Votre message":"Your message","Décrivez votre œuvre ou votre projet…":"Tell us about your artwork or project…","Répondez simplement, avec vos mots…":"Just tell us in your own words…","Joindre une photo ou un document":"Attach a photograph or document","Photo":"Photo","Envoyer le message":"Send message","Votre œuvre au centre. Les démarches, à leur place.":"Your focus stays on the art.","Quel est votre projet ?":"What would you like to do?","Vos documents":"Your documents","Préparés à partir de vos réponses. Chaque document garde son destinataire.":"Built from your details, with a separate file for each recipient.","En préparation":"In preparation","Compléter ce qui manque":"Complete outstanding details","La fiche de l’artiste est associée au dossier.":"The artist reference has been added to your record.","La référence est conservée avec votre description.":"This reference is saved alongside your description.","Les informations de l’œuvre":"Artwork details","Voir les rapprochements de la photo":"Explore visual references","Une modification est reprise dans les documents concernés.":"Changes carry through to the relevant documents.","Fiche de l’artiste ↗":"Artist reference ↗","Matériaux et techniques ↗":"Materials and techniques ↗","Retirer cette référence":"Remove this reference","Garder le propriétaire confidentiel côté acheteur":"Keep the owner’s identity private in the buyer’s file","Son identité reste au dossier interne. Elle est communiquée aux autorités ou aux parties lorsque c’est nécessaire. Les pièces destinées à l’acheteur doivent être relues pour retirer les mentions confidentielles.":"The owner’s identity stays in your internal record and is disclosed where required. Review buyer-facing attachments for confidential information before sharing them.","Précisions":"Further details","Situation déclarée manuellement par le professionnel, justificatif à examiner.":"Status entered by the professional; supporting evidence requires review.","Vérifiez cette valeur.":"Please check this value.","Votre précision":"Your detail","Enregistrer":"Save","La suite, simplement":"Your next steps","Compléter les informations en attente":"Complete outstanding details","Renseigner les déclarations":"Record disclosures","NOUS VOUS AIDONS À COMPRENDRE":"CLEAR GUIDANCE","Le parcours de votre œuvre":"Your artwork’s journey","Joindre le document et me guider":"Upload the document and guide me","Rassembler les justificatifs":"Gather supporting documents","Préciser les conditions de vente":"Set out the terms of sale","Ajouter une précision":"Add a detail","Voir les points à examiner":"View points requiring review","Complétez les informations sur l’œuvre et son parcours pour préciser les démarches.":"Add the artwork details and movement history to identify the relevant formalities.","À examiner":"For review","À préparer":"To prepare","Suivre cette démarche":"Track this step","Joindre un justificatif":"Attach supporting evidence","Me guider":"Guide me","Les conditions de la vente":"Terms of sale","Ne renseignez que les conditions réellement convenues. Le reste demeure à préciser dans le projet de contrat.":"Enter only the terms actually agreed. Other terms remain open in the draft agreement.","Rapprochements trouvés":"Visual references","Une image ressemblante n’établit pas l’identité de l’œuvre. Ces pages sont des pistes de recherche.":"Compare the images and their sources. A visual match is a research lead, not proof of attribution.","Page trouvée":"Reference page","Consulter la page ↗":"View source ↗","Cette page correspond à mon œuvre":"Use this reference","Aucune page identique n’a été retrouvée. Les images ci-dessous sont des pistes visuelles.":"No identical image was found on a reference page. These images may help guide further research.","Image visuellement proche":"Visually related image","Les pièces de l’œuvre":"Supporting documents","Ajouter une photo ou un document":"Add a photograph or document","Facture, certificat, rapport d’état, photo… Ajoutez ce que vous avez déjà.":"Invoices, certificates, condition reports, photographs. Start with what you have.","Conservé · contenu à examiner":"Saved · awaiting review","Consulter":"View","Lire avec Artvelchiv":"Read with Artvelchiv","Inclure cette pièce dans":"Include this attachment in","J’ai vérifié cette version : elle ne révèle pas l’identité confidentielle.":"I have checked that this copy does not disclose the confidential identity.","Sans cette vérification, la pièce reste exclue des dossiers acheteur et contrat.":"Until reviewed, this attachment is excluded from the buyer’s file and agreement.","L’archive interne conserve toujours la pièce.":"The internal archive retains the attachment.","Pièces utiles à rassembler":"Useful supporting documents","Photographies de l’œuvre":"Artwork photographs","Vue générale, dos, détails et inscriptions.":"Overall view, reverse, details and inscriptions.","Factures, catalogues, expositions et correspondances.":"Invoices, catalogues, exhibitions and correspondence.","Rapport d’état":"Condition report","État actuel et interventions connues.":"Current condition and known treatments.","Ajouter la pièce":"Add document","Consulter la pièce":"View attachment","Ce navigateur ne permet pas de consulter ce PDF dans l’application.":"This browser cannot display the PDF within the app.","Pièce introuvable.":"Attachment not found.","Indiquez où vous en êtes. Le dépôt et la décision de l’autorité restent distincts.":"Record your progress. Submitting an application is separate from receiving a decision.","État de la démarche":"Status","Préparée":"Prepared","Déposée":"Submitted","Réponse reçue — à examiner":"Response received — for review","Référence ou précision":"Reference or note","Date de l’événement":"Event date","Enregistrer le suivi":"Save progress","Gérer cette œuvre":"Manage artwork","Ce dossier est dans la corbeille. Ses photos et ses informations sont conservées.":"This record is in the trash. Its photographs and details are retained.","Le dossier est restauré.":"Record restored.","Retirée des récentes. Le dossier reste dans Mes œuvres.":"Removed from recent items. The record remains in My artworks.","Retirer des récentes":"Remove from recent items","Dossier déplacé dans la corbeille. Vous pouvez le restaurer.":"Record moved to trash. You can restore it at any time.","Supprimer le dossier":"Move record to trash","Le dossier sera placé dans la corbeille, avec ses pièces. Vous pourrez le restaurer.":"The record and its attachments will move to trash, where you can restore them.","Votre espace professionnel":"Your workspace","Nom de la structure":"Business name","Votre activité":"Your business","Les dossiers et les pièces sont conservés dans ce navigateur, sur cet appareil. La conversation transmet les informations utiles à votre service d’assistance.":"Records and attachments are saved in this browser on this device. Relevant information is sent to the assistance service when you use the conversation.","Repères professionnels":"Professional reference notes","Référence du dossier initial, à vérifier :":"Original reference, subject to verification:","Fermer mon accès":"Sign out","Ce que vous savez de l’œuvre":"What you know about the artwork","Répondez selon les informations en votre possession.":"Answer based on the information available to you.","Je ne sais pas":"I’m not sure","Précédent":"Back","Reprenons tranquillement.":"Let’s pick up where you left off.","L’affichage a été interrompu. Vos dossiers déjà enregistrés sont conservés.":"The display was interrupted. Your previously saved records are retained.","Rouvrir mon espace":"Reopen workspace","Bienvenue chez Artvelchiv":"Welcome to Artvelchiv","Entrer":"Enter","Fermer":"Close","Ouverture…":"Opening…","Toutes":"All","Ventes":"Sales","Archives":"Archives","Oui":"Yes","Non":"No","Terminer":"Done","Œuvre":"Artwork","Titre ou description":"Title or description","Période proposée":"Suggested period","Technique et support":"Medium and support","Description":"Description","Artiste":"Artist","Nature":"Category","Année":"Year","Destination":"Destination","Prix ou valeur (€)":"Price or value (€)","Situation de l’artiste":"Artist’s lifetime","Matériau":"Material","Technique":"Technique","Provenance":"Provenance","Tirage et fonte":"Edition and foundry","Matériaux protégés":"Regulated materials","Votre rôle":"Your role","Projet":"Project","Type d’acheteur":"Buyer type","Mode de vente":"Sale format","Origine de l’acquisition":"Acquisition source","Situation douanière":"Customs status","Attribution retenue":"Attribution wording","Dimensions":"Dimensions","État de conservation":"Condition","Historique de propriété":"Ownership history","Restaurations":"Restoration","Litige ou revendication":"Dispute or claim","Historique des sorties":"Export history","Avis d’experts":"Expert opinions","Vendeur":"Seller","Acheteur":"Buyer","Modalités de paiement":"Payment terms","Livraison et assurance":"Delivery and insurance","Frais convenus":"Agreed charges","Fiscalité à retenir":"Tax treatment","Droit applicable et règlement des litiges":"Governing law and dispute resolution","Propriétaire représenté":"Represented owner","Détail des matériaux":"Materials","Identité du propriétaire":"Owner’s identity","Pays du dernier achat":"Country of last acquisition","Comment l’œuvre est arrivée":"How the artwork arrived","Motif de l’arrivée":"Reason for movement","Document de transport ou de douane":"Transport or customs document","Justificatif de la situation douanière":"Evidence of customs status","Archiver une œuvre":"Create an artwork archive","Préparer un achat":"Prepare an acquisition","Déplacer une œuvre":"Move an artwork","Importer une œuvre":"Import an artwork","Exporter une œuvre":"Export an artwork","Elle était déjà dans ce pays":"It was already in this country","Elle est arrivée d’un autre pays":"It arrived from another country","Un achat":"An acquisition","Une exposition ou un prêt":"An exhibition or loan","Une restauration":"Restoration","Un dépôt ou un stockage":"Consignment or storage","Autre raison":"Another reason","Un carnet ATA":"An ATA carnet","Un document d’admission temporaire":"A temporary admission document","Un document d’importation définitive":"A permanent import document","Un document d’entrepôt douanier":"A customs warehousing document","Un autre document":"Another document","Je n’ai pas de document":"I don’t have a document","Je suis propriétaire":"I own the artwork","Je représente le propriétaire":"I act on behalf of the owner","Un particulier":"A private individual","Un professionnel":"A business or professional","De gré à gré":"Private treaty","À distance":"Distance sale","Aux enchères":"Auction","Directement auprès de l’artiste":"Directly from the artist","Une acquisition précédente":"A previous acquisition","Signé de":"Signed by","Attribué à":"Attributed to","Atelier de":"Studio of","Entourage de":"Circle of","École de":"School of","D’après":"After","Sans attribution":"Unattributed","Que souhaitez-vous faire de cette œuvre ?":"What’s next for this artwork?","Nous adaptons le dossier à votre projet.":"Your record will adapt to your plans.","Quelle œuvre souhaitez-vous ajouter ?":"Which artwork would you like to add?","Un titre, un artiste, ou simplement une courte description.":"A title, an artist’s name or a short description is enough to start.","De quel type d’œuvre s’agit-il ?":"What kind of artwork is it?","De quand date cette œuvre ?":"When was it made?","Une année approximative suffit pour commencer. Vous pourrez préciser la datation.":"An approximate year is enough to begin. You can refine the dating later.","Où se trouve-t-elle aujourd’hui ?":"Where is it now?","Le pays où l’œuvre est physiquement conservée.":"The country where the artwork is physically located.","Qui est le propriétaire que vous représentez ?":"Who is the owner you represent?","Son identité figurera au dossier. Le mandat pourra être joint.":"Their identity stays on file. You can attach your written authority to act.","À quel titre intervenez-vous ?":"What is your role?","Pour préparer les bons documents.":"This helps us prepare the right documents.","Dans quel pays l’œuvre a-t-elle été créée ?":"In which country was the artwork made?","Le pays de création peut être différent du lieu actuel.":"Its country of origin may differ from its current location.","Quel est son matériau principal ?":"What is its main material?","Que sait-on de l’artiste ?":"What do you know about the artist’s lifetime?","Cela aide à examiner les droits attachés à l’œuvre.":"This helps assess the rights associated with the artwork.","Que savez-vous de sa provenance ?":"What do you know about its provenance?","Vos factures et anciens catalogues pourront compléter la réponse.":"Invoices and earlier catalogues can help fill in the picture.","Pouvez-vous préciser sa nature ?":"Can you specify the technique or format?","Y a-t-il un numéro de tirage ou un fondeur ?":"Is there an edition number or foundry mark?","Par exemple : 4/6, fonte Susse, 1961.":"For example: 4/6, cast by Susse, 1961.","L’œuvre contient-elle un matériau animal ou végétal protégé ?":"Does it contain any protected animal or plant material?","Ivoire, écaille, corail ou certaines essences de bois, par exemple.":"For example, ivory, tortoiseshell, coral or certain timber species.","Quel matériau faut-il examiner ?":"Which material needs checking?","Une photo rapprochée et un justificatif aideront à l’identifier.":"A close-up photograph and supporting documentation can help identify it.","Dans quel pays l’œuvre sera-t-elle remise ?":"In which country will the artwork be delivered?","Si vous ne le savez pas encore, préparons déjà le reste.":"Not decided yet? We can prepare the rest now.","Quel prix envisagez-vous ?":"What price do you have in mind?","Quelle est la valeur déclarée de l’œuvre ?":"What is the artwork’s declared value?","Indiquez le montant en euros, sans présumer du régime fiscal.":"Enter the amount in euros. Tax treatment will be considered separately.","Votre acheteur est-il un particulier ou un professionnel ?":"Is the buyer a private individual or a business?","Comment la vente se fera-t-elle ?":"How will the sale take place?","D’où provient votre acquisition ?":"How did you acquire the artwork?","Comment l’attribution sera-t-elle présentée ?":"How will the attribution be worded?","Reprenez la formulation appuyée par vos justificatifs.":"Use the wording supported by your documentation.","Où l’œuvre a-t-elle été achetée la dernière fois ?":"Where was the artwork last acquired?","Une facture peut nous donner cette information.":"An invoice may provide this information.","Comment est-elle arrivée dans son pays actuel ?":"How did it arrive in its current country?","Nous vous aidons à reconstituer son parcours, sans vous demander de connaître les formalités.":"Tell us what happened. We’ll help work out the relevant formalities.","Pourquoi a-t-elle changé de pays ?":"Why was it moved to another country?","Avez-vous un document lié à son arrivée ?":"Do you have a document relating to its arrival?","Vous pouvez joindre le document : nous le lisons pour vous et proposons la situation correspondante.":"Upload the document. We’ll read it and suggest the status for you to confirm.","Situation retenue :":"Recorded status:",". Le justificatif doit être rapproché du dossier.":". Supporting documentation must be checked against the record.","Le carnet ATA peut correspondre à un déplacement temporaire. Ajoutez-le pour examiner sa validité, le titulaire et le retour prévu.":"An ATA carnet may indicate a temporary movement. Upload it to review its validity, holder and planned return.","Ce document peut indiquer une arrivée temporaire. Ajoutez-le pour lire les conditions et la date de réexportation.":"This may indicate temporary admission. Upload it to review the conditions and re-export date.","Ajoutez la déclaration d’importation pour examiner l’identification de l’œuvre et le régime déclaré.":"Upload the import declaration to check the artwork’s identification and declared customs procedure.","Ajoutez le document d’entrepôt : la présence de l’œuvre dans le pays ne signifie pas à elle seule qu’elle peut y être vendue ou remise.":"Upload the warehousing document. An artwork’s presence in a country does not, by itself, mean it can be sold or released there.","Nous conservons le parcours connu. Une facture, le bordereau du transporteur ou une copie obtenue auprès du dépositaire peut aider à préciser sa situation.":"We’ll keep the known movement history. An invoice, shipping document or copy from the custodian may help establish its status.","Ajoutez le document disponible. Nous chercherons les mentions utiles, sans vous demander de le qualifier.":"Upload what you have. We’ll look for the relevant details; you don’t need to identify the document type.","Nous rapprochons le lieu actuel, le dernier achat et les documents de transport pour vous proposer la situation à confirmer.":"We compare the current location, last acquisition and shipping documents to suggest a status for your review.","Préciser les matériaux":"Clarify the materials","Ajoutez une photo rapprochée ou un document identifiant le matériau. Son régime reste à examiner avant toute opération.":"Add a close-up or a document identifying the material. Any applicable restrictions must be reviewed before proceeding.","Décrire les restaurations":"Describe known restoration","Indiquez les interventions connues. Elles seront reprises dans le dossier acheteur.":"Record known treatments. They will appear in the buyer’s file.","Conserver l’avis de l’expert":"Keep the expert’s opinion","Ajoutez la réponse reçue et son contexte. Ne modifiez pas l’attribution sans justificatif.":"Add the response and its context. Do not change the attribution without supporting evidence.","Clarifier la revendication":"Clarify the claim","Conservez les pièces du litige. L’opération nécessite un examen avant de poursuivre.":"Keep the dispute documents on file. The transaction requires review before proceeding.","Documenter la sortie du pays":"Document the export history","Retrouvez la date et les justificatifs de sortie. La circulation ne peut pas être tenue pour validée.":"Find the departure date and export documentation. Lawful movement cannot be assumed.","Archive de l’œuvre":"Artwork archive","La mémoire de votre œuvre.":"A lasting record of your artwork.","Dossier acheteur":"Buyer’s file","L’œuvre, sa provenance et son état.":"The artwork, its provenance and condition.","Dossier de circulation":"Movement documentation","Les pièces à présenter aux autorités.":"Supporting documents for the relevant authorities.","Projet de contrat":"Draft sale agreement","Les éléments convenus pour la vente.":"The proposed terms of the sale.","propriétaire privé":"private owner","Identité confidentielle":"Identity withheld","Identité à communiquer avant signature":"Identity to be disclosed before signature","Peinture":"Painting","Gouache, aquarelle, dessin, estampe":"Watercolour, gouache, drawing or print","Sculpture, bronze, multiple":"Sculpture, bronze or editioned work","Photographie (tirage)":"Photographic print","Archéologie, élément de monument":"Antiquity or architectural element","Objet religieux, ethnographique":"Religious or ethnographic object","Manuscrit, archives, livre ancien":"Manuscript, archive or rare book","Mobilier, arts décoratifs, textile":"Furniture, decorative arts or textiles","Bijou, orfèvrerie":"Jewellery or silverware","Instrument de musique":"Musical instrument","Armes anciennes, militaria":"Antique arms or militaria","Monnaies, médailles":"Coins or medals","Fossile, spécimen naturel":"Fossil or natural history specimen","Restes humains":"Human remains","Italie":"Italy","Espagne":"Spain","Allemagne":"Germany","Belgique":"Belgium","Pays-Bas":"Netherlands","Suisse":"Switzerland","Royaume-Uni":"United Kingdom","États-Unis":"United States","Chine / Tibet":"China / Tibet","Inde":"India","Égypte":"Egypt","Grèce":"Greece","Turquie":"Türkiye","Nigéria":"Nigeria","Cambodge":"Cambodia","Mexique":"Mexico","Pérou":"Peru","Irak":"Iraq","Syrie":"Syria","Russie":"Russia","Autre pays tiers":"Other non-EU country","Toile, panneau, papier":"Canvas, panel or paper","Bronze, métal":"Bronze or metal","Pierre, marbre":"Stone or marble","Terre cuite, céramique, verre":"Terracotta, ceramic or glass","Bois (dont essences protégées)":"Wood, including protected species","Ivoire, os, corne, écaille, corail":"Ivory, bone, horn, tortoiseshell or coral","Métaux ou pierres précieux":"Precious metals or gemstones","Textile, tapisserie, cuir":"Textile, tapestry or leather","Mixte, autre":"Mixed or other materials","Artiste vivant":"Living artist","Décédé depuis moins de 70 ans":"Died less than 70 years ago","Décédé depuis plus de 70 ans":"Died more than 70 years ago","Anonyme, atelier, non attribué":"Anonymous, workshop or unattributed","Collection ancienne documentée":"Documented historic collection","Issue de fouilles ou de découverte":"From an excavation or discovery","Élément d'un monument, temple ou autel":"Part of a monument, temple or altar","Inconnue ou incomplète":"Unknown or incomplete","En libre pratique dans l'Union":"In free circulation in the EU","Sous admission temporaire":"Under temporary admission","Sous carnet ATA":"Covered by an ATA carnet","En entrepôt douanier ou port franc":"In a customs warehouse or freeport","Hors Union, à importer":"Outside the EU, awaiting import","Aquarelle, gouache, pastel":"Watercolour, gouache or pastel","Dessin":"Drawing","Gravure, estampe, lithographie":"Engraving, print or lithograph","Manuscrit, incunable, autographe":"Manuscript, incunable or autograph material","Livre ou partition imprimée":"Printed book or musical score","Carte géographique imprimée":"Printed map","Propriétaire, ou mandataire écrit ?":"Are you the owner, or do you have written authority to act?","Restaurée, rentoilée ou modifiée ?":"Has it been restored, relined or altered?","Présentée sans succès à un comité ou à un expert ?":"Has an attribution been declined by a committee or expert?","Litige, revendication ou saisie ?":"Is there any dispute, claim or seizure affecting the artwork?","Sortie d'un pays sous restriction après l'entrée en vigueur de celle-ci ?":"Did it leave a country after relevant export restrictions came into force?","Matériaux d'espèces protégées ?":"Does it contain materials from protected species?","Toutes les pièces de provenance connues versées ?":"Have all known provenance documents been added?","Galerie":"Gallery","Marchand ou antiquaire":"Dealer or antiques dealer","Maison de ventes":"Auction house","Courtier ou conseiller":"Art broker or adviser","Langue":"Language","Sur quoi repose cette proposition ?":"What supports this suggestion?","Date du modèle :":"Date of the original design:","Une signature, une étiquette ou le dos de l’œuvre peut préciser l’identification.":"A signature, label or photograph of the reverse may help refine the identification.","Ajouter un détail":"Add a detail photograph","Détail de l’œuvre":"Artwork detail","École, atelier ou origine":"School, workshop or origin","Votre corbeille est vide.":"Your trash is empty.","Reproduction · à confirmer":"Reproduction · to be confirmed","Affiche · à confirmer":"Poster · to be confirmed","Lisez ce justificatif et aidez-moi à préciser le parcours et la situation de l’œuvre. Proposez seulement ce que le document permet d’établir.":"Read this supporting document and help clarify the artwork’s movement history and status. Suggest only what the document supports.","Lisez ce document et proposez les informations utiles pour cette œuvre.":"Read this document and suggest the relevant details for this artwork."};
+const FR={"Chaque œuvre.": "Une photo.", "Toute son histoire.": "Un temps d’avance.", "Nous vous guidons pour l’archiver ou la vendre.": "Votre fiche se prépare. Vous validez. Votre dossier prend forme.", "Je vous accompagne, une étape à la fois. Vos documents se préparent au fil de nos échanges.": "L’essentiel, une étape à la fois. Vos documents se construisent avec vous.", "On garde ces informations ?": "Validez les informations utiles.", "CORRESPONDANCES VISUELLES": "REPÈRES VISUELS", "Votre œuvre au centre. Les démarches, à leur place.": "Moins de démarches. Plus de temps pour l’art."};
+let language='fr';try{language=new URLSearchParams(location.search).get('lang')||localStorage.getItem('artvelchiv-language')||'fr';}catch{}language=language==='en'?'en':'fr';
+function t(value){if(typeof value!=='string')return value;const key=value.trim(),dict=language==='en'?EN:FR;if(Object.hasOwn(dict,key))return value.replace(key,dict[key]);if(language!=='en')return value;
+ if(key.startsWith('Options pour '))return 'Options for '+key.slice(13);
+ if(key.startsWith('Situation retenue : '))return 'Recorded status: '+t(key.slice(20).replace('. Le justificatif doit être rapproché du dossier.',''))+'. Supporting documentation requires review.';
+ return value;
+}
+function set(lang){language=lang==='en'?'en':'fr';try{localStorage.setItem('artvelchiv-language',language);}catch{}document.documentElement.lang=language;document.title=language==='en'?'ARTVELCHIV — Your workspace':'ARTVELCHIV — Votre espace';}
+root.AVI18n={t,set,get language(){return language},get locale(){return language==='en'?'en-GB':'fr-FR'},keys:Object.keys(EN)};if(typeof document!=='undefined')set(language);
 })(typeof window!=='undefined'?window:globalThis);
 </script><script>function _extends() { return _extends = Object.assign ? Object.assign.bind() : function (n) { for (var e = 1; e < arguments.length; e++) { var t = arguments[e]; for (var r in t) ({}).hasOwnProperty.call(t, r) && (n[r] = t[r]); } return n; }, _extends.apply(null, arguments); }
 const {
@@ -141,12 +177,43 @@ const {
   useMemo
 } = React;
 const A = window.AV,
-  L = window.AVLegacy;
+  L = window.AVLegacy,
+  I = window.AVI18n;
+function h(type, props, ...children) {
+  const host = typeof type === 'string';
+  if ((host || type === React.Fragment) && props?.translate !== 'no') {
+    props = {
+      ...props
+    };
+    for (const key of ['aria-label', 'placeholder', 'title', 'alt']) if (typeof props[key] === 'string') props[key] = I.t(props[key]);
+    const translate = value => Array.isArray(value) ? value.map(translate) : typeof value === 'string' ? I.t(value) : value;
+    children = children.map(translate);
+  }
+  return React.createElement(type, props, ...children);
+}
+function LanguageSwitch({
+  language,
+  onChange
+}) {
+  return h("div", {
+    className: "language-switch",
+    role: "group",
+    "aria-label": "Langue"
+  }, h("button", {
+    type: "button",
+    "aria-pressed": language === 'fr',
+    onClick: () => onChange('fr')
+  }, "FR"), h("button", {
+    type: "button",
+    "aria-pressed": language === 'en',
+    onClick: () => onChange('en')
+  }, "EN"));
+}
 const STORE = 'artvelchiv-conversations-v1';
 const Icon = ({
   name = 'arrow',
   size = 20
-}) => React.createElement("svg", {
+}) => h("svg", {
   width: size,
   height: size,
   viewBox: "0 0 24 24",
@@ -157,72 +224,72 @@ const Icon = ({
   strokeLinejoin: "round",
   "aria-hidden": "true"
 }, {
-  plus: React.createElement("path", {
+  plus: h("path", {
     d: "M12 5v14M5 12h14"
   }),
-  arrow: React.createElement("path", {
+  arrow: h("path", {
     d: "m7 12 5-5 5 5M12 7v12"
   }),
-  chevron: React.createElement("path", {
+  chevron: h("path", {
     d: "m9 5 7 7-7 7"
   }),
-  back: React.createElement("path", {
+  back: h("path", {
     d: "m15 5-7 7 7 7"
   }),
-  close: React.createElement("path", {
+  close: h("path", {
     d: "m6 6 12 12M18 6 6 18"
   }),
-  menu: React.createElement("path", {
+  menu: h("path", {
     d: "M4 7h16M4 12h16M4 17h16"
   }),
-  doc: React.createElement(React.Fragment, null, React.createElement("path", {
+  doc: h(React.Fragment, null, h("path", {
     d: "M5 3h9l5 5v13H5zM14 3v5h5M8 13h8M8 17h5"
   })),
-  camera: React.createElement(React.Fragment, null, React.createElement("path", {
+  camera: h(React.Fragment, null, h("path", {
     d: "M8 5 10 3h4l2 2h4a1 1 0 0 1 1 1v13H3V6a1 1 0 0 1 1-1z"
-  }), React.createElement("circle", {
+  }), h("circle", {
     cx: "12",
     cy: "12",
     r: "4"
   })),
-  photo: React.createElement(React.Fragment, null, React.createElement("rect", {
+  photo: h(React.Fragment, null, h("rect", {
     x: "3",
     y: "4",
     width: "18",
     height: "16",
     rx: "3"
-  }), React.createElement("circle", {
+  }), h("circle", {
     cx: "8",
     cy: "9",
     r: "1.5"
-  }), React.createElement("path", {
+  }), h("path", {
     d: "m3 17 5-5 4 4 4-6 5 7"
   })),
-  check: React.createElement("path", {
+  check: h("path", {
     d: "m5 12 4 4L19 6"
   }),
-  folder: React.createElement("path", {
+  folder: h("path", {
     d: "M3 6h6l2 2h10v12H3z"
   }),
-  search: React.createElement(React.Fragment, null, React.createElement("circle", {
+  search: h(React.Fragment, null, h("circle", {
     cx: "10.5",
     cy: "10.5",
     r: "6.5"
-  }), React.createElement("path", {
+  }), h("path", {
     d: "m16 16 5 5"
   })),
-  paperclip: React.createElement("path", {
+  paperclip: h("path", {
     d: "m9 14 7-7a3 3 0 0 1 4 4L10 21a5 5 0 0 1-7-7L14 3"
   }),
-  dots: React.createElement(React.Fragment, null, React.createElement("circle", {
+  dots: h(React.Fragment, null, h("circle", {
     cx: "5",
     cy: "12",
     r: "1"
-  }), React.createElement("circle", {
+  }), h("circle", {
     cx: "12",
     cy: "12",
     r: "1"
-  }), React.createElement("circle", {
+  }), h("circle", {
     cx: "19",
     cy: "12",
     r: "1"
@@ -233,11 +300,11 @@ const Btn = ({
   onClick,
   kind = '',
   ...props
-}) => React.createElement("button", _extends({
+}) => h("button", _extends({
   className: 'btn ' + kind,
   onClick: onClick
 }, props), children);
-const Logo = () => React.createElement("img", {
+const Logo = () => h("img", {
   className: "logo",
   src: L.logo,
   alt: "ARTVELCHIV"
@@ -280,14 +347,148 @@ function SmallArt({
   r,
   className = ''
 }) {
-  return r?.photo ? React.createElement("img", {
+  return r?.photo ? h("img", {
     className: 'art-thumb ' + className,
     src: r.photo,
     alt: r.titre || 'Œuvre'
-  }) : React.createElement("span", {
+  }) : h("span", {
     className: 'art-thumb art-empty ' + className
-  }, React.createElement(Icon, {
+  }, h(Icon, {
     name: "photo"
+  }));
+}
+function MatchThumb({
+  src,
+  alt = ''
+}) {
+  const [failed, setFailed] = useState(false);
+  return /^https?:\/\//i.test(src || '') && !failed ? h("img", {
+    src: src,
+    alt: alt,
+    loading: "lazy",
+    referrerPolicy: "no-referrer",
+    onError: () => setFailed(true)
+  }) : h("span", {
+    className: "match-placeholder"
+  }, h(Icon, {
+    name: "photo"
+  }));
+}
+function MatchPreviews({
+  reco,
+  onOpen
+}) {
+  const pages = (reco?.occurrences || []).filter(p => /^https?:\/\//i.test(p.url || ''));
+  const pics = pages.length ? pages.slice(0, 3) : (reco?.similaires || []).slice(0, 3).map(image => ({
+    image,
+    titre: 'Image proche'
+  }));
+  return pics.length ? h("div", {
+    className: "match-previews"
+  }, h("div", {
+    className: "row"
+  }, h("span", {
+    className: "eyebrow"
+  }, "CORRESPONDANCES VISUELLES"), h("button", {
+    className: "text-btn",
+    onClick: onOpen
+  }, "Tout voir \u2197")), h("div", {
+    className: "match-preview-grid"
+  }, pics.map((p, i) => h("button", {
+    key: i,
+    onClick: onOpen
+  }, h(MatchThumb, {
+    src: p.image,
+    alt: p.titre
+  }), h("span", null, p.source || p.titre))))) : null;
+}
+function PhotoReview({
+  record,
+  onChange,
+  onConfirm,
+  onSkip,
+  onRetry,
+  onMatches,
+  onDetail,
+  busy
+}) {
+  const [editing, setEditing] = useState(false);
+  const fieldPrefix = React.useId();
+  const draft = record.photoDraft || {};
+  const photo = record.files?.find(f => f.id === record.recoFileId)?.dataUrl || record.photo;
+  const pending = Object.keys(draft).length > 0;
+  const reading = record.recognition?.status === 'reading' && busy;
+  const fields = ['titre', ...(draft.artisteNom ? ['artisteNom'] : ['origineCulturelle']), ...(draft.vocab ? ['vocab'] : []), ...(draft.annee ? ['annee'] : ['periode']), 'techniqueDetail', 'materiauxDetail'];
+  return h("section", {
+    className: "photo-review",
+    "aria-label": "Fiche propos\xE9e depuis la photo"
+  }, h("div", {
+    className: "photo-review-head"
+  }, photo && h("img", {
+    src: photo,
+    alt: "Votre photo de l\u2019\u0153uvre"
+  }), h("div", null, h("span", {
+    className: "eyebrow"
+  }, reading ? 'LECTURE DE VOTRE PHOTO' : pending ? 'FICHE PROPOSÉE' : 'VOTRE PHOTO'), h("h2", null, reading ? 'Votre fiche se prépare.' : pending ? draft.titre || 'Votre œuvre' : 'Retrouvons votre œuvre.'), h("p", {
+    role: reading ? "status" : undefined
+  }, reading ? 'Image, inscriptions et correspondances visuelles.' : pending ? 'Vérifiez les informations, puis validez.' : 'Votre photo est conservée. Vous pouvez relancer la lecture.'))), reading && h("div", {
+    className: "recognition-loader",
+    "aria-hidden": "true"
+  }, h("span", null), h("span", null), h("span", null)), pending && h(React.Fragment, null, ['reproduction', 'affiche'].includes(record.reco?.fiche?.type_objet) && h("span", {
+    className: "identification-tag"
+  }, record.reco.fiche.type_objet === 'reproduction' ? 'Reproduction · à confirmer' : 'Affiche · à confirmer'), h("dl", {
+    className: "photo-facts"
+  }, fields.map(k => h(React.Fragment, {
+    key: k
+  }, h("dt", null, A.labels[k]), h("dd", null, editing ? h(Field, {
+    idPrefix: fieldPrefix,
+    k: k,
+    value: draft[k] ?? '',
+    onChange: v => onChange({
+      ...draft,
+      [k]: k === 'annee' ? v === '' ? null : Number(v) : v
+    })
+  }) : A.truth(draft[k]) ? A.value(draft, k) : h("span", {
+    className: "not-found"
+  }, "\xC0 pr\xE9ciser"))))), record.reco?.fiche?.indices_identification && h("details", {
+    className: "photo-evidence"
+  }, h("summary", null, "Sur quoi repose cette proposition ?"), h("p", null, record.reco.fiche.indices_identification.replace(/\[([^\]]+)\]\(https?:[^)]+\)/g, '$1')), record.reco.fiche.date_modele && h("p", null, "Date du mod\xE8le : ", record.reco.fiche.date_modele), (record.reco.references || []).slice(0, 5).map((ref, i) => h("a", {
+    className: "source-link",
+    key: i,
+    href: ref.url,
+    target: "_blank",
+    rel: "noopener noreferrer"
+  }, ref.source, " \u2197"))), h("div", {
+    className: "photo-actions"
+  }, h(Btn, {
+    kind: "primary",
+    disabled: busy,
+    onClick: onConfirm
+  }, "Valider cette fiche ", h(Icon, {
+    name: "check",
+    size: 16
+  })), h("button", {
+    className: "text-btn",
+    onClick: () => setEditing(!editing)
+  }, editing ? 'Terminer les corrections' : 'Corriger ou compléter')), h("button", {
+    className: "text-btn small",
+    onClick: onSkip
+  }, "Ne pas conserver ces propositions")), !pending && !reading && h(Btn, {
+    disabled: busy,
+    onClick: onRetry
+  }, "Relancer la reconnaissance"), !reading && h("div", {
+    className: "photo-next"
+  }, h("p", null, record.reco?.fiche?.photo_utile || 'Une signature, une étiquette ou le dos de l’œuvre peut préciser l’identification.'), h("button", {
+    type: "button",
+    className: "text-btn",
+    disabled: busy,
+    onClick: onDetail
+  }, h(Icon, {
+    name: "camera",
+    size: 16
+  }), "Ajouter un d\xE9tail")), h(MatchPreviews, {
+    reco: record.reco,
+    onOpen: onMatches
   }));
 }
 function Dialog({
@@ -304,22 +505,22 @@ function Dialog({
       previous?.focus?.();
     };
   }, []);
-  return React.createElement("dialog", {
+  return h("dialog", {
     ref: ref,
     className: 'dialog ' + (wide ? 'wide' : ''),
     onCancel: onClose,
     onClick: e => {
       if (e.target === e.currentTarget) onClose();
     }
-  }, React.createElement("div", {
+  }, h("div", {
     className: "dialog-head"
-  }, React.createElement("h2", null, title), React.createElement("button", {
+  }, h("h2", null, title), h("button", {
     className: "icon-btn",
     onClick: onClose,
     "aria-label": "Fermer"
-  }, React.createElement(Icon, {
+  }, h(Icon, {
     name: "close"
-  }))), React.createElement("div", {
+  }))), h("div", {
     className: "dialog-body"
   }, children));
 }
@@ -327,27 +528,31 @@ function Field({
   k,
   value,
   onChange,
-  autoFocus = false
+  autoFocus = false,
+  idPrefix = "field-"
 }) {
   const choices = A.options[k] || (k === 'technique' ? null : null);
-  return choices ? React.createElement("select", {
-    id: 'field-' + k,
+  return choices ? h("select", {
+    id: idPrefix + k,
+    "aria-label": A.labels[k] || k,
     value: value ?? '',
     onChange: e => onChange(e.target.value),
     autoFocus: autoFocus
-  }, React.createElement("option", {
+  }, h("option", {
     value: ""
-  }, "Choisir\u2026"), choices.map(([v, l]) => React.createElement("option", {
+  }, "Choisir\u2026"), choices.map(([v, l]) => h("option", {
     value: v,
     key: v
-  }, l))) : ['etat', 'provenanceTexte', 'restauration', 'livraison', 'paiement', 'litige', 'sortie', 'expertise', 'materiauxDetail'].includes(k) ? React.createElement("textarea", {
-    id: 'field-' + k,
+  }, l))) : ['etat', 'provenanceTexte', 'restauration', 'livraison', 'paiement', 'litige', 'sortie', 'expertise', 'materiauxDetail'].includes(k) ? h("textarea", {
+    id: idPrefix + k,
+    "aria-label": A.labels[k] || k,
     value: value ?? '',
     onChange: e => onChange(e.target.value),
     rows: "3",
     autoFocus: autoFocus
-  }) : React.createElement("input", {
-    id: 'field-' + k,
+  }) : h("input", {
+    id: idPrefix + k,
+    "aria-label": A.labels[k] || k,
     type: ['annee', 'valeur'].includes(k) ? 'number' : 'text',
     step: k === 'valeur' ? '0.01' : k === 'annee' ? '1' : undefined,
     min: k === 'valeur' ? '0.01' : k === 'annee' ? '-10000' : undefined,
@@ -378,54 +583,54 @@ function Question({
     onAnswer(q.key, v);
   }
   const short = q.choices && q.choices.length <= 3;
-  return React.createElement("section", {
+  return h("section", {
     className: "question"
-  }, React.createElement("span", {
+  }, h("span", {
     className: "eyebrow"
-  }, "La prochaine \xE9tape"), React.createElement("h2", null, q.title), q.help && React.createElement("p", {
+  }, "La prochaine \xE9tape"), h("h2", null, q.title), q.help && h("p", {
     className: "muted"
-  }, q.help), short ? React.createElement("div", {
+  }, q.help), short ? h("div", {
     className: "choices"
-  }, q.choices.map(([v, l]) => React.createElement(Btn, {
+  }, q.choices.map(([v, l]) => h(Btn, {
     key: v,
     onClick: () => onAnswer(q.key, v)
-  }, l, React.createElement(Icon, {
+  }, l, h(Icon, {
     name: "chevron",
     size: 16
-  })))) : React.createElement("form", {
+  })))) : h("form", {
     onSubmit: submit
-  }, React.createElement("label", {
+  }, h("label", {
     className: "sr-only",
     htmlFor: 'field-' + q.key
-  }, q.title), q.choices ? React.createElement("select", {
+  }, q.title), q.choices ? h("select", {
     id: 'field-' + q.key,
     value: input,
     onChange: e => setInput(e.target.value)
-  }, React.createElement("option", {
+  }, h("option", {
     value: ""
-  }, "Choisir\u2026"), q.choices.map(([v, l]) => React.createElement("option", {
+  }, "Choisir\u2026"), q.choices.map(([v, l]) => h("option", {
     key: v,
     value: v
-  }, l))) : React.createElement(Field, {
+  }, l))) : h(Field, {
     k: q.key,
     value: input,
     onChange: setInput
-  }), React.createElement("div", {
+  }), h("div", {
     className: "question-bottom"
-  }, React.createElement(Btn, {
+  }, h(Btn, {
     kind: "primary",
     type: "submit",
     disabled: !input.trim()
-  }, "Continuer ", React.createElement(Icon, {
+  }, "Continuer ", h(Icon, {
     name: "chevron",
     size: 16
-  })), !['operation', 'titre'].includes(q.key) && React.createElement("button", {
+  })), !['operation', 'titre'].includes(q.key) && h("button", {
     className: "text-btn",
     type: "button",
     onClick: onSkip
-  }, "Je pr\xE9ciserai plus tard")), error && React.createElement("p", {
+  }, "Je pr\xE9ciserai plus tard")), error && h("p", {
     role: "alert"
-  }, error)), short && q.key !== 'operation' && React.createElement("button", {
+  }, error)), short && q.key !== 'operation' && h("button", {
     className: "text-btn defer",
     onClick: onSkip
   }, "Je pr\xE9ciserai plus tard"));
@@ -447,29 +652,29 @@ async function referenceRequest(token, body, signal) {
 function ReferenceSources({
   record
 }) {
-  return React.createElement("details", {
+  return h("details", {
     className: "reference-sources"
-  }, React.createElement("summary", null, "Sources et r\xE9f\xE9rences"), (record.sources || []).map(s => React.createElement("p", {
+  }, h("summary", null, "Sources et r\xE9f\xE9rences"), (record.sources || []).map(s => h("p", {
     key: s.url
-  }, React.createElement("a", {
+  }, h("a", {
     href: s.url,
     target: "_blank",
     rel: "noopener noreferrer"
-  }, s.name, " \u2197"), React.createElement("small", null, s.license, s.credit ? ' · ' + s.credit : ''))), React.createElement("small", null, "Consult\xE9es le ", new Date(record.retrievedAt).toLocaleDateString('fr-FR'), ". Les informations documentaires ne prouvent ni l\u2019attribution de l\u2019\u0153uvre ni la disponibilit\xE9 des droits."));
+  }, s.name, " \u2197"), h("small", null, s.license, s.credit ? ' · ' + s.credit : ''))), h("small", null, "Consult\xE9es le ", new Date(record.retrievedAt).toLocaleDateString(I.locale), ". Les informations documentaires ne prouvent ni l\u2019attribution de l\u2019\u0153uvre ni la disponibilit\xE9 des droits."));
 }
 function ReferenceCard({
   record
 }) {
-  return React.createElement("div", {
+  return h("div", {
     className: "reference-card"
-  }, React.createElement("span", {
+  }, h("span", {
     className: "eyebrow"
-  }, record.kind === 'artist' ? 'REPÈRES SUR L’ARTISTE' : 'VOCABULAIRE DE L’ŒUVRE'), React.createElement("h3", null, record.label), React.createElement("p", null, record.description), record.birth?.length > 0 && React.createElement("p", null, "Naissance : ", record.birth.join(' / '), record.death?.length > 0 ? ' · Décès : ' + record.death.join(' / ') : ''), record.getty?.map(g => React.createElement("p", {
+  }, record.kind === 'artist' ? 'REPÈRES SUR L’ARTISTE' : 'VOCABULAIRE DE L’ŒUVRE'), h("h3", null, record.label), h("p", null, record.description), record.birth?.length > 0 && h("p", null, "Naissance : ", record.birth.join(' / '), record.death?.length > 0 ? ' · Décès : ' + record.death.join(' / ') : ''), record.getty?.map(g => h("p", {
     key: g.id,
     className: "small"
-  }, "Getty ", g.vocabulary.toUpperCase(), " \xB7 ", g.label, g.birth ? ' · ' + g.birth : '', g.death ? '–' + g.death : '')), record.gettyStatus === 'unavailable' && React.createElement("p", {
+  }, "Getty ", g.vocabulary.toUpperCase(), " \xB7 ", g.label, g.birth ? ' · ' + g.birth : '', g.death ? '–' + g.death : '')), record.gettyStatus === 'unavailable' && h("p", {
     className: "small"
-  }, "La notice Getty est temporairement inaccessible."), React.createElement(ReferenceSources, {
+  }, "La notice Getty est temporairement inaccessible."), h(ReferenceSources, {
     record: record
   }));
 }
@@ -523,12 +728,12 @@ function ReferenceLookup({
       query: query.trim()
     });
   }, []);
-  return React.createElement(Dialog, {
+  return h(Dialog, {
     title: kind === 'artist' ? 'La fiche de l’artiste' : 'Préciser un matériau ou une technique',
     onClose: onClose
-  }, React.createElement("p", {
+  }, h("p", {
     className: "muted"
-  }, kind === 'artist' ? 'Confirmez la bonne personne. Ses repères et leurs sources rejoindront le dossier.' : 'Retrouvez un terme de référence sans modifier votre description de l’œuvre.'), React.createElement("form", {
+  }, kind === 'artist' ? 'Confirmez la bonne personne. Ses repères et leurs sources rejoindront le dossier.' : 'Retrouvez un terme de référence sans modifier votre description de l’œuvre.'), h("form", {
     className: "reference-search",
     onSubmit: e => {
       e.preventDefault();
@@ -536,39 +741,39 @@ function ReferenceLookup({
         query: query.trim()
       });
     }
-  }, React.createElement("label", {
+  }, h("label", {
     className: "sr-only",
     htmlFor: "reference-query"
-  }, kind === 'artist' ? 'Nom de l’artiste' : 'Matériau ou technique'), React.createElement("input", {
+  }, kind === 'artist' ? 'Nom de l’artiste' : 'Matériau ou technique'), h("input", {
     id: "reference-query",
     maxLength: "120",
     value: query,
     onChange: e => setQuery(e.target.value)
-  }), React.createElement(Btn, {
+  }), h(Btn, {
     type: "submit",
     disabled: loading || query.trim().length < 2
-  }, "Rechercher")), loading ? React.createElement("p", {
+  }, "Rechercher")), loading ? h("p", {
     role: "status"
-  }, "Recherche des r\xE9f\xE9rences\u2026") : error ? React.createElement("p", {
+  }, "Recherche des r\xE9f\xE9rences\u2026") : error ? h("p", {
     role: "status"
-  }, error) : detail ? React.createElement(React.Fragment, null, React.createElement(ReferenceCard, {
+  }, error) : detail ? h(React.Fragment, null, h(ReferenceCard, {
     record: detail
-  }), React.createElement(Btn, {
+  }), h(Btn, {
     kind: "primary full",
     onClick: () => onSave(detail)
-  }, kind === 'artist' ? 'C’est bien cet artiste' : 'Conserver cette référence'), React.createElement("button", {
+  }, kind === 'artist' ? 'C’est bien cet artiste' : 'Conserver cette référence'), h("button", {
     className: "text-btn",
     onClick: () => setDetail(null)
-  }, "Voir les autres r\xE9sultats")) : React.createElement("div", null, candidates.map(c => React.createElement("button", {
+  }, "Voir les autres r\xE9sultats")) : h("div", null, candidates.map(c => h("button", {
     className: "reference-result",
     key: c.id,
     onClick: () => run({
       id: c.id
     })
-  }, React.createElement("span", null, React.createElement("strong", null, c.label), React.createElement("small", null, c.description)), React.createElement(Icon, {
+  }, h("span", null, h("strong", null, c.label), h("small", null, c.description)), h(Icon, {
     name: "chevron",
     size: 17
-  }))), searched && !candidates.length && React.createElement("p", null, "Aucune correspondance. Essayez un autre nom ou poursuivez votre dossier.")));
+  }))), searched && !candidates.length && h("p", null, "Aucune correspondance. Essayez un autre nom ou poursuivez votre dossier.")));
 }
 function Document({
   r: original,
@@ -577,71 +782,76 @@ function Document({
   structure
 }) {
   const r = A.audienceRecord(original, kind);
-  const date = new Date(r.updatedAt).toLocaleDateString('fr-FR');
+  const date = new Date(r.updatedAt).toLocaleDateString(I.locale);
   const sharedFiles = A.audienceFiles(original, kind);
-  const rows = ['artisteNom', 'cat', 'annee', 'materiau', 'technique', 'dimensions', 'tirage'].filter(k => A.truth(r[k]));
+  const rows = ['artisteNom', 'origineCulturelle', 'cat', 'annee', 'periode', 'materiau', 'materiauxDetail', 'technique', 'techniqueDetail', 'dimensions', 'tirage'].filter(k => A.truth(r[k]));
   const missing = A.missing(r);
   const declarations = r.answers || {};
-  return React.createElement("article", {
+  return h("article", {
     className: "report"
-  }, React.createElement("header", {
+  }, h("header", {
     className: "report-cover"
-  }, React.createElement(Logo, null), React.createElement("span", {
+  }, h(Logo, null), h("span", {
     className: "eyebrow"
-  }, kind === 'archive' ? 'ŒUVRE & MÉMOIRE' : kind === 'buyer' ? 'À L’ATTENTION DE L’ACHETEUR' : kind === 'authority' ? 'PIÈCES & CIRCULATION' : 'VENTE & CONDITIONS'), React.createElement("h1", null, A.docs[kind][0], React.createElement("em", null, r.titre || 'Votre œuvre')), React.createElement("div", {
+  }, kind === 'archive' ? 'ŒUVRE & MÉMOIRE' : kind === 'buyer' ? 'À L’ATTENTION DE L’ACHETEUR' : kind === 'authority' ? 'PIÈCES & CIRCULATION' : 'VENTE & CONDITIONS'), h("h1", null, A.docs[kind][0], h("em", null, r.titre || 'Votre œuvre')), h("div", {
     className: "report-line"
-  }), r.photo && React.createElement("img", {
+  }), r.photo && h("img", {
     className: "report-art",
     src: r.photo,
     alt: r.titre
-  }), React.createElement("div", {
+  }), h("div", {
     className: "report-meta"
-  }, React.createElement("span", null, r.id), React.createElement("span", null, "Pr\xE9par\xE9 le ", date))), React.createElement("div", {
+  }, h("span", null, r.id), h("span", null, "Pr\xE9par\xE9 le ", date))), h("div", {
     className: "report-content"
-  }, React.createElement("p", {
+  }, h("p", {
     className: "report-status"
-  }, kind === 'contract' ? 'Projet à compléter et à faire valider avant signature.' : 'Document en préparation · informations et pièces renseignées au dossier.'), React.createElement("section", null, React.createElement("h2", null, "01 \u2014 L\u2019\u0153uvre"), React.createElement("h3", null, r.titre || 'Désignation à préciser'), React.createElement("dl", null, rows.map(k => React.createElement(React.Fragment, {
+  }, kind === 'contract' ? 'Projet à compléter et à faire valider avant signature.' : 'Document en préparation · informations et pièces renseignées au dossier.'), h("section", null, h("h2", null, "01 \u2014 L\u2019\u0153uvre"), h("h3", null, r.titre || 'Désignation à préciser'), h("dl", null, rows.map(k => h(React.Fragment, {
     key: k
-  }, React.createElement("dt", null, A.labels[k]), React.createElement("dd", null, A.value(r, k))))), !r.annee && React.createElement("p", null, "Datation \xE0 pr\xE9ciser."), !r.artisteNom && React.createElement("p", null, "Artiste ou attribution \xE0 pr\xE9ciser."), r.vocab && React.createElement("p", null, "Attribution retenue : ", A.value(r, 'vocab'), ". Justificatifs \xE0 rapprocher de cette formulation.")), (r.artistReference || (r.termReferences || []).length > 0) && React.createElement("section", null, React.createElement("h2", null, "Rep\xE8res documentaires"), r.artistReference && React.createElement(ReferenceCard, {
+  }, h("dt", null, A.labels[k]), h("dd", null, A.value(r, k))))), !r.annee && h("p", null, "Datation \xE0 pr\xE9ciser."), !r.artisteNom && h("p", null, "Artiste ou attribution \xE0 pr\xE9ciser."), r.vocab && h("p", null, "Attribution retenue : ", A.value(r, 'vocab'), ". Justificatifs \xE0 rapprocher de cette formulation.")), (r.artistReference || (r.termReferences || []).length > 0) && h("section", null, h("h2", null, "Rep\xE8res documentaires"), r.artistReference && h(ReferenceCard, {
     record: r.artistReference
-  }), " ", (r.termReferences || []).map(t => React.createElement(ReferenceCard, {
+  }), " ", (r.termReferences || []).map(t => h(ReferenceCard, {
     key: t.id,
     record: t
-  }))), React.createElement("section", null, React.createElement("h2", null, "02 \u2014 Provenance et \xE9tat"), React.createElement("p", null, r.provenanceTexte || 'Historique de propriété à documenter au moyen des factures, catalogues et autres pièces disponibles.'), React.createElement("p", null, r.etat || 'État de conservation à décrire. Un rapport d’état peut être annexé.'), r.restauration && React.createElement("p", null, "Restaurations connues : ", r.restauration), r.expertise && React.createElement("p", null, "Avis d\u2019experts : ", r.expertise), r.litige && React.createElement("p", null, "Litige ou revendication signal\xE9 : ", r.litige), r.sortie && React.createElement("p", null, "Historique de circulation : ", r.sortie)), kind === 'archive' && React.createElement("section", null, React.createElement("h2", null, "03 \u2014 Conservation du dossier"), React.createElement("dl", null, React.createElement("dt", null, "Lieu actuel"), React.createElement("dd", null, A.value(r, 'lieu')), React.createElement("dt", null, "Pays de cr\xE9ation"), React.createElement("dd", null, A.value(r, 'creation')), React.createElement("dt", null, "Professionnel"), React.createElement("dd", null, structure.name || 'À renseigner'), React.createElement("dt", null, "Propri\xE9taire"), React.createElement("dd", null, r.proprietaireNom || r.mandant || 'À renseigner')), React.createElement("p", null, "Les informations de cette archive pourront \xEAtre reprises pour une future vente ou un d\xE9placement.")), kind === 'buyer' && React.createElement("section", null, React.createElement("h2", null, "03 \u2014 Informations pour l\u2019acquisition"), React.createElement("dl", null, ['vendeurNom', 'acheteurNom', 'valeur', 'lieu', 'dest', 'livraison'].map(k => React.createElement(React.Fragment, {
+  }))), h("section", null, h("h2", null, "02 \u2014 Provenance et \xE9tat"), h("p", null, r.provenanceTexte || 'Historique de propriété à documenter au moyen des factures, catalogues et autres pièces disponibles.'), h("p", null, r.etat || 'État de conservation à décrire. Un rapport d’état peut être annexé.'), r.restauration && h("p", null, "Restaurations connues : ", r.restauration), r.expertise && h("p", null, "Avis d\u2019experts : ", r.expertise), r.litige && h("p", null, "Litige ou revendication signal\xE9 : ", r.litige), r.sortie && h("p", null, "Historique de circulation : ", r.sortie)), kind === 'archive' && h("section", null, h("h2", null, "03 \u2014 Conservation du dossier"), h("dl", null, h("dt", null, "Lieu actuel"), h("dd", null, A.value(r, 'lieu')), h("dt", null, "Pays de cr\xE9ation"), h("dd", null, A.value(r, 'creation')), h("dt", null, "Professionnel"), h("dd", null, structure.name || 'À renseigner'), h("dt", null, "Propri\xE9taire"), h("dd", null, r.proprietaireNom || r.mandant || 'À renseigner')), h("p", null, "Les informations de cette archive pourront \xEAtre reprises pour une future vente ou un d\xE9placement.")), kind === 'buyer' && h("section", null, h("h2", null, "03 \u2014 Informations pour l\u2019acquisition"), h("dl", null, ['vendeurNom', 'acheteurNom', 'valeur', 'lieu', 'dest', 'livraison'].map(k => h(React.Fragment, {
     key: k
-  }, React.createElement("dt", null, A.labels[k]), React.createElement("dd", null, A.value(r, k))))), React.createElement("p", null, "Les conditions de vente figurent dans le projet de contrat associ\xE9. L\u2019attribution, l\u2019\xE9tat et la provenance sont pr\xE9sent\xE9s selon les informations et justificatifs communiqu\xE9s.")), kind === 'authority' && React.createElement("section", null, React.createElement("h2", null, "03 \u2014 Le d\xE9placement pr\xE9vu"), React.createElement("p", null, "Propri\xE9taire : ", original.proprietaireNom || original.mandant || 'Identité à compléter pour les communications nécessaires.'), React.createElement("dl", null, ['operation', 'lieu', 'dest', 'creation', 'valeur', 'douane', 'role'].map(k => React.createElement(React.Fragment, {
+  }, h("dt", null, A.labels[k]), h("dd", null, A.value(r, k))))), h("p", null, "Les conditions de vente figurent dans le projet de contrat associ\xE9. L\u2019attribution, l\u2019\xE9tat et la provenance sont pr\xE9sent\xE9s selon les informations et justificatifs communiqu\xE9s.")), kind === 'authority' && h("section", null, h("h2", null, "03 \u2014 Le d\xE9placement pr\xE9vu"), h("p", null, "Propri\xE9taire : ", original.proprietaireNom || original.mandant || 'Identité à compléter pour les communications nécessaires.'), h("dl", null, ['operation', 'lieu', 'dest', 'creation', 'valeur', 'douane', 'role'].map(k => h(React.Fragment, {
     key: k
-  }, React.createElement("dt", null, A.labels[k]), React.createElement("dd", null, A.value(r, k))))), assessment.authorities.length > 0 && React.createElement(React.Fragment, null, React.createElement("h3", null, "Destinataires identifi\xE9s par le dossier"), assessment.authorities.map((x, i) => React.createElement("p", {
+  }, h("dt", null, A.labels[k]), h("dd", null, A.value(r, k))))), assessment.authorities.length > 0 && h(React.Fragment, null, h("h3", null, "Destinataires identifi\xE9s par le dossier"), assessment.authorities.map((x, i) => h("p", {
     key: i
-  }, x.dest, " \u2014 ", x.titre))), React.createElement("p", null, "Ce dossier rassemble les \xE9l\xE9ments pr\xE9paratoires. Aucune demande ni autorisation n\u2019est r\xE9put\xE9e d\xE9pos\xE9e ou obtenue par sa seule g\xE9n\xE9ration."), Object.keys(r.followup || {}).length > 0 && React.createElement(React.Fragment, null, React.createElement("h3", null, "Suivi renseign\xE9 par le professionnel"), Object.entries(r.followup).map(([title, item]) => React.createElement("p", {
+  }, x.dest, " \u2014 ", x.titre))), h("p", null, "Ce dossier rassemble les \xE9l\xE9ments pr\xE9paratoires. Aucune demande ni autorisation n\u2019est r\xE9put\xE9e d\xE9pos\xE9e ou obtenue par sa seule g\xE9n\xE9ration."), Object.keys(r.followup || {}).length > 0 && h(React.Fragment, null, h("h3", null, "Suivi renseign\xE9 par le professionnel"), Object.entries(r.followup).map(([title, item]) => h("p", {
     key: title
-  }, title, " : ", item.status, item.date ? ' · ' + item.date : '', item.reference ? ' · ' + item.reference : ''))), r.materiauxDetail && React.createElement("p", null, "Mat\xE9riaux \xE0 examiner : ", r.materiauxDetail), assessment.pending.length > 0 && React.createElement("p", null, "Le parcours administratif sera pr\xE9cis\xE9 apr\xE8s compl\xE9ment des informations manquantes.")), kind === 'contract' && React.createElement("section", null, React.createElement("h2", null, "03 \u2014 Projet d\u2019accord"), original.ownerPrivate !== false && React.createElement("p", null, "Version de consultation confidentielle. L\u2019identit\xE9 des parties et les pouvoirs de repr\xE9sentation devront \xEAtre compl\xE9t\xE9s dans les conditions requises avant toute signature."), [['Parties', ['vendeurNom', 'acheteurNom', 'role', 'mandant']], ['Désignation et prix', ['vocab', 'valeur', 'fiscalite']], ['Paiement et remise', ['paiement', 'livraison', 'frais']], ['Droit et règlement des litiges', ['droitApplicable']]].map(([title, keys]) => React.createElement("div", {
+  }, title, " : ", item.status, item.date ? ' · ' + item.date : '', item.reference ? ' · ' + item.reference : ''))), r.materiauxDetail && h("p", null, "Mat\xE9riaux \xE0 examiner : ", r.materiauxDetail), assessment.pending.length > 0 && h("p", null, "Le parcours administratif sera pr\xE9cis\xE9 apr\xE8s compl\xE9ment des informations manquantes.")), kind === 'contract' && h("section", null, h("h2", null, "03 \u2014 Projet d\u2019accord"), original.ownerPrivate !== false && h("p", null, "Version de consultation confidentielle. L\u2019identit\xE9 des parties et les pouvoirs de repr\xE9sentation devront \xEAtre compl\xE9t\xE9s dans les conditions requises avant toute signature."), [['Parties', ['vendeurNom', 'acheteurNom', 'role', 'mandant']], ['Désignation et prix', ['vocab', 'valeur', 'fiscalite']], ['Paiement et remise', ['paiement', 'livraison', 'frais']], ['Droit et règlement des litiges', ['droitApplicable']]].map(([title, keys]) => h("div", {
     className: "contract-section",
     key: title
-  }, React.createElement("h3", null, title), React.createElement("dl", null, keys.filter(k => k !== 'mandant' || r.role === 'mandataire').map(k => React.createElement(React.Fragment, {
+  }, h("h3", null, title), h("dl", null, keys.filter(k => k !== 'mandant' || r.role === 'mandataire').map(k => h(React.Fragment, {
     key: k
-  }, React.createElement("dt", null, A.labels[k]), React.createElement("dd", null, A.value(r, k))))))), React.createElement("h3", null, "Conditions li\xE9es \xE0 l\u2019op\xE9ration"), React.createElement("p", null, "Les autorisations de circulation, les garanties, les modalit\xE9s de transfert de propri\xE9t\xE9 et les r\xE8gles de protection de l\u2019acheteur devront \xEAtre arr\xEAt\xE9es en fonction du dossier et du droit applicable. Aucun taux, s\xE9questre ni d\xE9lai de r\xE9serve n\u2019est pr\xE9sum\xE9 convenu."), React.createElement("div", {
+  }, h("dt", null, A.labels[k]), h("dd", null, A.value(r, k))))))), h("h3", null, "Conditions li\xE9es \xE0 l\u2019op\xE9ration"), h("p", null, "Les autorisations de circulation, les garanties, les modalit\xE9s de transfert de propri\xE9t\xE9 et les r\xE8gles de protection de l\u2019acheteur devront \xEAtre arr\xEAt\xE9es en fonction du dossier et du droit applicable. Aucun taux, s\xE9questre ni d\xE9lai de r\xE9serve n\u2019est pr\xE9sum\xE9 convenu."), h("div", {
     className: "signature-grid"
-  }, React.createElement("div", null, "Le vendeur", React.createElement("br", null), React.createElement("span", null, "Signature \xE0 recueillir")), React.createElement("div", null, "L\u2019acheteur", React.createElement("br", null), React.createElement("span", null, "Signature \xE0 recueillir")))), kind !== 'contract' && Object.keys(declarations).length > 0 && React.createElement("section", null, React.createElement("h2", null, "04 \u2014 D\xE9clarations renseign\xE9es"), L.declarations.map((question, i) => React.createElement("div", {
+  }, h("div", null, "Le vendeur", h("br", null), h("span", null, "Signature \xE0 recueillir")), h("div", null, "L\u2019acheteur", h("br", null), h("span", null, "Signature \xE0 recueillir")))), kind !== 'contract' && Object.keys(declarations).length > 0 && h("section", null, h("h2", null, "04 \u2014 D\xE9clarations renseign\xE9es"), L.declarations.map((question, i) => h("div", {
     className: "declaration-line",
     key: i
-  }, React.createElement("span", null, question), React.createElement("strong", null, declarations[i] || 'À compléter'))), React.createElement("p", {
+  }, h("span", null, question), h("strong", null, declarations[i] || 'À compléter'))), h("p", {
     className: "small"
-  }, "R\xE9ponses saisies au dossier ; elles ne constituent pas une d\xE9claration sign\xE9e.")), React.createElement("section", null, React.createElement("h2", null, kind !== 'contract' && Object.keys(declarations).length ? '05' : '04', " \u2014 Pi\xE8ces annexes"), sharedFiles.length ? sharedFiles.map(f => React.createElement("div", {
+  }, "R\xE9ponses saisies au dossier ; elles ne constituent pas une d\xE9claration sign\xE9e.")), h("section", null, h("h2", null, kind !== 'contract' && Object.keys(declarations).length ? '05' : '04', " \u2014 Pi\xE8ces annexes"), sharedFiles.length ? sharedFiles.map(f => h("div", {
     className: "declaration-line",
     key: f.id
-  }, React.createElement("span", null, A.audienceRecord({
+  }, h("span", null, A.audienceRecord({
     ...original,
     titre: f.name
-  }, kind).titre), React.createElement("span", null, "Jointe \xB7 \xE0 examiner"))) : React.createElement("p", null, "Aucune pi\xE8ce affect\xE9e \xE0 ce document."), kind !== 'archive' && React.createElement("p", {
+  }, kind).titre), h("span", null, "Jointe \xB7 \xE0 examiner"))) : h("p", null, "Aucune pi\xE8ce affect\xE9e \xE0 ce document."), kind !== 'archive' && h("p", {
     className: "small"
-  }, "Les pi\xE8ces internes ne sont pas incluses dans ce document.")), (kind === 'archive' || kind === 'authority') && React.createElement("section", null, React.createElement("h2", null, "\xC0 compl\xE9ter"), missing.length ? React.createElement("ul", null, missing.map(q => React.createElement("li", {
+  }, "Les pi\xE8ces internes ne sont pas incluses dans ce document.")), (kind === 'archive' || kind === 'authority') && h("section", null, h("h2", null, "\xC0 compl\xE9ter"), missing.length ? h("ul", null, missing.map(q => h("li", {
     key: q.key
-  }, A.labels[q.key] || q.title))) : React.createElement("p", null, "Informations de cadrage renseign\xE9es. Les justificatifs et v\xE9rifications propres \xE0 l\u2019op\xE9ration restent \xE0 examiner."), assessment.warnings.map(x => React.createElement("p", {
+  }, A.labels[q.key] || q.title))) : h("p", null, "Informations de cadrage renseign\xE9es. Les justificatifs et v\xE9rifications propres \xE0 l\u2019op\xE9ration restent \xE0 examiner."), assessment.warnings.map(x => h("p", {
     key: x.key
-  }, x.titre, " : ", x.detail))), React.createElement("footer", null, "ARTVELCHIV \xB7 ", r.id, " \xB7 Version du ", date)));
+  }, x.titre, " : ", x.detail))), h("footer", null, "ARTVELCHIV \xB7 ", r.id, " \xB7 Version du ", date)));
 }
 function App() {
+  const [language, setLanguage] = useState(I.language);
+  function changeLanguage(lang) {
+    I.set(lang);
+    setLanguage(lang);
+  }
   const [ready, setReady] = useState(false),
     [records, setRecords] = useState([]),
     [selected, setSelected] = useState(null),
@@ -672,6 +882,8 @@ function App() {
     [tracking, setTracking] = useState(null),
     [trackingValue, setTrackingValue] = useState({});
   const [artistMatches, setArtistMatches] = useState(null);
+  const activeRecords = records.filter(x => !x.deletedAt);
+  const recentRecords = activeRecords.filter(x => !x.recentHidden).sort((a, b) => (b.lastOpenedAt || b.createdAt || '').localeCompare(a.lastOpenedAt || a.createdAt || '')).slice(0, 7);
   const referenceQueries = useRef(new Map());
   const upload = useRef(null),
     camera = useRef(null),
@@ -750,12 +962,23 @@ function App() {
     });
   }, [records, structure, ready]);
   useEffect(() => {
-    if (scroll.current) scroll.current.scrollTop = scroll.current.scrollHeight;
+    if (scroll.current) {
+      const card = scroll.current.querySelector('.photo-review');
+      if (card) card.scrollIntoView({
+        block: 'start',
+        behavior: 'smooth'
+      });else scroll.current.scrollTop = scroll.current.scrollHeight;
+    }
   }, [r?.messages?.length, proposal, busy, currentQuestion?.key]);
   function update(id, fn) {
     setRecords(prev => prev.map(x => x.id === id ? fn(x) : x));
   }
   function open(rec) {
+    update(rec.id, x => ({
+      ...x,
+      lastOpenedAt: new Date().toISOString(),
+      recentHidden: false
+    }));
     setSelected(rec.id);
     setScreen('chat');
     setMenu(false);
@@ -834,6 +1057,7 @@ function App() {
         },
         body: JSON.stringify({
           mode: 'conversation',
+          language: I.language,
           dossier: publicDossier,
           repereArtiste: target.artistReference ? {
             label: target.artistReference.label,
@@ -916,12 +1140,59 @@ function App() {
       setAccessBusy(false);
     }
   }
+  function confirmPhoto(id) {
+    const record = recordsRef.current.find(x => x.id === id);
+    const raw = record?.photoDraft || {};
+    if (raw.annee !== undefined && raw.annee !== null && (!Number.isInteger(raw.annee) || raw.annee > new Date().getFullYear() || raw.annee < -10000)) {
+      setNotice('Vérifiez l’année proposée.');
+      return;
+    }
+    const patch = A.safePatch(raw);
+    say(id, 'Je valide cette fiche.', 'Votre fiche est enregistrée. Précisons seulement la suite du projet.', {
+      ...patch,
+      photoDraft: null,
+      photoConfirmedAt: new Date().toISOString()
+    });
+    setModal(null);
+  }
+  function retryPhoto(record) {
+    const file = record.files?.find(x => x.id === record.recoFileId) || record.files?.find(x => x.mime.startsWith('image/'));
+    if (file) recognizePhoto(record, file);else chooseUpload('Œuvre');
+  }
+  function photoCard(record) {
+    return h(PhotoReview, {
+      record: record,
+      busy: busy,
+      onChange: draft => update(record.id, x => A.patch(x, {
+        photoDraft: draft
+      })),
+      onConfirm: () => confirmPhoto(record.id),
+      onSkip: () => update(record.id, x => A.patch(x, {
+        photoDraft: null,
+        photoDismissed: true
+      })),
+      onRetry: () => retryPhoto(record),
+      onMatches: () => setModal('matches'),
+      onDetail: () => {
+        setModal(null);
+        chooseUpload('Détail de l’œuvre');
+      }
+    });
+  }
   async function recognizePhoto(target, file, choice = null) {
     const id = target.id;
     setBusy(true);
     setProposal(null);
     setFailed(null);
+    setPendingFile(null);
     setNotice('');
+    update(id, x => A.patch(x, {
+      recoFileId: file.id,
+      photoDismissed: false,
+      recognition: {
+        status: 'reading'
+      }
+    }));
     const controller = new AbortController(),
       timer = setTimeout(() => controller.abort(), 58000);
     try {
@@ -932,55 +1203,28 @@ function App() {
           'Content-Type': 'application/json',
           'X-Artvelchiv-Key': token
         },
-        body: JSON.stringify({
-          image: file.dataUrl.split(',')[1],
-          mime: file.mime,
-          ...(choice ? {
-            choix: choice
-          } : {})
-        })
+        body: JSON.stringify(A.photoRequest(target, file, I.language, choice))
       });
-      if (!response.ok) throw Error('unavailable');
       const data = await response.json();
+      if (!response.ok) throw Error(data.code || 'PHOTO_UNAVAILABLE');
+      const draft = A.photoPatch(data.fiche);
       update(id, x => A.patch(x, {
         reco: data,
-        recoFileId: file.id
-      }));
-      const f = data.fiche;
-      if (!f) {
-        if (data.occurrences?.length) {
-          say(id, null, 'Des rapprochements ont été trouvés. Consultez les pages ci-dessous pour retrouver votre œuvre ; sa description pourra être relancée ensuite.');
-          setPendingFile({
-            recordId: id,
-            file
-          });
-          return;
+        recoFileId: file.id,
+        photoDraft: Object.keys(draft).length ? draft : null,
+        photoConfirmedAt: null,
+        recognition: {
+          status: 'done'
         }
-        throw Error('no-description');
-      }
-      const p = A.safePatch({
-        titre: f.description ? f.description.split(/(?<=[.!?])\s/)[0].slice(0, 180) : null,
-        cat: f.nature,
-        technique: f.technique,
-        materiau: f.materiau,
-        annee: f.annee_estimee,
-        artisteNom: f.artiste?.nom_probable || f.artiste?.ecole,
-        artiste: f.artiste?.statut,
-        etat: f.etat_apparent,
-        ...(f.espece_protegee_possible ? {
-          protege: 'inconnu'
-        } : {})
-      });
-      Object.keys(p).forEach(k => {
-        if (p[k] === null || p[k] === undefined || p[k] === '') delete p[k];
-      });
-      say(id, null, 'Voici les informations proposées à partir de votre photo. La date et l’attribution éventuelles restent à confirmer.');
-      if (Object.keys(p).length) setProposal({
-        id,
-        patch: p
-      });
-    } catch {
-      await converse(target, 'Décrivez cette œuvre à partir de la photo et proposez uniquement les éléments observables. Gardez la date et l’attribution incertaines.', file);
+      }));
+      say(id, null, Object.keys(draft).length ? 'Votre fiche est prête à être vérifiée. Validez les informations proposées ou corrigez-les directement.' : data.occurrences?.length ? 'Des rapprochements visuels sont disponibles ci-dessous. Choisissez la page qui correspond pour préciser la fiche.' : 'Je n’ai pas pu identifier cette œuvre. Une vue plus nette, une signature ou le dos de l’œuvre peuvent aider.');
+    } catch (e) {
+      update(id, x => A.patch(x, {
+        recognition: {
+          status: 'error'
+        }
+      }));
+      say(id, null, 'La lecture de votre photo n’a pas abouti. Elle reste visible dans le dossier ; vous pouvez réessayer.');
     } finally {
       clearTimeout(timer);
       setBusy(false);
@@ -1023,13 +1267,13 @@ function App() {
           photo: dataUrl
         } : {})
       }));
-      say(target.id, null, `« ${f.name} » est conservé dans votre dossier. ${mime.startsWith('image/') || filePurpose ? 'Je prépare les informations à confirmer.' : 'Vous pouvez me demander d’en extraire les informations.'}`);
+      say(target.id, null, I.language === 'en' ? `“${f.name}” is saved. ${mime.startsWith('image/') || filePurpose ? 'I’m preparing the details for your review.' : 'Ask me to read the document when you’re ready.'}` : `« ${f.name} » est conservé dans votre dossier. ${mime.startsWith('image/') || filePurpose ? 'Je prépare les informations à confirmer.' : 'Vous pouvez me demander d’en extraire les informations.'}`);
       setFilePurpose(null);
-      if (mime.startsWith('image/') && (!filePurpose || filePurpose === 'Œuvre')) {
+      if (mime.startsWith('image/') && (!filePurpose || filePurpose === 'Œuvre' || filePurpose === 'Détail de l’œuvre')) {
         setPendingFile(null);
         await recognizePhoto({
           ...target,
-          photo: dataUrl
+          photo: target.photo || dataUrl
         }, fnew);
       } else if (filePurpose) {
         setPendingFile(null);
@@ -1049,74 +1293,77 @@ function App() {
     upload.current?.click();
   }
   const messages = r?.messages || [];
-  const collection = records.filter(x => (filter === 'all' || x.operation === filter) && `${x.titre} ${x.artisteNom} ${x.nom}`.toLowerCase().includes(search.toLowerCase()));
-  if (!ready) return React.createElement("main", {
+  const collection = (screen === 'trash' ? records.filter(x => x.deletedAt) : activeRecords).filter(x => (filter === 'all' || x.operation === filter) && `${x.titre} ${x.artisteNom} ${x.nom}`.toLowerCase().includes(search.toLowerCase()));
+  if (!ready) return h("main", {
     className: "access"
-  }, React.createElement(Logo, null), React.createElement("p", null, "Ouverture de votre espace\u2026"));
-  if (!token) return React.createElement("main", {
+  }, h(Logo, null), h("p", null, "Ouverture de votre espace\u2026"));
+  if (!token) return h("main", {
     className: "access"
-  }, React.createElement(Logo, null), React.createElement("div", {
+  }, h(LanguageSwitch, {
+    language: language,
+    onChange: changeLanguage
+  }), h(Logo, null), h("div", {
     className: "access-form"
-  }, React.createElement("span", {
+  }, h("span", {
     className: "eyebrow"
-  }, "VOTRE ESPACE PROFESSIONNEL"), React.createElement("h1", null, "L\u2019art m\xE9rite", React.createElement("br", null), "toute votre attention."), React.createElement("p", null, "Retrouvez vos \u0153uvres et pr\xE9parez la suite,", React.createElement("br", null), "simplement."), React.createElement("form", {
+  }, "VOTRE ESPACE PROFESSIONNEL"), h("h1", null, "L\u2019art m\xE9rite", h("br", null), "toute votre attention."), h("p", null, "Retrouvez vos \u0153uvres et pr\xE9parez la suite,", h("br", null), "simplement."), h("form", {
     onSubmit: unlock
-  }, React.createElement("label", {
+  }, h("label", {
     htmlFor: "code"
-  }, "Votre code d\u2019acc\xE8s"), React.createElement("div", {
+  }, "Votre code d\u2019acc\xE8s"), h("div", {
     className: "access-input"
-  }, React.createElement("input", {
+  }, h("input", {
     id: "code",
     type: "password",
     value: code,
     onChange: e => setCode(e.target.value),
     autoComplete: "off",
     required: true
-  }), React.createElement(Btn, {
+  }), h(Btn, {
     kind: "primary",
     type: "submit",
     disabled: !code || accessBusy
-  }, accessBusy ? 'Ouverture…' : 'Entrer', React.createElement(Icon, {
+  }, accessBusy ? 'Ouverture…' : 'Entrer', h(Icon, {
     name: "chevron"
-  }))), accessError && React.createElement("p", {
+  }))), accessError && h("p", {
     role: "alert"
-  }, accessError))), React.createElement("span", {
+  }, accessError))), h("span", {
     className: "access-foot"
   }, "\u0152uvres. Transactions. S\xE9r\xE9nit\xE9."));
-  return React.createElement("div", {
+  return h("div", {
     className: "workspace"
-  }, React.createElement("input", {
+  }, h("input", {
     ref: camera,
     type: "file",
     accept: "image/*",
     capture: "environment",
     hidden: true,
     onChange: attach
-  }), React.createElement("input", {
+  }), h("input", {
     ref: upload,
     type: "file",
     accept: "application/pdf,image/jpeg,image/png,image/webp",
     hidden: true,
     onChange: attach
-  }), React.createElement("aside", {
+  }), h("aside", {
     className: 'sidebar ' + (menu ? 'visible' : '')
-  }, React.createElement("div", {
+  }, h("div", {
     className: "side-top"
-  }, React.createElement(Logo, null), React.createElement("button", {
+  }, h(Logo, null), h("button", {
     className: "icon-btn mobile-only",
     onClick: () => setMenu(false),
     "aria-label": "Fermer le menu"
-  }, React.createElement(Icon, {
+  }, h(Icon, {
     name: "close"
-  }))), React.createElement(Btn, {
+  }))), h(Btn, {
     kind: "new",
     onClick: () => create(),
     disabled: busy
-  }, React.createElement(Icon, {
+  }, h(Icon, {
     name: "plus"
-  }), "Nouvelle \u0153uvre"), React.createElement("nav", {
+  }), "Nouvelle \u0153uvre"), h("nav", {
     "aria-label": "Navigation principale"
-  }, React.createElement("button", {
+  }, h("button", {
     "aria-current": screen === 'home' ? 'page' : undefined,
     onClick: () => {
       setScreen('home');
@@ -1124,261 +1371,286 @@ function App() {
       setMenu(false);
       setProposal(null);
     }
-  }, "Mon espace"), React.createElement("button", {
+  }, "Mon espace"), h("button", {
     "aria-current": screen === 'library' ? 'page' : undefined,
     onClick: () => {
       setScreen('library');
       setMenu(false);
     }
-  }, React.createElement(Icon, {
+  }, h(Icon, {
     name: "folder"
-  }), "Mes \u0153uvres ", React.createElement("span", null, records.length))), React.createElement("span", {
+  }), "Mes \u0153uvres ", h("span", null, activeRecords.length)), h("button", {
+    onClick: () => {
+      setScreen('trash');
+      setMenu(false);
+      setSearch('');
+      setFilter('all');
+    }
+  }, "Corbeille ", h("span", null, records.filter(x => x.deletedAt).length))), h("span", {
     className: "side-label"
-  }, "R\xC9CEMMENT OUVERTES"), React.createElement("div", {
+  }, "R\xC9CEMMENT OUVERTES"), h("div", {
     className: "recent-nav"
-  }, records.slice(0, 7).map(rec => React.createElement("button", {
+  }, recentRecords.map(rec => h("div", {
+    className: "recent-item",
+    key: rec.id
+  }, h("button", {
     key: rec.id,
     onClick: () => open(rec),
     "aria-current": rec.id === selected && screen === 'chat' ? 'page' : undefined
-  }, React.createElement(SmallArt, {
+  }, h(SmallArt, {
     r: rec
-  }), React.createElement("span", null, rec.nom || rec.titre || 'Nouvelle œuvre')))), React.createElement("div", {
+  }), h("span", null, rec.nom || rec.titre || 'Nouvelle œuvre')), h("button", {
+    className: "recent-menu",
+    "aria-label": 'Options pour ' + (rec.titre || 'cette œuvre'),
+    onClick: () => setModal('manage:' + rec.id)
+  }, h(Icon, {
+    name: "dots",
+    size: 16
+  }))))), h("div", {
     className: "side-bottom"
-  }, React.createElement("button", {
+  }, h("button", {
     onClick: () => setModal('account')
-  }, React.createElement("span", {
+  }, h("span", {
     className: "avatar"
-  }, (structure.name || 'A').slice(0, 1).toUpperCase()), React.createElement("span", null, structure.name || 'Mon espace', React.createElement("small", null, L.structures[structure.type])), React.createElement(Icon, {
+  }, (structure.name || 'A').slice(0, 1).toUpperCase()), h("span", null, structure.name || 'Mon espace', h("small", null, L.structures[structure.type])), h(Icon, {
     name: "dots"
-  })))), menu && React.createElement("button", {
+  })))), menu && h("button", {
     className: "menu-scrim",
     onClick: () => setMenu(false),
     "aria-label": "Fermer le menu"
-  }), React.createElement("div", {
+  }), h("div", {
     className: "main"
-  }, React.createElement("header", {
+  }, h("header", {
     className: "topbar"
-  }, React.createElement("button", {
+  }, h(LanguageSwitch, {
+    language: language,
+    onChange: changeLanguage
+  }), h("button", {
     className: "icon-btn mobile-only",
     onClick: () => setMenu(true),
     "aria-label": "Ouvrir le menu"
-  }, React.createElement(Icon, {
+  }, h(Icon, {
     name: "menu"
-  })), screen === 'chat' && r ? React.createElement("button", {
+  })), screen === 'chat' && r ? h("button", {
     className: "work-title",
     onClick: () => setModal('details')
-  }, React.createElement(SmallArt, {
+  }, h(SmallArt, {
     r: r
-  }), React.createElement("span", null, r.titre || 'Nouvelle œuvre', React.createElement("small", null, A.value(r, 'operation') === 'À préciser' ? 'Votre projet' : A.value(r, 'operation')))) : React.createElement(React.Fragment, null, React.createElement("span", {
+  }), h("span", null, r.titre || 'Nouvelle œuvre', h("small", null, A.value(r, 'operation') === 'À préciser' ? 'Votre projet' : A.value(r, 'operation')))) : h(React.Fragment, null, h("span", {
     className: "desktop-only top-label"
-  }, "VOTRE ESPACE, EN TOUTE SIMPLICIT\xC9"), React.createElement("span", {
+  }, "VOTRE ESPACE, EN TOUTE SIMPLICIT\xC9"), h("span", {
     className: "mobile-only"
-  }, React.createElement(Logo, null))), screen === 'chat' && r && React.createElement("button", {
+  }, h(Logo, null))), screen === 'chat' && r && h("button", {
     className: "documents-button",
     "aria-label": "Mes documents",
     onClick: () => setModal('documents')
-  }, React.createElement(Icon, {
+  }, h(Icon, {
     name: "doc"
-  }), React.createElement("span", null, "Mes documents"))), storageError && React.createElement("div", {
+  }), h("span", null, "Mes documents"))), storageError && h("div", {
     className: "storage-alert",
     role: "alert"
-  }, storageError), notice && React.createElement("div", {
+  }, storageError), notice && h("div", {
     className: "notice",
     role: "status"
-  }, notice, React.createElement("button", {
+  }, notice, h("button", {
     onClick: () => setNotice(''),
     "aria-label": "Fermer le message"
-  }, React.createElement(Icon, {
+  }, h(Icon, {
     name: "close",
     size: 16
-  }))), screen === 'library' ? React.createElement("main", {
+  }))), screen === 'library' || screen === 'trash' ? h("main", {
     className: "library"
-  }, React.createElement("div", {
+  }, h("div", {
     className: "library-heading"
-  }, React.createElement("div", null, React.createElement("span", {
+  }, h("div", null, h("span", {
     className: "eyebrow"
-  }, "VOTRE COLLECTION"), React.createElement("h1", null, "Chaque \u0153uvre,", React.createElement("br", null), "son histoire.")), React.createElement(Btn, {
+  }, "VOTRE COLLECTION"), h("h1", null, screen === 'trash' ? 'La corbeille.' : h(React.Fragment, null, "Chaque \u0153uvre,", h("br", null), "son histoire."))), h(Btn, {
     kind: "primary",
     onClick: () => create()
-  }, React.createElement(Icon, {
+  }, h(Icon, {
     name: "plus"
-  }), "Ajouter une \u0153uvre")), React.createElement("label", {
+  }), "Ajouter une \u0153uvre")), h("label", {
     className: "search"
-  }, React.createElement(Icon, {
+  }, h(Icon, {
     name: "search"
-  }), React.createElement("input", {
+  }), h("input", {
     "aria-label": "Rechercher une \u0153uvre",
     placeholder: "Rechercher une \u0153uvre, un artiste\u2026",
     value: search,
     onChange: e => setSearch(e.target.value)
-  })), React.createElement("div", {
+  })), h("div", {
     className: "filters"
-  }, [['all', 'Toutes'], ['vente', 'Ventes'], ['archiver', 'Archives']].map(([v, t]) => React.createElement("button", {
+  }, [['all', 'Toutes'], ['vente', 'Ventes'], ['archiver', 'Archives']].map(([v, t]) => h("button", {
     key: v,
     className: filter === v ? 'active' : '',
     onClick: () => setFilter(v)
-  }, t))), React.createElement("div", {
+  }, t))), h("div", {
     className: "art-grid"
-  }, collection.map(rec => React.createElement("button", {
+  }, collection.map(rec => h("div", {
+    className: "art-card-wrap",
+    key: rec.id
+  }, h("button", {
     className: "art-card",
-    key: rec.id,
-    onClick: () => open(rec)
-  }, React.createElement(SmallArt, {
+    onClick: () => rec.deletedAt ? setModal('manage:' + rec.id) : open(rec)
+  }, h(SmallArt, {
     r: rec
-  }), React.createElement("div", null, React.createElement("small", null, A.value(rec, 'operation')), React.createElement("h2", null, rec.nom || rec.titre || 'Nouvelle œuvre'), React.createElement("span", null, "Reprendre le dossier ", React.createElement(Icon, {
+  }), h("div", null, h("small", null, A.value(rec, 'operation')), h("h2", null, rec.nom || rec.titre || 'Nouvelle œuvre'), h("span", null, rec.deletedAt ? 'Restaurer le dossier' : 'Reprendre le dossier', " ", h(Icon, {
     name: "chevron",
     size: 14
-  })))))), !collection.length && React.createElement("p", null, "Aucune \u0153uvre ne correspond \xE0 cette recherche.")) : React.createElement(React.Fragment, null, React.createElement("main", {
+  })))), h("button", {
+    className: "art-card-menu icon-btn",
+    "aria-label": 'Options pour ' + (rec.titre || 'cette œuvre'),
+    onClick: () => setModal('manage:' + rec.id)
+  }, h(Icon, {
+    name: "dots"
+  }))))), !collection.length && h("p", null, screen === 'trash' && !search ? 'Votre corbeille est vide.' : 'Aucune œuvre ne correspond à cette recherche.')) : h(React.Fragment, null, h("main", {
     className: 'conversation ' + (screen === 'home' ? 'home' : ''),
     ref: scroll,
     "aria-label": "Conversation avec Artvelchiv"
-  }, screen === 'home' ? React.createElement("div", {
+  }, screen === 'home' ? h("div", {
     className: "editorial-home"
-  }, React.createElement("div", {
+  }, h("div", {
     className: "welcome"
-  }, React.createElement("span", {
+  }, h("span", {
     className: "eyebrow"
-  }, React.createElement("span", {
+  }, h("span", {
     className: "status-dot"
-  }), "L\u2019ESPACE DES PROFESSIONNELS DE L\u2019ART"), React.createElement("h1", null, "Chaque \u0153uvre.", React.createElement("br", null), React.createElement("em", null, "Toute son histoire.")), React.createElement("p", null, "Photographiez votre \u0153uvre.", React.createElement("br", null), "Nous vous guidons pour l\u2019archiver ou la vendre."), React.createElement("div", {
+  }), "L\u2019ESPACE DES PROFESSIONNELS DE L\u2019ART"), h("h1", null, "Chaque \u0153uvre.", h("br", null), h("em", null, "Toute son histoire.")), h("p", null, "Photographiez votre \u0153uvre.", h("br", null), "Nous vous guidons pour l\u2019archiver ou la vendre."), h("div", {
     className: "hero-actions"
-  }, React.createElement(Btn, {
+  }, h(Btn, {
     kind: "primary camera-primary",
     onClick: () => {
       setFilePurpose('Œuvre');
       camera.current?.click();
     },
     disabled: busy
-  }, React.createElement(Icon, {
+  }, h(Icon, {
     name: "camera"
-  }), "Photographier une \u0153uvre ", React.createElement("span", null, "\u2197")), React.createElement("button", {
+  }), "Photographier une \u0153uvre ", h("span", null, "\u2197")), h("button", {
     className: "import-action",
     onClick: () => chooseUpload(),
     disabled: busy
-  }, React.createElement(Icon, {
+  }, h(Icon, {
     name: "paperclip",
     size: 16
-  }), "Importer une photo ou un document")), React.createElement("div", {
+  }), "Importer une photo ou un document")), h("div", {
     className: "intent-links"
-  }, React.createElement("button", {
+  }, h("button", {
     onClick: () => create('vente')
-  }, "Pr\xE9parer une vente ", React.createElement("span", null, "\u2197")), React.createElement("button", {
+  }, "Pr\xE9parer une vente ", h("span", null, "\u2197")), h("button", {
     onClick: () => create('archiver')
-  }, "Archiver ", React.createElement("span", null, "\u2197")), React.createElement("button", {
+  }, "Archiver ", h("span", null, "\u2197")), h("button", {
     onClick: () => setModal('projects')
-  }, "Autre projet"))), React.createElement("div", {
+  }, "Autre projet"))), h("div", {
     className: "home-art"
-  }, React.createElement("div", {
+  }, h("div", {
     className: "art-heading"
-  }, React.createElement("span", null, "VOTRE COLLECTION"), React.createElement("button", {
+  }, h("span", null, "VOTRE COLLECTION"), h("button", {
     onClick: () => setScreen('library')
-  }, "Voir les \u0153uvres ", React.createElement("span", null, "\u2197"))), (() => {
-    const rec = records.find(x => x.id === '26-004817') || records.find(x => x.photo);
-    return rec ? React.createElement("button", {
+  }, "Voir les \u0153uvres ", h("span", null, "\u2197"))), (() => {
+    const rec = activeRecords.find(x => x.id === '26-004817') || activeRecords.find(x => x.photo);
+    return rec ? h("button", {
       className: "featured-work",
       onClick: () => open(rec)
-    }, React.createElement("div", {
+    }, h("div", {
       className: "featured-stage"
-    }, React.createElement("img", {
+    }, h("img", {
       src: rec.photo,
       alt: rec.titre
-    }), React.createElement("span", {
+    }), h("span", {
       className: "work-open"
-    }, React.createElement(Icon, {
+    }, h(Icon, {
       name: "arrow",
       size: 18
-    }))), React.createElement("div", {
+    }))), h("div", {
       className: "featured-caption"
-    }, React.createElement("div", null, React.createElement("strong", null, rec.artisteNom || rec.nom || rec.titre), React.createElement("span", null, rec.nom?.includes(',') ? rec.nom.split(',').slice(1).join(',').trim() : rec.titre, rec.annee ? ' · ' + rec.annee : '')), React.createElement("span", {
+    }, h("div", null, h("strong", null, rec.artisteNom || rec.nom || rec.titre), h("span", null, rec.nom?.includes(',') ? rec.nom.split(',').slice(1).join(',').trim() : rec.titre, rec.annee ? ' · ' + rec.annee : '')), h("span", {
       className: "mini-label"
-    }, "Dossier d\u2019\u0153uvre"))) : React.createElement("div", {
+    }, "Dossier d\u2019\u0153uvre"))) : h("div", {
       className: "art-placeholder"
-    }, React.createElement(Icon, {
+    }, h(Icon, {
       name: "photo",
       size: 48
-    }), React.createElement("p", null, "Votre prochaine \u0153uvre", React.createElement("br", null), "commence ici."));
-  })()), React.createElement("div", {
+    }), h("p", null, "Votre prochaine \u0153uvre", h("br", null), "commence ici."));
+  })()), h("div", {
     className: "home-footer"
-  }, React.createElement("span", null, "UNE \u0152UVRE. UN DOSSIER. TOUT EST R\xC9UNI."), React.createElement("span", null, "Archive ", React.createElement("i", null, "\xB7"), " Vente ", React.createElement("i", null, "\xB7"), " Circulation"))) : r && React.createElement("div", {
+  }, h("span", null, "UNE \u0152UVRE. UN DOSSIER. TOUT EST R\xC9UNI."), h("span", null, "Archive ", h("i", null, "\xB7"), " Vente ", h("i", null, "\xB7"), " Circulation"))) : r && h("div", {
     className: "thread"
-  }, r.photo && React.createElement("button", {
+  }, r.photo && h("button", {
     className: "conversation-art",
     onClick: () => setModal('details')
-  }, React.createElement(SmallArt, {
+  }, h(SmallArt, {
     r: r
-  }), React.createElement("span", null, React.createElement("small", null, "VOTRE \u0152UVRE"), React.createElement("strong", null, r.artisteNom || r.nom || r.titre || 'Nouvelle œuvre'), React.createElement("span", null, r.titre || 'Informations à confirmer')), React.createElement(Icon, {
+  }), h("span", null, h("small", null, "VOTRE \u0152UVRE"), h("strong", null, r.artisteNom || r.nom || r.titre || 'Nouvelle œuvre'), h("span", null, r.titre || 'Informations à confirmer')), h(Icon, {
     name: "chevron",
     size: 17
-  })), r.artisteNom && React.createElement("button", {
+  })), r.artisteNom && h("button", {
     className: "reference-shortcut",
     onClick: () => setModal('artist-reference')
-  }, r.artistReference ? 'Fiche artiste associée' : artistMatches?.id === r.id && artistMatches.query === r.artisteNom.trim() && artistMatches.candidates.length ? 'Compléter la fiche de l’artiste' : 'Rechercher les repères de l’artiste', " ", React.createElement("span", null, "\u2197")), React.createElement("div", {
+  }, r.artistReference ? 'Fiche artiste associée' : artistMatches?.id === r.id && artistMatches.query === r.artisteNom.trim() && artistMatches.candidates.length ? 'Compléter la fiche de l’artiste' : 'Rechercher les repères de l’artiste', " ", h("span", null, "\u2197")), h("div", {
     className: "thread-intro"
-  }, React.createElement("span", {
+  }, h("span", {
     className: "assistant-symbol"
-  }, "A"), React.createElement("p", null, 'Je vous accompagne, une étape à la fois. Vos documents se préparent au fil de nos échanges.')), messages.length > 4 && !showAll && React.createElement("button", {
+  }, "A"), h("p", null, 'Je vous accompagne, une étape à la fois. Vos documents se préparent au fil de nos échanges.')), messages.length > 4 && !showAll && h("button", {
     className: "history-btn",
     onClick: () => setShowAll(true)
-  }, "Voir les \xE9changes pr\xE9c\xE9dents"), React.createElement("div", {
+  }, "Voir les \xE9changes pr\xE9c\xE9dents"), h("div", {
     className: "messages",
     role: "log",
     "aria-live": "polite",
     "aria-relevant": "additions"
-  }, (showAll ? messages : messages.slice(-4)).map(m => React.createElement("div", {
+  }, (showAll ? messages : messages.slice(-4)).map(m => h("div", {
     className: 'message ' + m.role,
-    key: m.id
-  }, m.text)), busy && React.createElement("div", {
+    key: m.id,
+    translate: m.role === 'user' ? 'no' : undefined
+  }, m.text)), busy && h("div", {
     className: "message assistant thinking"
-  }, "Lecture en cours", React.createElement("span", null, "\xB7\xB7\xB7"))), r.reco?.occurrences?.length > 0 && React.createElement("div", {
-    className: "attachment-action"
-  }, React.createElement(Icon, {
-    name: "search"
-  }), React.createElement("span", null, "Des pages pr\xE9sentent une image identique ou proche."), React.createElement("button", {
-    className: "text-btn",
-    onClick: () => setModal('matches')
-  }, "Voir les rapprochements")), failed?.recordId === r.id && !busy && React.createElement("button", {
+  }, "Lecture en cours", h("span", null, "\xB7\xB7\xB7"))), r.photoDraft || r.recognition?.status === 'reading' || r.recognition?.status === 'error' || r.reco && !r.photoConfirmedAt && !r.photoDismissed ? photoCard(r) : r.reco && h(MatchPreviews, {
+    reco: r.reco,
+    onOpen: () => setModal('matches')
+  }), failed?.recordId === r.id && !busy && h("button", {
     className: "text-btn",
     onClick: () => converse(r, failed.message, failed.attachment)
-  }, "R\xE9essayer la lecture"), pendingFile?.recordId === r.id && !busy && React.createElement("div", {
+  }, "R\xE9essayer la lecture"), pendingFile?.recordId === r.id && !busy && h("div", {
     className: "attachment-action"
-  }, React.createElement(Icon, {
+  }, h(Icon, {
     name: "paperclip"
-  }), React.createElement("span", null, pendingFile.file.name), React.createElement("button", {
+  }), h("span", null, pendingFile.file.name), h("button", {
     className: "text-btn",
     onClick: () => {
       const f = pendingFile.file;
       setPendingFile(null);
       f.mime.startsWith('image/') ? recognizePhoto(r, f) : converse(r, 'Lisez ce document et proposez les informations utiles pour cette œuvre.', f);
     }
-  }, "Lire ", pendingFile.file.mime.startsWith('image/') ? 'la photo' : 'le document'), React.createElement("button", {
+  }, "Lire ", pendingFile.file.mime.startsWith('image/') ? 'la photo' : 'le document'), h("button", {
     className: "icon-btn",
     "aria-label": "Garder sans analyser",
     onClick: () => setPendingFile(null)
-  }, React.createElement(Icon, {
+  }, h(Icon, {
     name: "close",
     size: 16
-  }))), proposal?.id === r.id ? React.createElement("section", {
+  }))), proposal?.id === r.id ? h("section", {
     className: "proposal"
-  }, React.createElement("span", {
+  }, h("span", {
     className: "eyebrow"
-  }, "CE QUE J\u2019AI RETENU"), React.createElement("h2", null, "On garde ces informations ?"), React.createElement("dl", null, Object.keys(proposal.patch).map(k => React.createElement(React.Fragment, {
+  }, "CE QUE J\u2019AI RETENU"), h("h2", null, "On garde ces informations ?"), h("dl", null, Object.keys(proposal.patch).map(k => h(React.Fragment, {
     key: k
-  }, React.createElement("dt", null, A.labels[k] || k), React.createElement("dd", null, A.value(proposal.patch, k))))), React.createElement("div", {
+  }, h("dt", null, A.labels[k] || k), h("dd", null, A.value(proposal.patch, k))))), h("div", {
     className: "row"
-  }, React.createElement(Btn, {
+  }, h(Btn, {
     kind: "primary",
     onClick: () => {
       const p = proposal.patch;
       setProposal(null);
       say(r.id, 'Oui, conserver ces informations.', 'Le dossier est à jour.', p);
     }
-  }, "Oui, conserver ", React.createElement(Icon, {
+  }, "Oui, conserver ", h(Icon, {
     name: "check",
     size: 16
-  })), React.createElement("button", {
+  })), h("button", {
     className: "text-btn",
     onClick: () => setProposal(null)
-  }, "Ne pas retenir"))) : !busy && (currentQuestion ? React.createElement(Question, {
+  }, "Ne pas retenir"))) : !busy && !r.photoDraft && (currentQuestion ? h(Question, {
     key: r.id + currentQuestion.key,
     q: currentQuestion,
     onAnswer: answer,
@@ -1388,44 +1660,44 @@ function App() {
       }));
       say(r.id, 'Je préciserai plus tard.', 'Nous gardons cette information à compléter, sans bloquer la préparation.');
     }
-  }) : React.createElement("section", {
+  }) : h("section", {
     className: "question completion"
-  }, React.createElement("span", {
+  }, h("span", {
     className: "eyebrow"
-  }, "VOTRE DOSSIER PREND FORME"), React.createElement("h2", null, r.operation === 'archiver' ? 'L’œuvre a maintenant son espace.' : 'Les bases de votre projet sont posées.'), React.createElement("p", {
+  }, "VOTRE DOSSIER PREND FORME"), h("h2", null, r.operation === 'archiver' ? 'L’œuvre a maintenant son espace.' : 'Les bases de votre projet sont posées.'), h("p", {
     className: "muted"
-  }, A.missing(r).length ? 'Les informations en attente restent accessibles. Vos documents se complètent avec vous.' : 'Retrouvez les informations, ajoutez vos pièces et relisez les documents préparés.'), React.createElement(Btn, {
+  }, A.missing(r).length ? 'Les informations en attente restent accessibles. Vos documents se complètent avec vous.' : 'Retrouvez les informations, ajoutez vos pièces et relisez les documents préparés.'), h(Btn, {
     kind: "primary",
     onClick: () => setModal('documents')
-  }, "Voir mes documents ", React.createElement(Icon, {
+  }, "Voir mes documents ", h(Icon, {
     name: "doc",
     size: 17
-  })), r.operation === 'archiver' ? React.createElement("button", {
+  })), r.operation === 'archiver' ? h("button", {
     className: "text-btn",
     onClick: () => answer('operation', 'vente')
-  }, "Pr\xE9parer une vente avec cette \u0153uvre") : React.createElement("button", {
+  }, "Pr\xE9parer une vente avec cette \u0153uvre") : h("button", {
     className: "text-btn",
     onClick: () => setModal('steps')
-  }, "Me guider pour la suite"))), r.operation !== 'archiver' && ['arrivee', 'motifArrivee', 'douaneDocument'].includes(currentQuestion?.key) && React.createElement("div", {
+  }, "Me guider pour la suite"))), r.operation !== 'archiver' && ['arrivee', 'motifArrivee', 'douaneDocument'].includes(currentQuestion?.key) && h("div", {
     className: "customs-inline"
-  }, React.createElement("button", {
+  }, h("button", {
     className: "text-btn",
     onClick: () => chooseUpload('Transport et situation douanière')
-  }, React.createElement(Icon, {
+  }, h(Icon, {
     name: "paperclip",
     size: 15
-  }), "J\u2019ai un document : le lire pour moi")), React.createElement("div", {
+  }), "J\u2019ai un document : le lire pour moi")), h("div", {
     className: "thread-links"
-  }, React.createElement("button", {
+  }, h("button", {
     onClick: () => setModal('details')
-  }, "Informations de l\u2019\u0153uvre"), React.createElement("button", {
+  }, "Informations de l\u2019\u0153uvre"), h("button", {
     onClick: () => setModal('files')
-  }, "Pi\xE8ces jointes", r.files?.length ? ' · ' + r.files.length : '')))), React.createElement("div", {
+  }, "Pi\xE8ces jointes", r.files?.length ? ' · ' + r.files.length : '')))), h("div", {
     className: "composer-wrap"
-  }, React.createElement("form", {
+  }, h("form", {
     className: "composer",
     onSubmit: submit
-  }, React.createElement("textarea", {
+  }, h("textarea", {
     "aria-label": "Votre message",
     value: text,
     maxLength: 6000,
@@ -1438,18 +1710,18 @@ function App() {
         submit();
       }
     }
-  }), React.createElement("div", {
+  }), h("div", {
     className: "composer-tools"
-  }, React.createElement("button", {
+  }, h("button", {
     className: "icon-btn",
     type: "button",
     onClick: () => chooseUpload(),
     disabled: busy,
     "aria-label": "Joindre une photo ou un document"
-  }, React.createElement(Icon, {
+  }, h(Icon, {
     name: "plus",
     size: 23
-  })), React.createElement("button", {
+  })), h("button", {
     className: "camera-shortcut",
     type: "button",
     onClick: () => {
@@ -1457,61 +1729,61 @@ function App() {
       camera.current?.click();
     },
     disabled: busy
-  }, React.createElement(Icon, {
+  }, h(Icon, {
     name: "camera",
     size: 16
-  }), React.createElement("span", null, "Photo")), React.createElement("button", {
+  }), h("span", null, "Photo")), h("button", {
     className: "send",
     "aria-label": "Envoyer le message",
     disabled: busy || !text.trim(),
     type: "submit"
-  }, React.createElement(Icon, {
+  }, h(Icon, {
     name: "arrow"
-  })))), React.createElement("p", {
+  })))), h("p", {
     className: "composer-note"
-  }, "Votre \u0153uvre au centre. Les d\xE9marches, \xE0 leur place.")))), modal === 'projects' && React.createElement(Dialog, {
+  }, "Votre \u0153uvre au centre. Les d\xE9marches, \xE0 leur place.")))), modal === 'projects' && h(Dialog, {
     title: "Quel est votre projet ?",
     onClose: () => setModal(null)
-  }, A.purpose.slice(2).map(([v, t]) => React.createElement("button", {
+  }, A.purpose.slice(2).map(([v, t]) => h("button", {
     className: "list-button",
     key: v,
     onClick: () => {
       setModal(null);
       create(v);
     }
-  }, t, React.createElement(Icon, {
+  }, t, h(Icon, {
     name: "chevron"
-  })))), modal === 'documents' && r && React.createElement(Dialog, {
+  })))), modal === 'documents' && r && h(Dialog, {
     title: "Vos documents",
     onClose: () => setModal(null)
-  }, React.createElement("p", {
+  }, h("p", {
     className: "muted"
-  }, "Pr\xE9par\xE9s \xE0 partir de vos r\xE9ponses. Chaque document garde son destinataire."), A.documentKinds(r, assessment).map(kind => React.createElement("button", {
+  }, "Pr\xE9par\xE9s \xE0 partir de vos r\xE9ponses. Chaque document garde son destinataire."), A.documentKinds(r, assessment).map(kind => h("button", {
     className: "document-card",
     key: kind,
     onClick: () => setModal('doc:' + kind)
-  }, React.createElement("span", {
+  }, h("span", {
     className: 'doc-icon ' + kind
-  }, React.createElement(Icon, {
+  }, h(Icon, {
     name: "doc",
     size: 24
-  })), React.createElement("span", null, React.createElement("strong", null, A.docs[kind][0]), React.createElement("small", null, A.docs[kind][1]), React.createElement("small", {
+  })), h("span", null, h("strong", null, A.docs[kind][0]), h("small", null, A.docs[kind][1]), h("small", {
     className: "doc-state"
-  }, "En pr\xE9paration")), React.createElement(Icon, {
+  }, "En pr\xE9paration")), h(Icon, {
     name: "chevron"
-  }))), React.createElement("button", {
+  }))), h("button", {
     className: "text-btn",
     onClick: () => setModal('steps')
-  }, "Compl\xE9ter ce qui manque")), modal?.startsWith('doc:') && r && React.createElement(Dialog, {
+  }, "Compl\xE9ter ce qui manque")), modal?.startsWith('doc:') && r && h(Dialog, {
     wide: true,
     title: A.docs[modal.slice(4)][0],
     onClose: () => setModal('documents')
-  }, React.createElement(Document, {
+  }, h(Document, {
     r: r,
     kind: modal.slice(4),
     assessment: assessment,
     structure: structure
-  })), modal === 'artist-reference' && r && React.createElement(ReferenceLookup, {
+  })), modal === 'artist-reference' && r && h(ReferenceLookup, {
     key: r.id + 'artist',
     record: r,
     token: token,
@@ -1524,7 +1796,7 @@ function App() {
       setModal(null);
       setNotice('La fiche de l’artiste est associée au dossier.');
     }
-  }), modal === 'term-reference' && r && React.createElement(ReferenceLookup, {
+  }), modal === 'term-reference' && r && h(ReferenceLookup, {
     key: r.id + 'term',
     record: r,
     kind: "term",
@@ -1537,58 +1809,58 @@ function App() {
       setModal('details');
       setNotice('La référence est conservée avec votre description.');
     }
-  }), modal === 'details' && r && React.createElement(Dialog, {
+  }), modal === 'details' && r && h(Dialog, {
     title: "Les informations de l\u2019\u0153uvre",
     onClose: () => setModal(null)
-  }, r.photo && React.createElement("img", {
+  }, r.photoDraft && photoCard(r), r.photo && !r.photoDraft && h("img", {
     className: "details-photo",
     src: r.photo,
     alt: r.titre
-  }), r.reco && React.createElement("button", {
+  }), r.reco && h("button", {
     className: "text-btn",
     onClick: () => setModal('matches')
-  }, "Voir les rapprochements de la photo"), React.createElement("p", {
+  }, "Voir les rapprochements de la photo"), h("p", {
     className: "muted"
-  }, "Une modification est reprise dans les documents concern\xE9s."), React.createElement("div", {
+  }, "Une modification est reprise dans les documents concern\xE9s."), h("div", {
     className: "reference-actions"
-  }, React.createElement("button", {
+  }, h("button", {
     className: "text-btn",
     onClick: () => setModal('artist-reference')
-  }, "Fiche de l\u2019artiste \u2197"), React.createElement("button", {
+  }, "Fiche de l\u2019artiste \u2197"), h("button", {
     className: "text-btn",
     onClick: () => setModal('term-reference')
-  }, "Mat\xE9riaux et techniques \u2197")), r.artistReference && React.createElement(ReferenceCard, {
+  }, "Mat\xE9riaux et techniques \u2197")), r.artistReference && h(ReferenceCard, {
     record: r.artistReference
-  }), React.createElement("div", null, (r.termReferences || []).map(t => React.createElement("div", {
+  }), h("div", null, (r.termReferences || []).map(t => h("div", {
     key: t.id
-  }, React.createElement(ReferenceCard, {
+  }, h(ReferenceCard, {
     record: t
-  }), React.createElement("button", {
+  }), h("button", {
     className: "text-btn",
     onClick: () => update(r.id, x => A.patch(x, {
       termReferences: x.termReferences.filter(a => a.id !== t.id)
     }))
-  }, "Retirer cette r\xE9f\xE9rence")))), React.createElement("div", {
+  }, "Retirer cette r\xE9f\xE9rence")))), h("div", {
     className: "privacy-setting"
-  }, React.createElement("label", {
+  }, h("label", {
     className: "checkbox"
-  }, React.createElement("input", {
+  }, h("input", {
     type: "checkbox",
     checked: r.ownerPrivate !== false,
     onChange: e => update(r.id, x => A.patch(x, {
       ownerPrivate: e.target.checked
     }))
-  }), "Garder le propri\xE9taire confidentiel c\xF4t\xE9 acheteur"), React.createElement("p", null, "Son identit\xE9 reste au dossier interne. Elle est communiqu\xE9e aux autorit\xE9s ou aux parties lorsque c\u2019est n\xE9cessaire. Les pi\xE8ces destin\xE9es \xE0 l\u2019acheteur doivent \xEAtre relues pour retirer les mentions confidentielles.")), ['titre', 'artisteNom', 'proprietaireNom', 'mandant', 'operation', 'cat', 'annee', 'lieu', 'creation', 'dimensions', 'materiau', 'technique', 'tirage', 'prov', 'provenanceTexte', 'etat', 'protege', ...(r.operation !== 'archiver' ? ['dest', 'valeur', 'role', 'artiste', 'achatPays', 'arrivee', 'motifArrivee', 'douaneDocument', 'douane', 'douaneEvidence'] : []), ...(A.sale(r) ? ['acheteur', 'mode', 'source', 'vocab', 'vendeurNom', 'acheteurNom', 'paiement', 'livraison', 'frais', 'fiscalite', 'droitApplicable'] : [])].map(k => React.createElement("button", {
+  }), "Garder le propri\xE9taire confidentiel c\xF4t\xE9 acheteur"), h("p", null, "Son identit\xE9 reste au dossier interne. Elle est communiqu\xE9e aux autorit\xE9s ou aux parties lorsque c\u2019est n\xE9cessaire. Les pi\xE8ces destin\xE9es \xE0 l\u2019acheteur doivent \xEAtre relues pour retirer les mentions confidentielles.")), ['titre', 'artisteNom', 'origineCulturelle', 'periode', 'techniqueDetail', 'materiauxDetail', 'proprietaireNom', 'mandant', 'operation', 'cat', 'annee', 'lieu', 'creation', 'dimensions', 'materiau', 'technique', 'tirage', 'prov', 'provenanceTexte', 'etat', 'protege', ...(r.operation !== 'archiver' ? ['dest', 'valeur', 'role', 'artiste', 'achatPays', 'arrivee', 'motifArrivee', 'douaneDocument', 'douane', 'douaneEvidence'] : []), ...(A.sale(r) ? ['acheteur', 'mode', 'source', 'vocab', 'vendeurNom', 'acheteurNom', 'paiement', 'livraison', 'frais', 'fiscalite', 'droitApplicable'] : [])].map(k => h("button", {
     className: "detail-row",
     key: k,
     onClick: () => edit(k)
-  }, React.createElement("span", null, A.labels[k]), React.createElement("strong", null, A.value(r, k)), React.createElement(Icon, {
+  }, h("span", null, A.labels[k]), h("strong", null, A.value(r, k)), h(Icon, {
     name: "chevron",
     size: 14
-  })))), field && r && React.createElement(Dialog, {
+  })))), field && r && h(Dialog, {
     title: A.labels[field] || 'Précisions',
     onClose: () => setField(null)
-  }, React.createElement("form", {
+  }, h("form", {
     onSubmit: e => {
       e.preventDefault();
       let val = fieldValue;
@@ -1606,20 +1878,20 @@ function App() {
       update(r.id, x => A.patch(x, safe));
       setField(null);
     }
-  }, React.createElement("label", {
+  }, h("label", {
     htmlFor: 'field-' + field
-  }, A.labels[field] || 'Votre précision'), React.createElement(Field, {
+  }, A.labels[field] || 'Votre précision'), h(Field, {
     k: field,
     value: fieldValue,
     onChange: setFieldValue,
     autoFocus: true
-  }), React.createElement(Btn, {
+  }), h(Btn, {
     kind: "primary full",
     type: "submit"
-  }, "Enregistrer"))), modal === 'steps' && r && React.createElement(Dialog, {
+  }, "Enregistrer"))), modal === 'steps' && r && h(Dialog, {
     title: "La suite, simplement",
     onClose: () => setModal(null)
-  }, A.missing(r).length > 0 && React.createElement("button", {
+  }, A.missing(r).length > 0 && h("button", {
     className: "list-button",
     onClick: () => {
       update(r.id, x => A.patch(x, {
@@ -1628,44 +1900,47 @@ function App() {
       setModal(null);
       setScreen('chat');
     }
-  }, "Compl\xE9ter les informations en attente", React.createElement(Icon, {
+  }, "Compl\xE9ter les informations en attente", h(Icon, {
     name: "chevron"
-  })), React.createElement("button", {
+  })), h("button", {
     className: "list-button",
     onClick: () => setModal('declarations')
-  }, "Renseigner les d\xE9clarations", React.createElement(Icon, {
+  }, "Renseigner les d\xE9clarations", h(Icon, {
     name: "chevron"
-  })), r.operation !== 'archiver' && React.createElement("div", {
+  })), r.operation !== 'archiver' && h("div", {
     className: "guidance customs-help"
-  }, React.createElement("span", {
+  }, h("span", {
     className: "eyebrow"
-  }, "NOUS VOUS AIDONS \xC0 COMPRENDRE"), React.createElement("h3", null, "Le parcours de votre \u0153uvre"), React.createElement("p", null, A.customsHelp(r)), React.createElement("button", {
+  }, "NOUS VOUS AIDONS \xC0 COMPRENDRE"), h("h3", null, "Le parcours de votre \u0153uvre"), h("p", null, A.customsHelp(r)), h("button", {
     className: "text-btn",
     onClick: () => chooseUpload('Transport et situation douanière')
-  }, "Joindre le document et me guider")), React.createElement("button", {
+  }, "Joindre le document et me guider")), h("button", {
     className: "list-button",
     onClick: () => setModal('files')
-  }, "Rassembler les justificatifs", React.createElement(Icon, {
+  }, "Rassembler les justificatifs", h(Icon, {
     name: "chevron"
-  })), A.sale(r) && React.createElement("button", {
+  })), A.sale(r) && h("button", {
     className: "list-button",
     onClick: () => setModal('terms')
-  }, "Pr\xE9ciser les conditions de vente", React.createElement(Icon, {
+  }, "Pr\xE9ciser les conditions de vente", h(Icon, {
     name: "chevron"
-  })), assessment.warnings.map(w => React.createElement("div", {
+  })), assessment.warnings.map(w => h("div", {
     className: "guidance",
     key: w.key
-  }, React.createElement("h3", null, w.titre), React.createElement("p", null, w.detail), React.createElement("button", {
+  }, h("h3", null, w.titre), h("p", null, w.detail), h("button", {
     className: "text-btn",
     onClick: () => edit(w.field)
-  }, "Ajouter une pr\xE9cision"))), r.operation !== 'archiver' && React.createElement("details", {
+  }, "Ajouter une pr\xE9cision"))), r.operation !== 'archiver' && h("details", {
     className: "disclosure"
-  }, React.createElement("summary", null, "Voir les points \xE0 examiner"), assessment.pending.length > 0 ? React.createElement("p", null, "Compl\xE9tez les informations sur l\u2019\u0153uvre et son parcours pour pr\xE9ciser les d\xE9marches.") : assessment.rules.map((rule, i) => React.createElement("div", {
+  }, h("summary", null, "Voir les points \xE0 examiner"), I.language === 'en' && h("p", {
+    className: "small",
+    lang: "en"
+  }, "Legal reference notes are retained in their original French. Choose \u201CGuide me\u201D for an explanation in English."), assessment.pending.length > 0 ? h("p", null, "Compl\xE9tez les informations sur l\u2019\u0153uvre et son parcours pour pr\xE9ciser les d\xE9marches.") : assessment.rules.map((rule, i) => h("div", {
     className: "guidance",
     key: i
-  }, React.createElement("h3", null, rule.titre), React.createElement("p", null, rule.detail), React.createElement("small", null, r.followup?.[rule.titre]?.status || 'À examiner', " \xB7 ", rule.base), React.createElement("div", {
+  }, h("h3", null, rule.titre), h("p", null, rule.detail), h("small", null, r.followup?.[rule.titre]?.status || 'À examiner', " \xB7 ", rule.base), h("div", {
     className: "row"
-  }, React.createElement("button", {
+  }, h("button", {
     className: "text-btn",
     onClick: () => {
       setTracking(rule);
@@ -1675,43 +1950,46 @@ function App() {
         date: ''
       });
     }
-  }, "Suivre cette d\xE9marche"), React.createElement("button", {
+  }, "Suivre cette d\xE9marche"), h("button", {
     className: "text-btn",
     onClick: () => {
       setFilePurpose(rule.titre);
       chooseUpload(rule.titre);
     }
-  }, "Joindre un justificatif"), React.createElement("button", {
+  }, "Joindre un justificatif"), h("button", {
     className: "text-btn",
     onClick: () => {
       setModal(null);
       converse(r, 'Aidez-moi à préparer ce point, sans supposer que la démarche est faite : ' + rule.titre);
     }
-  }, "Me guider")))))), modal === 'terms' && r && React.createElement(Dialog, {
+  }, "Me guider")))))), modal === 'terms' && r && h(Dialog, {
     title: "Les conditions de la vente",
     onClose: () => setModal('steps')
-  }, React.createElement("p", {
+  }, h("p", {
     className: "muted"
-  }, "Ne renseignez que les conditions r\xE9ellement convenues. Le reste demeure \xE0 pr\xE9ciser dans le projet de contrat."), ['vendeurNom', 'acheteurNom', 'valeur', 'paiement', 'livraison', 'frais', 'fiscalite', 'droitApplicable'].map(k => React.createElement("button", {
+  }, "Ne renseignez que les conditions r\xE9ellement convenues. Le reste demeure \xE0 pr\xE9ciser dans le projet de contrat."), ['vendeurNom', 'acheteurNom', 'valeur', 'paiement', 'livraison', 'frais', 'fiscalite', 'droitApplicable'].map(k => h("button", {
     className: "detail-row",
     key: k,
     onClick: () => edit(k)
-  }, React.createElement("span", null, A.labels[k]), React.createElement("strong", null, A.value(r, k)), React.createElement(Icon, {
+  }, h("span", null, A.labels[k]), h("strong", null, A.value(r, k)), h(Icon, {
     name: "chevron",
     size: 14
-  })))), modal === 'matches' && r && React.createElement(Dialog, {
+  })))), modal === 'matches' && r && h(Dialog, {
     title: "Rapprochements trouv\xE9s",
     onClose: () => setModal('details')
-  }, React.createElement("p", {
+  }, h("p", {
     className: "muted"
-  }, "Une image ressemblante n\u2019\xE9tablit pas l\u2019identit\xE9 de l\u2019\u0153uvre. Ces pages sont des pistes de recherche."), (r.reco?.occurrences || []).filter(p => /^https?:\/\//i.test(p.url || '')).slice(0, 8).map((p, i) => React.createElement("div", {
-    className: "guidance",
+  }, "Une image ressemblante n\u2019\xE9tablit pas l\u2019identit\xE9 de l\u2019\u0153uvre. Ces pages sont des pistes de recherche."), (r.reco?.occurrences || []).filter(p => /^https?:\/\//i.test(p.url || '')).slice(0, 8).map((p, i) => h("div", {
+    className: "match-result",
     key: i
-  }, React.createElement("h3", null, p.titre || p.source || 'Page trouvée'), React.createElement("a", {
+  }, h(MatchThumb, {
+    src: p.image,
+    alt: p.titre
+  }), h("div", null, h("h3", null, p.titre || p.source || 'Page trouvée'), h("a", {
     href: p.url,
     target: "_blank",
     rel: "noopener noreferrer"
-  }, "Consulter la page \u2197"), React.createElement("button", {
+  }, "Consulter la page \u2197"), h("button", {
     className: "text-btn",
     disabled: busy,
     onClick: () => {
@@ -1724,44 +2002,50 @@ function App() {
         });
       }
     }
-  }, "Cette page correspond \xE0 mon \u0153uvre"))), !(r.reco?.occurrences || []).length && React.createElement("p", null, "Aucune page correspondante conserv\xE9e dans ce dossier.")), modal === 'declarations' && r && React.createElement(Declarations, {
+  }, "Cette page correspond \xE0 mon \u0153uvre")))), !(r.reco?.occurrences || []).length && h("p", null, "Aucune page identique n\u2019a \xE9t\xE9 retrouv\xE9e. Les images ci-dessous sont des pistes visuelles."), h("div", {
+    className: "similar-grid"
+  }, (r.reco?.similaires || []).slice(0, 6).map((src, i) => h(MatchThumb, {
+    key: i,
+    src: src,
+    alt: "Image visuellement proche"
+  })))), modal === 'declarations' && r && h(Declarations, {
     r: r,
     onClose: () => setModal('steps'),
     update: p => update(r.id, x => A.patch(x, p))
-  }), modal === 'files' && r && React.createElement(Dialog, {
+  }), modal === 'files' && r && h(Dialog, {
     title: "Les pi\xE8ces de l\u2019\u0153uvre",
     onClose: () => setModal(null)
-  }, React.createElement(Btn, {
+  }, h(Btn, {
     kind: "primary full",
     onClick: () => chooseUpload(),
     disabled: busy
-  }, React.createElement(Icon, {
+  }, h(Icon, {
     name: "plus"
-  }), "Ajouter une photo ou un document"), !(r.files || []).length && React.createElement("p", {
+  }), "Ajouter une photo ou un document"), !(r.files || []).length && h("p", {
     className: "muted"
-  }, "Facture, certificat, rapport d\u2019\xE9tat, photo\u2026 Ajoutez ce que vous avez d\xE9j\xE0."), (r.files || []).map(f => React.createElement("div", {
+  }, "Facture, certificat, rapport d\u2019\xE9tat, photo\u2026 Ajoutez ce que vous avez d\xE9j\xE0."), (r.files || []).map(f => h("div", {
     className: "file-card",
     key: f.id
-  }, React.createElement("div", {
+  }, h("div", {
     className: "row"
-  }, React.createElement(Icon, {
+  }, h(Icon, {
     name: "doc"
-  }), React.createElement("strong", null, f.name)), React.createElement("small", null, "Conserv\xE9 \xB7 contenu \xE0 examiner"), React.createElement("div", {
+  }), h("strong", null, f.name)), h("small", null, "Conserv\xE9 \xB7 contenu \xE0 examiner"), h("div", {
     className: "row"
-  }, React.createElement("button", {
+  }, h("button", {
     className: "text-btn",
     onClick: () => setModal('file:' + f.id)
-  }, "Consulter"), React.createElement("button", {
+  }, "Consulter"), h("button", {
     className: "text-btn",
     disabled: busy,
     onClick: () => {
       setModal(null);
       f.mime.startsWith('image/') ? recognizePhoto(r, f) : converse(r, 'Lisez ce document et proposez les informations utiles pour cette œuvre.', f);
     }
-  }, "Lire avec Artvelchiv")), React.createElement("fieldset", null, React.createElement("legend", null, "Inclure cette pi\xE8ce dans"), A.documentKinds(r, assessment).filter(k => k !== 'archive').map(kind => React.createElement("label", {
+  }, "Lire avec Artvelchiv")), h("fieldset", null, h("legend", null, "Inclure cette pi\xE8ce dans"), A.documentKinds(r, assessment).filter(k => k !== 'archive').map(kind => h("label", {
     className: "checkbox",
     key: kind
-  }, React.createElement("input", {
+  }, h("input", {
     type: "checkbox",
     checked: (f.audiences || []).includes(kind),
     onChange: e => update(r.id, x => A.patch(x, {
@@ -1770,9 +2054,9 @@ function App() {
         audiences: e.target.checked ? [...(file.audiences || []), kind] : (file.audiences || []).filter(k => k !== kind)
       } : file)
     }))
-  }), A.docs[kind][0])), r.ownerPrivate !== false && React.createElement("label", {
+  }), A.docs[kind][0])), r.ownerPrivate !== false && h("label", {
     className: "checkbox"
-  }, React.createElement("input", {
+  }, h("input", {
     type: "checkbox",
     checked: f.privacyReviewed === true,
     onChange: e => update(r.id, x => A.patch(x, {
@@ -1781,9 +2065,9 @@ function App() {
         privacyReviewed: e.target.checked
       } : file)
     }))
-  }), "J\u2019ai v\xE9rifi\xE9 cette version : elle ne r\xE9v\xE8le pas l\u2019identit\xE9 confidentielle."), React.createElement("small", null, r.ownerPrivate !== false ? 'Sans cette vérification, la pièce reste exclue des dossiers acheteur et contrat. ' : '', "L\u2019archive interne conserve toujours la pi\xE8ce.")))), React.createElement("details", {
+  }), "J\u2019ai v\xE9rifi\xE9 cette version : elle ne r\xE9v\xE8le pas l\u2019identit\xE9 confidentielle."), h("small", null, r.ownerPrivate !== false ? 'Sans cette vérification, la pièce reste exclue des dossiers acheteur et contrat. ' : '', "L\u2019archive interne conserve toujours la pi\xE8ce.")))), h("details", {
     className: "disclosure"
-  }, React.createElement("summary", null, "Pi\xE8ces utiles \xE0 rassembler"), (assessment.pieces.length ? assessment.pieces : [{
+  }, h("summary", null, "Pi\xE8ces utiles \xE0 rassembler"), (assessment.pieces.length ? assessment.pieces : [{
     titre: 'Photographies de l’œuvre',
     why: 'Vue générale, dos, détails et inscriptions.'
   }, {
@@ -1792,55 +2076,56 @@ function App() {
   }, {
     titre: 'Rapport d’état',
     why: 'État actuel et interventions connues.'
-  }]).map((p, i) => React.createElement("div", {
+  }]).map((p, i) => h("div", {
     className: "guidance",
     key: i
-  }, React.createElement("h3", null, p.titre), React.createElement("p", null, p.why), React.createElement("button", {
+  }, h("h3", null, p.titre), h("p", null, p.why), h("button", {
     className: "text-btn",
     onClick: () => chooseUpload(p.titre)
-  }, "Ajouter la pi\xE8ce"))))), modal?.startsWith('file:') && r && React.createElement(Dialog, {
+  }, "Ajouter la pi\xE8ce"))))), modal?.startsWith('file:') && r && h(Dialog, {
     title: "Consulter la pi\xE8ce",
     wide: true,
     onClose: () => setModal('files')
   }, (() => {
     const f = r.files.find(x => x.id === modal.slice(5));
-    return f?.mime === 'application/pdf' ? React.createElement("object", {
+    return f?.mime === 'application/pdf' ? h("object", {
       className: "pdf-preview",
       data: f.dataUrl,
       type: "application/pdf"
-    }, React.createElement("p", null, "Ce navigateur ne permet pas de consulter ce PDF dans l\u2019application.")) : f ? React.createElement("img", {
+    }, h("p", null, "Ce navigateur ne permet pas de consulter ce PDF dans l\u2019application.")) : f ? h("img", {
       className: "file-preview",
       src: f.dataUrl,
       alt: f.name
-    }) : React.createElement("p", null, "Pi\xE8ce introuvable.");
-  })()), tracking && r && React.createElement(Dialog, {
+    }) : h("p", null, "Pi\xE8ce introuvable.");
+  })()), tracking && r && h(Dialog, {
     title: tracking.titre,
     onClose: () => setTracking(null)
-  }, React.createElement("p", {
+  }, h("p", {
     className: "muted"
-  }, "Indiquez o\xF9 vous en \xEAtes. Le d\xE9p\xF4t et la d\xE9cision de l\u2019autorit\xE9 restent distincts."), React.createElement("label", {
+  }, "Indiquez o\xF9 vous en \xEAtes. Le d\xE9p\xF4t et la d\xE9cision de l\u2019autorit\xE9 restent distincts."), h("label", {
     htmlFor: "tracking-status"
-  }, "\xC9tat de la d\xE9marche"), React.createElement("select", {
+  }, "\xC9tat de la d\xE9marche"), h("select", {
     id: "tracking-status",
     value: trackingValue.status,
     onChange: e => setTrackingValue({
       ...trackingValue,
       status: e.target.value
     })
-  }, ['À préparer', 'Préparée', 'Déposée', 'Réponse reçue — à examiner'].map(x => React.createElement("option", {
-    key: x
-  }, x))), React.createElement("label", {
+  }, ['À préparer', 'Préparée', 'Déposée', 'Réponse reçue — à examiner'].map(x => h("option", {
+    key: x,
+    value: x
+  }, x))), h("label", {
     htmlFor: "tracking-ref"
-  }, "R\xE9f\xE9rence ou pr\xE9cision"), React.createElement("input", {
+  }, "R\xE9f\xE9rence ou pr\xE9cision"), h("input", {
     id: "tracking-ref",
     value: trackingValue.reference,
     onChange: e => setTrackingValue({
       ...trackingValue,
       reference: e.target.value
     })
-  }), React.createElement("label", {
+  }), h("label", {
     htmlFor: "tracking-date"
-  }, "Date de l\u2019\xE9v\xE9nement"), React.createElement("input", {
+  }, "Date de l\u2019\xE9v\xE9nement"), h("input", {
     id: "tracking-date",
     type: "date",
     value: trackingValue.date,
@@ -1848,7 +2133,7 @@ function App() {
       ...trackingValue,
       date: e.target.value
     })
-  }), React.createElement(Btn, {
+  }), h(Btn, {
     kind: "primary full",
     onClick: () => {
       update(r.id, x => A.patch(x, {
@@ -1859,38 +2144,88 @@ function App() {
       }));
       setTracking(null);
     }
-  }, "Enregistrer le suivi")), modal === 'account' && React.createElement(Dialog, {
+  }, "Enregistrer le suivi")), modal?.startsWith('manage:') && (() => {
+    const item = records.find(x => x.id === modal.slice(7));
+    if (!item) return null;
+    return h(Dialog, {
+      title: item.titre || 'Gérer cette œuvre',
+      onClose: () => setModal(null)
+    }, item.deletedAt ? h(React.Fragment, null, h("p", null, "Ce dossier est dans la corbeille. Ses photos et ses informations sont conserv\xE9es."), h(Btn, {
+      kind: "primary full",
+      onClick: () => {
+        update(item.id, x => ({
+          ...x,
+          deletedAt: null,
+          recentHidden: false
+        }));
+        setModal(null);
+        setNotice('Le dossier est restauré.');
+      }
+    }, "Restaurer le dossier")) : h(React.Fragment, null, h("button", {
+      className: "list-button",
+      onClick: () => {
+        update(item.id, x => ({
+          ...x,
+          recentHidden: true
+        }));
+        setModal(null);
+        setNotice('Retirée des récentes. Le dossier reste dans Mes œuvres.');
+      }
+    }, "Retirer des r\xE9centes ", h(Icon, {
+      name: "close"
+    })), h("button", {
+      className: "list-button delete-action",
+      disabled: busy,
+      onClick: () => {
+        update(item.id, x => ({
+          ...x,
+          deletedAt: new Date().toISOString()
+        }));
+        if (selected === item.id) {
+          setSelected(null);
+          setScreen('home');
+          setProposal(null);
+        }
+        setModal(null);
+        setNotice('Dossier déplacé dans la corbeille. Vous pouvez le restaurer.');
+      }
+    }, "Supprimer le dossier ", h(Icon, {
+      name: "close"
+    })), h("p", {
+      className: "muted small"
+    }, "Le dossier sera plac\xE9 dans la corbeille, avec ses pi\xE8ces. Vous pourrez le restaurer.")));
+  })(), modal === 'account' && h(Dialog, {
     title: "Votre espace professionnel",
     onClose: () => setModal(null)
-  }, React.createElement("label", {
+  }, h("label", {
     htmlFor: "professional"
-  }, "Nom de la structure"), React.createElement("input", {
+  }, "Nom de la structure"), h("input", {
     id: "professional",
     value: structure.name,
     onChange: e => setStructure({
       ...structure,
       name: e.target.value
     })
-  }), React.createElement("label", {
+  }), h("label", {
     htmlFor: "structure"
-  }, "Votre activit\xE9"), React.createElement("select", {
+  }, "Votre activit\xE9"), h("select", {
     id: "structure",
     value: structure.type,
     onChange: e => setStructure({
       ...structure,
       type: e.target.value
     })
-  }, Object.entries(L.structures).map(([v, t]) => React.createElement("option", {
+  }, Object.entries(L.structures).map(([v, t]) => h("option", {
     key: v,
     value: v
-  }, t))), React.createElement("p", {
+  }, t))), h("p", {
     className: "muted small"
-  }, "Les dossiers et les pi\xE8ces sont conserv\xE9s dans ce navigateur, sur cet appareil. La conversation transmet les informations utiles \xE0 votre service d\u2019assistance."), React.createElement("details", {
+  }, "Les dossiers et les pi\xE8ces sont conserv\xE9s dans ce navigateur, sur cet appareil. La conversation transmet les informations utiles \xE0 votre service d\u2019assistance."), h("details", {
     className: "disclosure"
-  }, React.createElement("summary", null, "Rep\xE8res professionnels"), L.obligations[structure.type][1].map(([title, detail, base], i) => React.createElement("div", {
+  }, h("summary", null, "Rep\xE8res professionnels"), L.obligations[structure.type][1].map(([title, detail, base], i) => h("div", {
     className: "guidance",
     key: i
-  }, React.createElement("h3", null, title), React.createElement("p", null, detail), React.createElement("small", null, "R\xE9f\xE9rence du dossier initial, \xE0 v\xE9rifier : ", base)))), React.createElement("button", {
+  }, h("h3", null, title), h("p", null, detail), h("small", null, "R\xE9f\xE9rence du dossier initial, \xE0 v\xE9rifier : ", base)))), h("button", {
     className: "text-btn",
     onClick: () => {
       setToken('');
@@ -1910,16 +2245,16 @@ function Declarations({
   });
   const q = L.declarations[index],
     answer = r.answers?.[index];
-  return React.createElement(Dialog, {
+  return h(Dialog, {
     title: "Ce que vous savez de l\u2019\u0153uvre",
     onClose: onClose
-  }, React.createElement("span", {
+  }, h("span", {
     className: "eyebrow"
-  }, index + 1, " / ", L.declarations.length), React.createElement("h2", null, q), React.createElement("p", {
+  }, index + 1, " / ", L.declarations.length), h("h2", null, q), h("p", {
     className: "muted"
-  }, "R\xE9pondez selon les informations en votre possession."), React.createElement("div", {
+  }, "R\xE9pondez selon les informations en votre possession."), h("div", {
     className: "choices"
-  }, ['Oui', 'Non', 'Je ne sais pas'].map(v => React.createElement(Btn, {
+  }, ['Oui', 'Non', 'Je ne sais pas'].map(v => h(Btn, {
     key: v,
     kind: answer === v ? 'selected' : '',
     onClick: () => update({
@@ -1928,7 +2263,7 @@ function Declarations({
         [index]: v
       }
     })
-  }, v, answer === v && React.createElement(Icon, {
+  }, v, answer === v && h(Icon, {
     name: "check",
     size: 16
   })))), answer && A.warnings(r).filter(w => ({
@@ -1937,16 +2272,16 @@ function Declarations({
     3: 'claim',
     4: 'origin',
     5: 'materials'
-  })[index] === w.key).map(w => React.createElement("p", {
+  })[index] === w.key).map(w => h("p", {
     className: "guidance",
     key: w.key
-  }, w.detail)), React.createElement("div", {
+  }, w.detail)), h("div", {
     className: "question-bottom"
-  }, React.createElement("button", {
+  }, h("button", {
     className: "text-btn",
     disabled: index === 0,
     onClick: () => setIndex(index - 1)
-  }, "Pr\xE9c\xE9dent"), React.createElement(Btn, {
+  }, "Pr\xE9c\xE9dent"), h(Btn, {
     kind: "primary",
     disabled: !answer,
     onClick: () => index < L.declarations.length - 1 ? setIndex(index + 1) : onClose()
@@ -1965,9 +2300,9 @@ class ErrorBoundary extends React.Component {
     };
   }
   render() {
-    return this.state.failed ? React.createElement("main", {
+    return this.state.failed ? h("main", {
       className: "access"
-    }, React.createElement(Logo, null), React.createElement("h1", null, "Reprenons tranquillement."), React.createElement("p", null, "L\u2019affichage a \xE9t\xE9 interrompu. Vos dossiers d\xE9j\xE0 enregistr\xE9s sont conserv\xE9s."), React.createElement("button", {
+    }, h(Logo, null), h("h1", null, "Reprenons tranquillement."), h("p", null, "L\u2019affichage a \xE9t\xE9 interrompu. Vos dossiers d\xE9j\xE0 enregistr\xE9s sont conserv\xE9s."), h("button", {
       className: "btn primary",
       onClick: () => location.reload()
     }, "Rouvrir mon espace")) : this.props.children;
@@ -1980,25 +2315,25 @@ function Opening() {
     const timer = setTimeout(() => setVisible(false), reduced ? 400 : 2400);
     return () => clearTimeout(timer);
   }, []);
-  return React.createElement(React.Fragment, null, React.createElement("div", {
+  return h(React.Fragment, null, h("div", {
     className: "application-stage",
     inert: visible ? '' : undefined
-  }, React.createElement(App, null)), visible && React.createElement("div", {
+  }, h(App, null)), visible && h("div", {
     className: "brand-opening",
     "aria-label": "Bienvenue chez Artvelchiv"
-  }, React.createElement("div", {
+  }, h("div", {
     className: "brand-signature"
-  }, React.createElement("span", {
+  }, h("span", {
     className: "brand-wordmark"
-  }, "ARTVELCHIV"), React.createElement("span", {
+  }, "ARTVELCHIV"), h("span", {
     className: "brand-rule"
-  }), React.createElement("span", {
+  }), h("span", {
     className: "brand-baseline"
-  }, "THE ART STANDARD")), React.createElement("button", {
+  }, "THE ART STANDARD")), h("button", {
     className: "opening-skip",
     onClick: () => setVisible(false)
-  }, "Entrer ", React.createElement("span", {
+  }, "Entrer ", h("span", {
     "aria-hidden": "true"
   }, "\u2197"))));
 }
-ReactDOM.createRoot(document.getElementById('root')).render(React.createElement(ErrorBoundary, null, React.createElement(Opening, null)));</script><noscript>Activez JavaScript pour ouvrir votre espace ARTVELCHIV.</noscript></body></html>
+ReactDOM.createRoot(document.getElementById('root')).render(h(ErrorBoundary, null, h(Opening, null)));</script><noscript>Activez JavaScript pour ouvrir votre espace ARTVELCHIV.</noscript></body></html>
