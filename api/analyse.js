@@ -50,7 +50,7 @@ export default async function handler(req,res){
  if(b.document){const d=b.document;if(!['application/pdf','image/jpeg','image/png','image/webp'].includes(d.mime)||typeof d.base64!=='string'||d.base64.length>11_200_000||!/^[A-Za-z0-9+/]*={0,2}$/.test(d.base64))return res.status(400).json({error:'Ajoutez un PDF ou une photo de moins de 8 Mo.'});content.push({type:d.mime==='application/pdf'?'document':'image',source:{type:'base64',media_type:d.mime,data:d.base64}});}
  const base=promptContext(dossier,message);
  const instructions=SYSTEM+'\nBASE_OFFICIELLE (sources sélectionnées, conditions à vérifier) : '+JSON.stringify(base)+(b.language==='en'?'\nWrite all user-facing advice in idiomatic British English, using professional art-market language. Keep artwork titles, legal references and stored enum codes unchanged.':'');
- return callModel(content,instructions,res,p=>({reponse:typeof p.reponse==='string'?p.reponse.slice(0,2200):'Précisons ensemble les informations de l’œuvre.',propositions:b.documentPurpose==='comparables'?{}:cleanPatch(p.propositions),legalSources:base.sources.map(({id,title,url,reviewed})=>({id,title,url,reviewed})),guideVersion:'guide-4.0'}));
+ return callModel(content,instructions,res,p=>({reponse:typeof p.reponse==='string'?p.reponse.slice(0,2200):'Précisons ensemble les informations de l’œuvre.',propositions:b.documentPurpose==='comparables'?{}:cleanPatch(p.propositions),legalSources:base.sources.map(({id,title,url,reviewed})=>({id,title,url,reviewed})),guideVersion:'guide-4.1'}));
 }
 async function legacyAnalysis(b,req,res){return existingAnalysisHandler({...req,body:b},res);}
 // Classify failures without returning provider messages, secrets or dossier contents.
