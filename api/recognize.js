@@ -100,7 +100,7 @@ async function claudeFiche(b64, mime, indices, choix) {
   const r = await fetch("https://api.anthropic.com/v1/messages", {
     method: "POST",
     headers: { "Content-Type": "application/json", "x-api-key": key, "anthropic-version": "2023-06-01" },
-    body: JSON.stringify({ model, max_tokens: 900, temperature: 0, messages: [{ role: "user", content: [{ type: "image", source: { type: "base64", media_type: mime, data: b64 } }, { type: "text", text: texte }] }] }),
+    body: JSON.stringify({ model, max_tokens: 900, messages: [{ role: "user", content: [{ type: "image", source: { type: "base64", media_type: mime, data: b64 } }, { type: "text", text: texte }] }] }),
   });
   if (!r.ok) throw new Error("Anthropic : " + r.status + " " + (await r.text()).slice(0, 200));
   const j = await r.json();
