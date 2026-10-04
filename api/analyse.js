@@ -49,6 +49,16 @@ export default async function handler(req,res){
  const content=[{type:'text',text:JSON.stringify({message,dossier,documentPurpose:b.documentPurpose==='comparables'?'comparables':null,question:b.question||null,schema:b.schema||{},repereArtiste:repere,regles:(Array.isArray(b.regles)?b.regles:[]).slice(0,40),historique:(Array.isArray(b.historique)?b.historique:[]).slice(-6)})}];
  if(b.document){const d=b.document;if(!['application/pdf','image/jpeg','image/png','image/webp'].includes(d.mime)||typeof d.base64!=='string'||d.base64.length>11_200_000||!/^[A-Za-z0-9+/]*={0,2}$/.test(d.base64))return res.status(400).json({error:'Ajoutez un PDF ou une photo de moins de 8 Mo.'});content.push({type:d.mime==='application/pdf'?'document':'image',source:{type:'base64',media_type:d.mime,data:d.base64}});}
  const base=promptContext(dossier,message);
+ // Narrow the prompt to declared jurisdictions. Missing geography never becomes clearance.
+ const normal=x=>String(x||'').normalize('NFD').replace(/[\u0300-\u036f]/g,'').toLowerCase();
+ const places=[dossier.lieu,dossier.dest].filter(Boolean).map(normal),topic=normal(message+' '+(dossier.droitApplicable||''));
+ if(places.length){
+  const france=places.includes('france')||/france|francais|french/.test(topic);
+  const monaco=places.includes('monaco')||/monaco|monegas/.test(topic);
+  const europe=france||monaco||places.some(x=>['italie','allemagne','belgique','espagne','pays-bas','grece','portugal','autriche','irlande','suede','pologne','danemark','finlande','croatie','roumanie','bulgarie','hongrie','slovaquie','slovenie','tchequie','republique tcheque','chypre','malte','estonie','lettonie','lituanie','luxembourg'].includes(x))||/union europeenne|european union|\beu\b|\bue\b/.test(topic);
+  base.sources=base.sources.filter(s=>s.id.startsWith('fr-')?france:s.id.startsWith('mc-')||s.id==='monaco-customs'?monaco:s.id.startsWith('eu-')?europe:true);
+ }
+
  const instructions=SYSTEM+'\nBASE_OFFICIELLE (sources sélectionnées, conditions à vérifier) : '+JSON.stringify(base)+(b.language==='en'?'\nWrite all user-facing advice in idiomatic British English, using professional art-market language. Keep artwork titles, legal references and stored enum codes unchanged.':'');
  return callModel(content,instructions,res,p=>({reponse:typeof p.reponse==='string'?p.reponse.slice(0,2200):'Précisons ensemble les informations de l’œuvre.',propositions:b.documentPurpose==='comparables'?{}:cleanPatch(p.propositions),legalSources:base.sources.map(({id,title,url,reviewed})=>({id,title,url,reviewed})),guideVersion:'guide-4.1'}));
 }
