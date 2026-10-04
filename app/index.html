@@ -28,6 +28,25 @@
 .reference-shortcut{display:flex;gap:14px;align-items:center;background:transparent;border:0;border-bottom:1px solid #dedfd8;padding:10px 0;margin:0 0 18px;color:#315348;font:inherit;font-size:13px;text-align:left;cursor:pointer}
 .reference-shortcut span{margin-left:auto}.reference-search{display:flex;gap:8px;margin:18px 0}.reference-search input{min-width:0;flex:1;margin:0}.reference-search .btn{flex-shrink:0}.reference-result{display:flex;align-items:center;justify-content:space-between;gap:16px;width:100%;padding:18px 0;background:none;border:0;border-bottom:1px solid #dedfd8;text-align:left;color:inherit;cursor:pointer;font:inherit}.reference-result small,.reference-sources small{display:block;color:#69776f;line-height:1.6;margin-top:6px}.reference-card{padding:20px 0;border-bottom:1px solid #dedfd8;overflow-wrap:anywhere}.reference-card h3{font:normal 28px Georgia,serif;margin:10px 0}.reference-card p{line-height:1.6}.reference-sources{font-size:12px;margin:16px 0}.reference-sources summary{cursor:pointer;color:#315348}.reference-sources a{color:#315348}.reference-actions{display:flex;flex-wrap:wrap;gap:12px}.reference-actions .text-btn{font-size:13px}
 @media(max-width:420px){.reference-search{flex-direction:column}.reference-search .btn{width:100%}.reference-card h3{font-size:24px}}
+
+/* Signature opening and centered, quieter welcome. */
+.application-stage{height:100%;min-height:0}
+.brand-opening{position:fixed;inset:0;z-index:10000;display:grid;place-items:center;background:#102d24;color:#f3eee0;animation:opening-away .65s cubic-bezier(.22,1,.36,1) 1.75s forwards}
+.brand-signature{display:flex;flex-direction:column;align-items:center;max-width:100%;padding:30px;text-align:center;transform:translateY(-3vh)}
+.brand-wordmark{font-family:Arial,Helvetica,sans-serif;font-size:clamp(30px,5.4vw,78px);font-weight:400;letter-spacing:.23em;text-indent:.23em;line-height:1.2;animation:signature-arrive 1.1s cubic-bezier(.16,1,.3,1) both}
+.brand-rule{width:34px;height:1px;background:#a8ad91;margin:30px 0 24px;animation:signature-arrive 1.1s .15s both}
+.brand-baseline{font-size:clamp(9px,1vw,12px);font-weight:400;letter-spacing:.36em;text-indent:.36em;color:#c9cfbb;animation:signature-arrive 1.1s .25s both}
+.opening-skip{position:absolute;bottom:max(35px,env(safe-area-inset-bottom));left:50%;transform:translateX(-50%);padding:12px 22px;min-height:44px;border:0;background:transparent;color:#c9cfbb;font-size:11px;letter-spacing:.08em;cursor:pointer}.opening-skip span{margin-left:14px}
+@keyframes signature-arrive{from{opacity:0;transform:translateY(13px)}to{opacity:1;transform:translateY(0)}}
+@keyframes opening-away{to{opacity:0;visibility:hidden}}
+.access{background:#f8f7f2;padding:40px 6%;align-items:center;gap:30px}.access>.logo{width:210px;margin:0 auto}.access-form{text-align:center;max-width:470px;padding:40px 0}.access-form .eyebrow{font-size:10px;letter-spacing:.17em}.access-form h1{font-size:clamp(42px,5vw,62px);font-weight:400;line-height:1.1;letter-spacing:-.04em;margin:26px 0}.access-form>p{font-size:15px;line-height:1.8;margin-bottom:34px}.access-form form{text-align:left;max-width:350px;margin:0 auto}.access-form form>label{display:block;margin-bottom:10px;font-size:12px}.access-input input{min-height:50px;margin:0}.access-input .btn{min-height:50px}.access-foot{font-size:11px;letter-spacing:.05em}
+.conversation.home{padding:32px 42px 20px}.editorial-home{display:flex;flex-direction:column;max-width:720px;gap:27px;margin:auto}.welcome{text-align:center;max-width:680px;width:100%}.welcome .eyebrow{justify-content:center;font-size:10px;letter-spacing:.14em;line-height:1.6}.status-dot{display:none}.welcome h1{font-size:clamp(42px,4.9vw,68px);line-height:1.06;letter-spacing:-.045em;margin:24px 0 22px}.welcome h1 em{color:#667b68}.welcome p{font-size:15px;line-height:1.75}.hero-actions{align-items:center;margin:27px 0 17px;gap:3px}.camera-primary{min-height:52px;font-size:13px;padding:14px 24px;border-radius:5px}.import-action{font-size:12px;color:#647166;justify-content:center}.intent-links{justify-content:center;border:0;gap:24px;padding-top:0}.intent-links button{font-size:12px;min-height:44px}.intent-links button:last-child{color:#697669}.home-art{max-width:460px;border-top:1px solid #dedfd7;padding-top:23px}.art-heading{border:0;padding:0;margin-bottom:15px}.art-heading>span{font-size:9px}.art-heading button{font-size:11px}.featured-work{display:grid;grid-template-columns:80px 1fr;align-items:center;gap:20px}.featured-stage{height:92px;padding:8px;background:#efeee7}.work-open{display:none}.featured-caption{padding:0}.featured-caption strong{font-size:22px}.featured-caption div>span{font-size:11px}.mini-label{display:none}.home-footer{display:none}.top-label{font-size:9px}.composer-note{font-size:10px;letter-spacing:0}.composer-tools>span{font-size:11px}.sidebar nav button{font-size:12px}.recent-nav button{font-size:12px}
+@media(max-width:720px){.access{padding:32px 24px;gap:20px}.access-form{padding:25px 0}.access-form h1{font-size:44px}.access>.logo{width:184px}.brand-wordmark{font-size:clamp(26px,7.5vw,42px);letter-spacing:.18em;text-indent:.18em}.brand-rule{margin:25px 0 22px}.brand-baseline{font-size:9px;letter-spacing:.28em}.conversation.home{padding:30px 23px 18px}.editorial-home{gap:26px;max-width:450px}.welcome .eyebrow{font-size:9px;letter-spacing:.1em}.welcome h1{font-size:43px;margin:23px 0 20px}.welcome p{font-size:14px}.hero-actions{margin:25px 0 10px;align-items:stretch}.camera-primary{justify-content:center;padding:14px 18px;font-size:13px}.camera-primary>span{margin-left:0}.import-action{font-size:12px}.intent-links{gap:8px 19px}.intent-links button{font-size:11px}.home-art{max-width:100%;padding-top:21px}.art-heading{display:none}.featured-caption strong{font-size:21px}.composer-note{font-size:9px}.topbar>.mobile-only{margin:0 auto}.topbar>.mobile-only .logo{width:172px}.brand-signature{padding:24px}}
+@media(max-width:380px){.welcome h1{font-size:37px}.welcome .eyebrow{font-size:8px}.conversation.home{padding:24px 20px 16px}.intent-links{gap:6px 14px}.intent-links button{font-size:10px}}
+@media(max-height:760px) and (max-width:720px){.conversation.home{padding-top:22px}.welcome h1{font-size:36px;margin:18px 0}.hero-actions{margin-top:20px}.editorial-home{gap:18px}.welcome p{font-size:13px}}
+@media(prefers-reduced-motion:reduce){.brand-opening,.brand-wordmark,.brand-rule,.brand-baseline{animation:none}.brand-signature{transform:none}}
+
+@media(max-width:720px){.topbar{position:relative}.topbar>span.mobile-only{position:absolute;left:50%;transform:translateX(-50%);margin:0;pointer-events:none}.topbar>.icon-btn.mobile-only{margin:0}}
 </style></head><body><div id="root"></div><script src="https://cdnjs.cloudflare.com/ajax/libs/react/18.3.1/umd/react.production.min.js"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/react-dom/18.3.1/umd/react-dom.production.min.js"></script><script>window.ARTVELCHIV_API_URL="";window.require=n=>n==='react'?window.React:n==='react-dom/client'?window.ReactDOM:null;</script><script>(()=>{var Mt=(e=>typeof require<"u"?require:typeof Proxy<"u"?new Proxy(e,{get:(A,n)=>(typeof require<"u"?require:A)[n]}):e)(function(e){if(typeof require<"u")return require.apply(this,arguments);throw Error('Dynamic require of "'+e+'" is not supported')});var di=Mt("react-dom/client");var q=Mt("react"),hi="arttest",Kt=`
 @import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400;1,500&family=Jost:wght@300;400;500;600&family=IBM+Plex+Mono:wght@400;600&display=swap');
 @keyframes avFade { from { opacity: 0; transform: translateY(4px); } to { opacity: 1; transform: none; } }
@@ -848,7 +867,11 @@ function App() {
       } catch {
         throw Error('unavailable');
       }
-      if (!resp.ok) throw Error(resp.status === 401 ? 'access' : 'unavailable');
+      if (!resp.ok) {
+        const e = Error(resp.status === 401 ? 'access' : 'unavailable');
+        if (/^AI_(AUTH|QUOTA|MODEL|BUSY|REQUEST|UNAVAILABLE|TIMEOUT|REFUSED|FORMAT)$/.test(data.code) && typeof data.error === 'string') e.userMessage = data.error;
+        throw e;
+      }
       say(id, null, data.reponse || 'Précisons ensemble le dossier.');
       const p = A.safePatch(data.propositions);
       if (Object.keys(p).length) setProposal({
@@ -861,7 +884,7 @@ function App() {
         message,
         attachment
       });
-      say(id, null, err.message === 'access' ? 'Votre accès doit être confirmé pour reprendre la conversation. Les choix ci-dessous restent disponibles.' : 'Je n’ai pas pu lire votre réponse pour le moment. Elle reste dans la conversation. Vous pouvez réessayer ou utiliser les choix ci-dessous.');
+      say(id, null, err.userMessage || (err.message === 'access' ? 'Votre accès doit être confirmé pour reprendre la conversation. Les choix ci-dessous restent disponibles.' : 'Je n’ai pas pu lire votre réponse pour le moment. Elle reste dans la conversation. Vous pouvez réessayer ou utiliser les choix ci-dessous.'));
       setNotice('Lecture interrompue.');
     } finally {
       clearTimeout(timer);
@@ -920,10 +943,21 @@ function App() {
       if (!response.ok) throw Error('unavailable');
       const data = await response.json();
       update(id, x => A.patch(x, {
-        reco: data
+        reco: data,
+        recoFileId: file.id
       }));
       const f = data.fiche;
-      if (!f) throw Error('no-description');
+      if (!f) {
+        if (data.occurrences?.length) {
+          say(id, null, 'Des rapprochements ont été trouvés. Consultez les pages ci-dessous pour retrouver votre œuvre ; sa description pourra être relancée ensuite.');
+          setPendingFile({
+            recordId: id,
+            file
+          });
+          return;
+        }
+        throw Error('no-description');
+      }
       const p = A.safePatch({
         titre: f.description ? f.description.split(/(?<=[.!?])\s/)[0].slice(0, 180) : null,
         cat: f.nature,
@@ -1295,7 +1329,14 @@ function App() {
     key: m.id
   }, m.text)), busy && React.createElement("div", {
     className: "message assistant thinking"
-  }, "Lecture en cours", React.createElement("span", null, "\xB7\xB7\xB7"))), failed?.recordId === r.id && !busy && React.createElement("button", {
+  }, "Lecture en cours", React.createElement("span", null, "\xB7\xB7\xB7"))), r.reco?.occurrences?.length > 0 && React.createElement("div", {
+    className: "attachment-action"
+  }, React.createElement(Icon, {
+    name: "search"
+  }), React.createElement("span", null, "Des pages pr\xE9sentent une image identique ou proche."), React.createElement("button", {
+    className: "text-btn",
+    onClick: () => setModal('matches')
+  }, "Voir les rapprochements")), failed?.recordId === r.id && !busy && React.createElement("button", {
     className: "text-btn",
     onClick: () => converse(r, failed.message, failed.attachment)
   }, "R\xE9essayer la lecture"), pendingFile?.recordId === r.id && !busy && React.createElement("div", {
@@ -1674,7 +1715,7 @@ function App() {
     className: "text-btn",
     disabled: busy,
     onClick: () => {
-      const f = r.files?.find(f => f.mime.startsWith('image/'));
+      const f = r.files?.find(f => f.id === r.recoFileId) || (!r.recoFileId ? r.files?.find(f => f.mime.startsWith('image/')) : null);
       if (f) {
         setModal(null);
         recognizePhoto(r, f, {
@@ -1932,4 +1973,32 @@ class ErrorBoundary extends React.Component {
     }, "Rouvrir mon espace")) : this.props.children;
   }
 }
-ReactDOM.createRoot(document.getElementById('root')).render(React.createElement(ErrorBoundary, null, React.createElement(App, null)));</script><noscript>Activez JavaScript pour ouvrir votre espace ARTVELCHIV.</noscript></body></html>
+function Opening() {
+  const [visible, setVisible] = useState(true);
+  useEffect(() => {
+    const reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    const timer = setTimeout(() => setVisible(false), reduced ? 400 : 2400);
+    return () => clearTimeout(timer);
+  }, []);
+  return React.createElement(React.Fragment, null, React.createElement("div", {
+    className: "application-stage",
+    inert: visible ? '' : undefined
+  }, React.createElement(App, null)), visible && React.createElement("div", {
+    className: "brand-opening",
+    "aria-label": "Bienvenue chez Artvelchiv"
+  }, React.createElement("div", {
+    className: "brand-signature"
+  }, React.createElement("span", {
+    className: "brand-wordmark"
+  }, "ARTVELCHIV"), React.createElement("span", {
+    className: "brand-rule"
+  }), React.createElement("span", {
+    className: "brand-baseline"
+  }, "THE ART STANDARD")), React.createElement("button", {
+    className: "opening-skip",
+    onClick: () => setVisible(false)
+  }, "Entrer ", React.createElement("span", {
+    "aria-hidden": "true"
+  }, "\u2197"))));
+}
+ReactDOM.createRoot(document.getElementById('root')).render(React.createElement(ErrorBoundary, null, React.createElement(Opening, null)));</script><noscript>Activez JavaScript pour ouvrir votre espace ARTVELCHIV.</noscript></body></html>
