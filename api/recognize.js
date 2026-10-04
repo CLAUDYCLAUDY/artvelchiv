@@ -133,12 +133,12 @@ async function lensDetection(photo,language){
  if(q&&process.env.RECOGNITION_SEARCH!=='0'){
   await Promise.allSettled(['google','google_images'].map(async engine=>{try{
    const params=new URLSearchParams({engine,q,api_key:key,hl:language});
-   const result=await fetch('https://serpapi.com/search.json?'+params,{signal:AbortSignal.timeout(6500)});
-   if(!result.ok)throw Error('SEARCH_UNAVAILABLE');const json=await result.json();if(json.error)throw Error('SEARCH_UNAVAILABLE');
+   const result=await fetch('https://serpapi.com/search.json?'+params,{signal:AbortSignal.timeout(12000)});
+   if(!result.ok)throw Error(result.status===429?'QUOTA':result.status===401?'AUTH':'UNAVAILABLE');const json=await result.json();if(json.error)throw Error('PROVIDER_ERROR');
    if(engine==='google')for(const r of (json.organic_results||[]).slice(0,5)){const url=publicURL(r.link);if(url)sources.push({url,titre:String(r.title||'').slice(0,300),source:domainOf(url),extrait:String(r.snippet||'').slice(0,600),type:'piste-documentaire'});}
    else for(const r of (json.images_results||[]).slice(0,4)){const url=publicURL(r.link),image=publicURL(r.thumbnail||r.original);if(url&&image&&!matches.some(m=>m.url===url))matches.push({url,image,titre:String(r.title||'').slice(0,300),source:domainOf(url),type:'piste-images',provider:'google-images-serpapi',exact:false});}
    services.push({service:engine==='google'?'search':'images',code:'OK'});
-  }catch{services.push({service:engine==='google'?'search':'images',code:'UNAVAILABLE'});}}));
+  }catch(e){services.push({service:engine==='google'?'search':'images',code:e.name==='TimeoutError'?'TIMEOUT':['QUOTA','AUTH','PROVIDER_ERROR'].includes(e.message)?e.message:'UNAVAILABLE'});}}));
  }
  return {occurrences:matches,sources,services};
 }
