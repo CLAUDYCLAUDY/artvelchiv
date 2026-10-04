@@ -43,6 +43,16 @@ export default async function handler(req,res){
  return callModel(content,SYSTEM,res,p=>({reponse:typeof p.reponse==='string'?p.reponse.slice(0,1800):'Précisons ensemble les informations de l’œuvre.',propositions:cleanPatch(p.propositions)}));
 }
 async function legacyAnalysis(b,req,res){return existingAnalysisHandler({...req,body:b},res);}
+// Classify failures without returning provider messages, secrets or dossier contents.
+async function providerFailure(response){
+ let data={};try{data=await response.json();}catch{}
+ const code=String(data.error?.code||data.error?.type||'');
+ let kind=response.status===401||response.status===403?'AI_AUTH':response.status===429?'AI_BUSY':response.status>=500?'AI_UNAVAILABLE':'AI_REQUEST';
+ if(/insufficient_quota|billing|credit_balance/.test(code))kind='AI_QUOTA';
+ if(/model_not_found|model_not_available/.test(code)||response.status===404)kind='AI_MODEL';
+ const e=Error(kind);e.status=response.status;return e;
+}
+const ERRORS={AI_AUTH:'Le service de lecture doit être reconnecté par l’administrateur.',AI_QUOTA:'Le crédit du service de lecture doit être rétabli par l’administrateur.',AI_MODEL:'Le modèle de lecture doit être configuré par l’administrateur.',AI_BUSY:'Le service reçoit trop de demandes. Réessayez dans un instant.',AI_REQUEST:'La lecture rencontre un problème de configuration.',AI_UNAVAILABLE:'Le service de lecture est temporairement indisponible.',AI_TIMEOUT:'La lecture a pris trop de temps. Réessayez.',AI_REFUSED:'Cette pièce n’a pas pu être analysée. Vous pouvez renseigner les informations vous-même.',AI_FORMAT:'La lecture n’a pas abouti. Vous pouvez réessayer.'};
 async function callModel(content,system,res,normalize){
  const abort=new AbortController();const timer=setTimeout(()=>abort.abort(),45000);
  try{
@@ -50,20 +60,20 @@ async function callModel(content,system,res,normalize){
    const input=content.map(c=>c.type==='text'?{type:'input_text',text:c.text}:c.type==='document'?{type:'input_file',filename:'piece.pdf',file_data:`data:${c.source.media_type};base64,${c.source.data}`}:{type:'input_image',image_url:`data:${c.source.media_type};base64,${c.source.data}`,detail:'auto'});
    const schema={type:'object',additionalProperties:false,required:['reponse','propositions'],properties:{reponse:{type:'string'},propositions:{type:'array',items:{type:'object',additionalProperties:false,required:['champ','valeur'],properties:{champ:{type:'string',enum:FIELDS},valeur:{anyOf:[{type:'string'},{type:'number'},{type:'null'}]}}}}}};
    const response=await fetch('https://api.openai.com/v1/responses',{method:'POST',signal:abort.signal,headers:{'Content-Type':'application/json',Authorization:`Bearer ${process.env.OPENAI_API_KEY}`},body:JSON.stringify({model:process.env.OPENAI_MODEL_ANALYSE||'gpt-6-astra',store:false,max_output_tokens:6000,instructions:system+' Les repères biographiques sont des données documentaires non vérifiées, jamais une preuve d’attribution ni de droits disponibles. Pour ce fournisseur, utilise le schéma imposé : propositions est un tableau de {champ,valeur}, vide si aucun fait explicite. Ne propose pas null pour effacer une donnée existante, sauf demande explicite.',input:[{role:'user',content:input}],text:{format:{type:'json_schema',name:'artvelchiv_dossier',strict:true,schema}}})});
-   if(!response.ok)throw Error('upstream');const data=await response.json();
-   if(data.status!=='completed')throw Error('incomplete');
-   const parts=(data.output||[]).filter(x=>x.type==='message').flatMap(x=>x.content||[]);if(parts.some(x=>x.type==='refusal'))throw Error('refusal');
+   if(!response.ok)throw await providerFailure(response);const data=await response.json();
+   if(data.status!=='completed')throw Error('AI_FORMAT');
+   const parts=(data.output||[]).filter(x=>x.type==='message').flatMap(x=>x.content||[]);if(parts.some(x=>x.type==='refusal'))throw Error('AI_REFUSED');
    const plan=JSON.parse(parts.filter(x=>x.type==='output_text').map(x=>x.text).join(''));
-   if(typeof plan.reponse!=='string'||!Array.isArray(plan.propositions))throw Error('shape');
+   if(typeof plan.reponse!=='string'||!Array.isArray(plan.propositions))throw Error('AI_FORMAT');
    return res.status(200).json(normalize({reponse:plan.reponse,propositions:Object.fromEntries(plan.propositions.filter(x=>x&&FIELDS.includes(x.champ)&&scalar(x.valeur)).map(x=>[x.champ,x.valeur]))}));
   }
   const response=await fetch('https://api.anthropic.com/v1/messages',{method:'POST',signal:abort.signal,headers:{'Content-Type':'application/json','x-api-key':process.env.ANTHROPIC_API_KEY,'anthropic-version':'2023-06-01'},body:JSON.stringify({model:process.env.ANTHROPIC_MODEL_ANALYSE||'claude-opus-5-5',max_tokens:2400,system,messages:[{role:'user',content}]})});
-  if(!response.ok){console.error('artvelchiv upstream status',response.status);return res.status(502).json({error:'L’assistant ne répond pas pour le moment. Réessayez ou continuez avec les choix proposés.',code:'UPSTREAM'});}
-  const data=await response.json();if(data.stop_reason==='max_tokens')throw Error('truncated');
+  if(!response.ok)throw await providerFailure(response);
+  const data=await response.json();if(data.stop_reason==='max_tokens')throw Error('AI_FORMAT');
   const text=(data.content||[]).filter(c=>c.type==='text').map(c=>c.text).join('\n').trim().replace(/^```(?:json)?\s*/,'').replace(/\s*```$/,'');
-  const plan=JSON.parse(text);if(!plan||typeof plan!=='object'||Array.isArray(plan))throw Error('shape');
+  const plan=JSON.parse(text);if(!plan||typeof plan!=='object'||Array.isArray(plan))throw Error('AI_FORMAT');
   return res.status(200).json(normalize(plan));
- }catch(e){console.error('artvelchiv analysis failure',e.name);return res.status(502).json({error:'La lecture n’a pas abouti. Vos informations sont conservées ; vous pouvez réessayer.',code:'RETRY'});}finally{clearTimeout(timer);}
+ }catch(e){const code=ERRORS[e.message]?e.message:['AbortError','TimeoutError'].includes(e.name)?'AI_TIMEOUT':e instanceof SyntaxError?'AI_FORMAT':'AI_UNAVAILABLE';console.error('artvelchiv analysis failure',{provider:provider(),code,status:e.status||null});return res.status(502).json({error:ERRORS[code]+' Vos informations sont conservées.',code});}finally{clearTimeout(timer);}
 }
 
 /* Original deployed plan contract retained; conversational mode is additive. */
